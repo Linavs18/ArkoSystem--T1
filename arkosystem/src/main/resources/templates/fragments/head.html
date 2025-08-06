@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="head">
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="description" content="ArkoSystem - Sistema de gestión para ferretería">
+        <meta name="author" content="ArkoSystem Team">
+        <meta name="color-scheme" content="light dark">
+        <title th:text="${pageTitle != null ? pageTitle + ' · ArkoSystem' : 'ArkoSystem · Sistema de Gestión'}">ArkoSystem</title>
+
+        <!-- Favicons -->
+        <link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
+        <link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
+        <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
+
+        <!-- CSS -->
+        <link rel="preload" th:href="@{/assets/css/volt.css}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="stylesheet" th:href="@{/assets/vendor/sweetalert2/dist/sweetalert2.min.css}" media="print" onload="this.media='all'">
+        <link rel="stylesheet" th:href="@{/assets/vendor/notyf/notyf.min.css}" media="print" onload="this.media='all'">
+        <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+
+        <!-- Icons -->
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="" referrerpolicy="no-referrer">
+
+        <!-- Theme -->
+        <meta name="theme-color" content="#667eea">
+    </head>
+</html>

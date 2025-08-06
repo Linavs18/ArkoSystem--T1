@@ -1,0 +1,287 @@
+.card-hover:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+.icon-shape {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.numbers p {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+.numbers h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+}
+.bg-gradient-primary {
+    background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+}
+.bg-gradient-success {
+    background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%);
+}
+.bg-gradient-warning {
+    background: linear-gradient(87deg, #fb6340 0, #fbb140 100%);
+}
+.bg-gradient-danger {
+    background: linear-gradient(87deg, #f5365c 0, #f56036 100%);
+}
+.aside-ferreteria {
+    background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%);
+    color: #fff;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    box-shadow: 0 8px 32px rgba(252,74,26,0.15);
+    border-radius: 1rem;
+    position: relative;
+}
+.ferreteria-shadow {
+    box-shadow: 0 8px 32px rgba(252,74,26,0.25) !important;
+}
+.aside-header {
+    margin-bottom: 2rem;
+}
+.aside-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(252,74,26,0.12);
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+.aside-menu {
+    margin-bottom: 2rem;
+}
+.aside-link {
+    color: #fff !important;
+    font-weight: 500;
+    font-size: 1.1rem;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+}
+.aside-link:hover, .aside-link.active {
+    background: rgba(255,255,255,0.15);
+    color: #ffd200 !important;
+    text-decoration: none;
+}
+.user-avatar {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #f7b733 100%);
+    color: #fff;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.12);
+}
+.logo-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #262833 !important;
+}
+.sidebar-brand-text {
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    min-width: 18px;
+    text-align: center;
+}
+.stock-alert {
+    border-left: 4px solid #f39c12;
+    background-color: #fef9e7;
+}
+.stats-card {
+    transition: transform 0.2s;
+}
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+.aside-ferreteria {
+    background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%);
+    color: #fff;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    box-shadow: 0 8px 32px rgba(252,74,26,0.15);
+    border-radius: 1rem;
+    position: relative;
+}
+.ferreteria-shadow {
+    box-shadow: 0 8px 32px rgba(252,74,26,0.25) !important;
+}
+.aside-header {
+    margin-bottom: 2rem;
+}
+.aside-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(252,74,26,0.12);
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+.aside-menu {
+    margin-bottom: 2rem;
+}
+.aside-link {
+    color: #fff !important;
+    font-weight: 500;
+    font-size: 1.1rem;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+}
+.aside-link:hover, .aside-link.active {
+    background: rgba(255,255,255,0.15);
+    color: #ffd200 !important;
+    text-decoration: none;
+}
+.user-avatar {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #f7b733 100%);
+    color: #fff;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.12);
+}
+.logo-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #262833 !important;
+}
+
+.sidebar-brand-text {
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    min-width: 18px;
+    text-align: center;
+}
+
+.stock-alert {
+    border-left: 4px solid #f39c12;
+    background-color: #fef9e7;
+}
+
+.stats-card {
+    transition: transform 0.2s;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-hover {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.icon-shape {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(87deg, #fb6340 0, #fbb140 100%);
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(87deg, #f5365c 0, #f56036 100%);
+}
+
+/* Sidebar width and shadow */
+.sidebar {
+    width: 220px;
+    min-width: 220px;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+    z-index: 100;
+}
+
+/* Main content background for contrast */
+.main-content {
+    background: #f8fafc;
+    min-height: 100vh;
+    border-radius: 0 1rem 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding-left: 2rem;
+}
+
+/* Responsive sidebar: collapsable on small screens */
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  .main-content {
+    padding-left: 0;
+    border-radius: 0;
+  }
+}

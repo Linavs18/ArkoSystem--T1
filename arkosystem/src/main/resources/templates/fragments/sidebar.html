@@ -1,0 +1,57 @@
+<div th:fragment="sidebar">
+<nav id="sidebarMenu" class="sidebar d-lg-block bg-primary text-white collapse" data-simplebar aria-label="Navegación lateral">
+  <div class="sidebar-inner px-4 pt-3">
+    <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+      <div class="d-flex align-items-center">
+        <div class="avatar-lg me-4">
+          <img th:src="@{/assets/img/sena-logo.png}" class="card-img-top rounded-circle border-white" alt="Logo SENA">
+        </div>
+        <div class="d-block">
+          <h2 class="h6 mb-1">Bienvenido</h2>
+          <a th:href="@{/logout}" class="btn btn-secondary text-dark btn-xs">Cerrar sesión</a>
+        </div>
+      </div>
+      <div class="collapse-close d-md-none">
+        <a href="#sidebarMenu" class="fas fa-times" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-label="Cerrar menú"></a>
+      </div>
+    </div>
+
+    <ul class="nav flex-column pt-3 pt-md-0">
+      <li class="nav-item mb-3">
+        <a th:href="@{/}" class="nav-link d-flex align-items-center">
+          <span class="sidebar-icon" aria-hidden="true"><i class="fas fa-cubes"></i></span>
+          <span class="sidebar-text ms-2 fw-semibold">ArkoSystem</span>
+        </a>
+      </li>
+
+      <li class="nav-item" th:classappend="${activePage} == 'home' ? 'active'">
+        <a class="nav-link d-flex align-items-center" th:href="@{/}">
+          <span class="sidebar-icon" aria-hidden="true"><i class="fas fa-home"></i></span>
+          <span class="sidebar-text ms-2">Inicio</span>
+        </a>
+      </li>
+
+      <li class="nav-item" th:classappend="${activePage} == 'ventas' ? 'active'">
+        <a class="nav-link d-flex align-items-center" th:href="@{/ventas}">
+          <span class="sidebar-icon" aria-hidden="true"><i class="fas fa-cash-register"></i></span>
+          <span class="sidebar-text ms-2">Ventas</span>
+        </a>
+      </li>
+
+      <li class="nav-item" th:classappend="${activePage} == 'inventario' ? 'active'">
+        <a class="nav-link d-flex align-items-center" th:href="@{/inventario}">
+          <span class="sidebar-icon" aria-hidden="true"><i class="fas fa-boxes"></i></span>
+          <span class="sidebar-text ms-2">Inventario</span>
+        </a>
+      </li>
+
+      <li class="nav-item" th:classappend="${activePage} == 'reportes' ? 'active'">
+        <a class="nav-link d-flex align-items-center" th:href="@{/reportes}">
+          <span class="sidebar-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
+          <span class="sidebar-text ms-2">Reportes</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+</div>
