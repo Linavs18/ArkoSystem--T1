@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="~{fragments/head :: head}"></head>
+
+<body class="g-sidenav-show bg-gray-100 g-sidenav-pinned">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div class="d-flex">
+    <main class="main-content flex-grow-1 position-relative max-height-vh-100 h-100 border-radius-lg" style="margin-left: 250px;">
+      <div th:replace="~{fragments/topbar :: topbar}"></div>
+      <div class="container-fluid">
+        <div layout:fragment="content"></div>
+        <div th:replace="~{fragments/footer :: footer}"></div>
+      </div>
+    </main>
+  </div>
+  <!-- Core JS -->
+  <script th:src="@{/assets/vendor/@popperjs/core/dist/umd/popper.min.js}"></script>
+  <script th:src="@{/assets/vendor/bootstrap/dist/js/bootstrap.min.js}"></script>
+  <!-- Vendor JS -->
+  <script th:src="@{/assets/vendor/onscreen/dist/on-screen.umd.min.js}"></script>
+  <script th:src="@{/assets/vendor/nouislider/distribute/nouislider.min.js}"></script>
+  <script th:src="@{/assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js}"></script>
+  <script th:src="@{/assets/vendor/chartist/dist/chartist.min.js}"></script>
+  <script th:src="@{/assets/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js}"></script>
+  <script th:src="@{/assets/vendor/vanillajs-datepicker/dist/js/datepicker.min.js}"></script>
+  <script th:src="@{/assets/vendor/sweetalert2/dist/sweetalert2.all.min.js}"></script>
+  <script th:src="@{/assets/vendor/notyf/notyf.min.js}"></script>
+  <script th:src="@{/assets/vendor/simplebar/dist/simplebar.min.js}"></script>
+  <!-- External JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Volt JS -->
+  <script th:src="@{/assets/js/volt.js}"></script>
+</body>
+</html>

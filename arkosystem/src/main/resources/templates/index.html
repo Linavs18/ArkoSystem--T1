@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>ArkoSystem</title>
+  <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+</head>
+<body>
+  <div layout:fragment="content">
+    <div class="content-wrapper">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Panel general</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Panel</li>
+          </ol>
+        </nav>
+      </div>
+
+      <!-- Tarjetas resumen -->
+      <div class="row g-4">
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-3">
+                  <div class="icon icon-shape bg-primary text-white rounded-circle">
+                    <i class="fas fa-cash-register" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <div class="col-9">
+                  <h6 class="text-muted mb-1">Ventas Hoy</h6>
+                  <h4 class="mb-0" th:text="${ventasHoy ?: '0'}">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-3">
+                  <div class="icon icon-shape bg-success text-white rounded-circle">
+                    <i class="fas fa-users" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <div class="col-9">
+                  <h6 class="text-muted mb-1">Clientes</h6>
+                  <h4 class="mb-0" th:text="${clientes ?: '0'}">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-3">
+                  <div class="icon icon-shape bg-warning text-white rounded-circle">
+                    <i class="fas fa-boxes" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <div class="col-9">
+                  <h6 class="text-muted mb-1">Productos</h6>
+                  <h4 class="mb-0" th:text="${productos ?: '0'}">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-3">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle">
+                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <div class="col-9">
+                  <h6 class="text-muted mb-1">Stock Bajo</h6>
+                  <h4 class="mb-0 text-danger" th:text="${stockBajo ?: '0'}">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfica -->
+      <div class="card border-0 shadow mt-4">
+        <div class="card-header bg-white">
+          <h2 class="h6 mb-0">Ventas de la semana</h2>
+        </div>
+        <div class="card-body">
+          <canvas id="ventasChart" width="400" height="140" role="img" aria-label="Gráfica de ventas semanales"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/assets/vendor/chart.js/dist/chart.min.js}" defer></script>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+      var ctx = document.getElementById('ventasChart');
+      if (!ctx) return;
+      var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: /*[[${labels}]]*/ ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
+          datasets: [{
+            label: 'Ventas',
+            data: /*[[${ventas}]]*/ [12, 19, 3, 5, 2, 3, 7],
+            tension: 0.35,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
