@@ -22,11 +22,6 @@ public class ControllerOrderDetail {
         return orderDetailRepository.findById(id).orElse(null);
     }
 
-    @GetMapping("/order/{orderId}")
-    public List<OrderDetails> getDetailsByOrder(@PathVariable Long orderId) {
-        return orderDetailRepository.findByOrderId(orderId);
-    }
-
     @PostMapping
     public OrderDetails createOrderDetail(@RequestBody OrderDetails orderDetail) {
         return orderDetailRepository.save(orderDetail);

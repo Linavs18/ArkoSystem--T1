@@ -22,10 +22,6 @@ public class ControllerInventory {
         return inventoryRepository.findById(id).orElse(null);
     }
 
-    @GetMapping("/low-stock")
-    public List<Inventory> getLowStockItems() {
-        return inventoryRepository.findByAvailableQuantityLessThanMinStock();
-    }
 
     @PostMapping
     public Inventory createInventoryItem(@RequestBody Inventory inventory) {

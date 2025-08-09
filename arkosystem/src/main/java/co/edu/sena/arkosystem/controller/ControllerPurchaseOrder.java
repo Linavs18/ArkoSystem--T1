@@ -22,11 +22,6 @@ public class ControllerPurchaseOrder {
         return purchaseOrderRepository.findById(id).orElse(null);
     }
 
-    @GetMapping("/client/{clientId}")
-    public List<PurchaseOrder> getOrdersByClient(@PathVariable Long clientId) {
-        return purchaseOrderRepository.findByClientId(clientId);
-    }
-
     @PostMapping
     public PurchaseOrder createPurchaseOrder(@RequestBody PurchaseOrder order) {
         return purchaseOrderRepository.save(order);
@@ -46,4 +41,5 @@ public class ControllerPurchaseOrder {
             return purchaseOrderRepository.save(order);
         }
         return null;
+    }
 }
