@@ -1,30 +1,34 @@
-<!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-    <head th:fragment="head">
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-        <meta name="description" content="ArkoSystem - Sistema de gestión para ferretería">
-        <meta name="author" content="ArkoSystem Team">
-        <meta name="color-scheme" content="light dark">
-        <title th:text="${pageTitle != null ? pageTitle + ' · ArkoSystem' : 'ArkoSystem · Sistema de Gestión'}">ArkoSystem</title>
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$LAYOUT_TITLE - ArkoSystem">ArkoSystem</title>
+    <meta name="description" content="ArkoSystem - Software de gestión para el SENA CLEM de Ferretería">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" th:href="@{/assets/img/sena-logo-negro.png}"/>
 
-        <!-- Favicons -->
-        <link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
-        <link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
-        <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
-
-        <!-- CSS -->
-        <link rel="preload" th:href="@{/assets/css/volt.css}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <link rel="stylesheet" th:href="@{/assets/vendor/sweetalert2/dist/sweetalert2.min.css}" media="print" onload="this.media='all'">
-        <link rel="stylesheet" th:href="@{/assets/vendor/notyf/notyf.min.css}" media="print" onload="this.media='all'">
-        <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
-
-        <!-- Icons -->
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="" referrerpolicy="no-referrer">
-
-        <!-- Theme -->
-        <meta name="theme-color" content="#667eea">
-    </head>
-</html>
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    
+    <!-- Nucleo Icons -->
+    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/assets/css/nucleo-svg.css}">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- CSS Files -->
+    <link id="pagestyle" th:href="@{/assets/css/argon-dashboard.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    
+    <!-- DataTables CSS (si se necesita) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+</head>
