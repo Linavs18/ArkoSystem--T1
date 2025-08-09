@@ -22,10 +22,7 @@ public class ControllerSaleDetail {
         return saleDetailRepository.findById(id).orElse(null);
     }
 
-    @GetMapping("/sale/{saleId}")
-    public List<SaleDetails> getDetailsBySale(@PathVariable Long saleId) {
-        return saleDetailRepository.findBySaleId(saleId);
-    }
+
 
     @PostMapping
     public SaleDetails createSaleDetail(@RequestBody SaleDetails saleDetail) {
