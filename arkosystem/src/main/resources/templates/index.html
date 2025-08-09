@@ -4,11 +4,23 @@
       layout:decorate="~{layout/base}">
 <head>
   <title>ArkoSystem</title>
+  <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
   <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
   <div layout:fragment="content">
     <div class="content-wrapper">
+
+      <!-- Sección de bienvenida -->
+      <div class="welcome-section animate__animated animate__fadeInDown">
+        <i class="fas fa-tools"></i>
+        <div>
+          <h2 class="mb-1">¡Bienvenido a ArkoSystem!</h2>
+          <p class="mb-0">Gestiona tu ferretería de forma eficiente y visualiza el estado de tu negocio en tiempo real.</p>
+        </div>
+      </div>
+
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Panel general</h1>
         <nav aria-label="breadcrumb">
@@ -20,74 +32,70 @@
       </div>
 
       <!-- Tarjetas resumen -->
-      <div class="row g-4">
+      <div class="row g-4 mb-4">
         <div class="col-6 col-xl-3">
-          <div class="card border-0 shadow h-100">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-3">
-                  <div class="icon icon-shape bg-primary text-white rounded-circle">
-                    <i class="fas fa-cash-register" aria-hidden="true"></i>
-                  </div>
+          <div class="card border-0 shadow h-100 stats-card animate__animated animate__fadeInUp">
+            <div class="card-body d-flex align-items-center">
+              <div class="me-3">
+                <span class="badge bg-primary mb-2">Hoy</span>
+                <div class="icon icon-shape bg-primary text-white rounded-circle">
+                  <i class="fas fa-cash-register icon-lg"></i>
                 </div>
-                <div class="col-9">
-                  <h6 class="text-muted mb-1">Ventas Hoy</h6>
-                  <h4 class="mb-0" th:text="${ventasHoy ?: '0'}">0</h4>
-                </div>
+              </div>
+              <div>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Ventas Hoy</p>
+                <h4 class="font-weight-bolder mb-0" th:text="${ventasHoy ?: '0'}">0</h4>
               </div>
             </div>
           </div>
         </div>
 
         <div class="col-6 col-xl-3">
-          <div class="card border-0 shadow h-100">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-3">
-                  <div class="icon icon-shape bg-success text-white rounded-circle">
-                    <i class="fas fa-users" aria-hidden="true"></i>
-                  </div>
+          <div class="card border-0 shadow h-100 stats-card animate__animated animate__fadeInUp" style="animation-delay:0.1s;">
+            <div class="card-body d-flex align-items-center">
+              <div class="me-3">
+                <span class="badge bg-success mb-2">Total</span>
+                <div class="icon icon-shape bg-success text-white rounded-circle">
+                  <i class="fas fa-users icon-lg"></i>
                 </div>
-                <div class="col-9">
-                  <h6 class="text-muted mb-1">Clientes</h6>
-                  <h4 class="mb-0" th:text="${clientes ?: '0'}">0</h4>
-                </div>
+              </div>
+              <div>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Clientes</p>
+                <h4 class="font-weight-bolder mb-0" th:text="${clientes ?: '0'}">0</h4>
               </div>
             </div>
           </div>
         </div>
 
         <div class="col-6 col-xl-3">
-          <div class="card border-0 shadow h-100">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-3">
-                  <div class="icon icon-shape bg-warning text-white rounded-circle">
-                    <i class="fas fa-boxes" aria-hidden="true"></i>
-                  </div>
+          <div class="card border-0 shadow h-100 stats-card animate__animated animate__fadeInUp" style="animation-delay:0.2s;">
+            <div class="card-body d-flex align-items-center">
+              <div class="me-3">
+                <span class="badge bg-warning mb-2">Stock</span>
+                <div class="icon icon-shape bg-warning text-white rounded-circle">
+                  <i class="fas fa-boxes icon-lg"></i>
                 </div>
-                <div class="col-9">
-                  <h6 class="text-muted mb-1">Productos</h6>
-                  <h4 class="mb-0" th:text="${productos ?: '0'}">0</h4>
-                </div>
+              </div>
+              <div>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Productos</p>
+                <h4 class="font-weight-bolder mb-0" th:text="${productos ?: '0'}">0</h4>
               </div>
             </div>
           </div>
         </div>
 
         <div class="col-6 col-xl-3">
-          <div class="card border-0 shadow h-100">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-3">
-                  <div class="icon icon-shape bg-danger text-white rounded-circle">
-                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                  </div>
+          <div class="card border-0 shadow h-100 stats-card animate__animated animate__fadeInUp" style="animation-delay:0.3s;">
+            <div class="card-body d-flex align-items-center">
+              <div class="me-3">
+                <span class="badge bg-danger mb-2">Alerta</span>
+                <div class="icon icon-shape bg-danger text-white rounded-circle">
+                  <i class="fas fa-exclamation-triangle icon-lg"></i>
                 </div>
-                <div class="col-9">
-                  <h6 class="text-muted mb-1">Stock Bajo</h6>
-                  <h4 class="mb-0 text-danger" th:text="${stockBajo ?: '0'}">0</h4>
-                </div>
+              </div>
+              <div>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Stock Bajo</p>
+                <h4 class="font-weight-bolder mb-0 text-danger" th:text="${stockBajo ?: '0'}">0</h4>
               </div>
             </div>
           </div>
@@ -95,40 +103,16 @@
       </div>
 
       <!-- Gráfica -->
-      <div class="card border-0 shadow mt-4">
-        <div class="card-header bg-white">
-          <h2 class="h6 mb-0">Ventas de la semana</h2>
+      <div class="card border-0 shadow mt-4 chart-bg animate__animated animate__fadeIn">
+        <div class="card-header bg-white border-0">
+          <h2 class="h6 mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Ventas de la semana</h2>
         </div>
         <div class="card-body">
-          <canvas id="ventasChart" width="400" height="140" role="img" aria-label="Gráfica de ventas semanales"></canvas>
+          <canvas id="ventasChart" height="140" role="img" aria-label="Gráfica de ventas semanales"></canvas>
         </div>
       </div>
+
     </div>
   </div>
-
-  <script th:src="@{/assets/vendor/chart.js/dist/chart.min.js}" defer></script>
-  <script defer>
-    document.addEventListener('DOMContentLoaded', function () {
-      var ctx = document.getElementById('ventasChart');
-      if (!ctx) return;
-      var chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: /*[[${labels}]]*/ ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
-          datasets: [{
-            label: 'Ventas',
-            data: /*[[${ventas}]]*/ [12, 19, 3, 5, 2, 3, 7],
-            tension: 0.35,
-            fill: false
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    });
-  </script>
 </body>
 </html>

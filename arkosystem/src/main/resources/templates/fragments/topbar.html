@@ -1,30 +1,6 @@
-<header th:fragment="topbar" class="py-3">
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom" role="navigation" aria-label="Barra superior">
-  <div class="container-fluid">
-    <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Alternar navegación lateral">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <a class="navbar-brand d-none d-sm-inline" th:href="@{/}">
-      <img th:src="@{/assets/img/sena-logo.png}" height="28" alt="ArkoSystem">
-    </a>
-
-    <div class="d-flex align-items-center ms-auto gap-3">
-      <form class="d-none d-md-block" role="search" aria-label="Buscar">
-        <input class="form-control form-control-sm" type="search" placeholder="Buscar…" aria-label="Buscar">
-      </form>
-
-      <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fas fa-user-circle fa-lg" aria-hidden="true"></i><span class="visually-hidden">Menú de usuario</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-          <li><a class="dropdown-item" th:href="@{/perfil}">Perfil</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" th:href="@{/logout}">Cerrar sesión</a></li>
-        </ul>
-      </div>
+<nav th:fragment="topbar" class="topbar-custom d-flex align-items-center justify-content-between px-4 py-2 shadow-sm"
+     id="navbarBlur" data-scroll="false" style="background-color: #343434; z-index: 1000;">
+    <div class="d-flex align-items-center gap-3">
+        <span class="fw-bold fs-5 text-primary-brand"><i class="fas fa-tools me-2"></i>ArkoSystem</span>
     </div>
-  </div>
 </nav>
-</header>
