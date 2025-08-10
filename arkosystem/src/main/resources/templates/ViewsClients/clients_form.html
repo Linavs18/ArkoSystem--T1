@@ -11,7 +11,7 @@
 <body>
     <div layout:fragment="content">
         <div class="content-wrapper">
-            <h1 class="text-warning" th:text="${clients.id == null} ? 'Registrar Clientes' : 'Editar Clientes'"></h1>
+            <h1 class="color: #CFA500;" th:text="${clients.id == null} ? 'Registrar Clientes' : 'Editar Clientes'"></h1>
 
             <!-- Formulario de guardado -->
             <form th:action="@{/viewC/save}" th:object="${clients}" method="post" novalidate>
