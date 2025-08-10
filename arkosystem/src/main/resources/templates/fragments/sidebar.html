@@ -5,14 +5,20 @@
       <h4 class="fw-bold mb-0 text-primary-brand">ArkoSystem</h4>
     </div>
     <ul class="nav flex-column px-2">
-      <li class="nav-item mb-2">
-        <a th:href="@{/}" class="nav-link-custom active"><i class="fas fa-home me-2"></i>Inicio</a>
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'home'} ? ' active' : ''">
+        <a th:href="@{/}" class="nav-link-custom">
+          <i class="fas fa-home me-2"></i>Inicio
+        </a>
       </li>
       <li class="nav-item mb-2">
         <a th:href="@{/ventas}" class="nav-link-custom"><i class="fas fa-cash-register me-2"></i>Ventas</a>
       </li>
-      <li class="nav-item mb-2">
-        <a th:href="@{/clientes}" class="nav-link-custom"><i class="fas fa-users me-2"></i>Clientes</a>
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'clients'} ? ' active' : ''">
+        <a th:href="@{/view/clients}" class="nav-link-custom">
+          <i class="fas fa-users me-2"></i>Clientes
+        </a>
       </li>
       <li class="nav-item mb-2">
         <a th:href="@{/inventario}" class="nav-link-custom"><i class="fas fa-boxes me-2"></i>Inventario</a>
