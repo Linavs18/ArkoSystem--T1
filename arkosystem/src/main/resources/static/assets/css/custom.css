@@ -1132,3 +1132,58 @@ html, body {
         flex: 1;
     }
 }
+
+/* Estilo general de la tarjeta contenedora */
+        .custom-table-container {
+            border: 1px solid #d4a017;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Encabezado */
+        .custom-table-header {
+            background-color: white;
+            font-weight: bold;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        /* Filas */
+        .custom-table-row {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f1f1;
+            background-color: white;
+        }
+
+        /* Hover en filas */
+        .custom-table-row:hover {
+            background-color: #fafafa ;
+        }
+
+        /* Botones estilo imagen */
+        .btn-custom-warning {
+            background-color: #d4a017 !important;
+            color: white;
+            font-weight: bold;
+            border: none;
+        }
+
+        .btn-custom-warning:hover {
+            background-color: #b58b14;
+            color: white;
+        }
+
+        .custom-select {
+            border: 2px solid #d4a017; /* color dorado */
+            border-radius: 12px;
+            padding: 8px 12px;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .custom-select:focus {
+            border-color: #b8900f; /* más oscuro al enfocar */
+            box-shadow: 0 0 8px rgba(212, 160, 23, 0.5);
+        }
+
