@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>ArkoSystem</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="content-wrapper">
+                <!-- Breadcrumb para navegación -->
+                <h1 class="text-warning mb-4">
+                    <i class="bi bi-person-gear"></i> Lista de clientes
+                </h1>
+
+                <!-- Notificaciones de éxito -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <strong>¡Éxito!</strong> <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Notificaciones de error -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong>Error:</strong> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Botón para agregar nuevo cliente -->
+                <div class="mb-4">
+                    <a th:href="@{/viewC/form}" class="btn btn-warning">
+                        <i class="bi bi-plus-circle"></i> Registrar cliente
+                    </a>
+                </div>
+
+                <!-- Tabla de técnicos -->
+                <!-- Tabla de clientes -->
+                <div class="table-responsive shadow rounded">
+                    <table class="table table-hover align-middle" style="background-color: #fff8e1;">
+                        <thead style="background-color: #d4a017; color: white;">
+                        <tr class="table-header">
+                            <th class="text-center ">
+                                <i class="bi bi-gear"></i> Acciones
+                            </th>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Correo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="clients : ${clients}" class="table-row">
+                            <td class="text-center">
+                                <!-- Botón de editar -->
+                                <a th:href="@{/viewC/edit/{id}(id=${clients.id})}"
+                                   class="btn btn-success btn-sm me-1"
+                                   title="Editar Cliente">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <!-- Botón de eliminar -->
+                                <form th:action="@{/viewC/delete/{id}(id=${clients.id})}"
+                                      method="post"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('¿Está seguro que desea eliminar este cliente?')">
+                                    <button type="submit"
+                                            class="btn btn-warning btn-sm"
+                                            title="Eliminar Cliente">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td th:text="${clients.id}"></td>
+                            <td th:text="${clients.name}"></td>
+                            <td th:text="${clients.phone}"></td>
+                            <td th:text="${clients.address}"></td>
+                            <td th:text="${clients.email}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <style>
+                    /* Color de fila al pasar el mouse */
+                    .table-hover tbody tr:hover {
+                        background-color: #fff3cd !important;
+                    }
+                </style>
+        </div>
+    </div>
+</body>
+</html>

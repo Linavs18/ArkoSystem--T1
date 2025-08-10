@@ -610,3 +610,35 @@
     border-radius: 1rem;
     padding: 1.5rem;
 }
+
+.btn-outline-success i {
+    color: #198754; /* Verde Bootstrap */
+}
+
+.btn-outline-danger i {
+    color: #dc3545; /* Rojo Bootstrap */
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.table-header th {
+    color: white;
+    text-center;
+}
+
+.nav-item.active > a,
+.nav-item.active > .nav-link-custom {
+    background-color: #d4a017; /* amarillo o el color que prefieras */
+    color: black !important;
+    border-radius: 8px; /* opcional para que se vea más bonito */
+}
+
+.alert-success {
+        background: #f4d35e !important; /* Amarillo ocre */
+        color: #5a4b2c !important;      /* Texto marrón oscuro */
+        border-color: #e6b800 !important; /* Borde ocre */
+        box-shadow: 0 4px 8px rgba(180, 150, 50, 0.3); /* Sombra suave ocre */
+    }

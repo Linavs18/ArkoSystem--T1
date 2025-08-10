@@ -1,17 +1,17 @@
 package co.edu.sena.arkosystem.model;
 import jakarta.persistence.*;
 
-
 @Entity
-@Table(name = "categoria")
-public class Categoria {
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String descripcion;
+    private String description;
 
-    // Getters y Setters
+    // GETTERS AND SETTERS
+
 
     public Long getId() {
         return id;
@@ -21,11 +21,11 @@ public class Categoria {
         this.id = id;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
