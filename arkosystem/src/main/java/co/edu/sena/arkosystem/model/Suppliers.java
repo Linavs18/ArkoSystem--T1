@@ -9,7 +9,9 @@ public class Suppliers {
     private Long id;
 
     private String name;
-    private String contact;
+    private String phone;
+    private String address;
+    private String email;
 
     // GETTERS AND SETTERS
 
@@ -29,11 +31,27 @@ public class Suppliers {
         this.name = name;
     }
 
-    public String getContact() {
-        return contact;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
