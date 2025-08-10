@@ -5,33 +5,89 @@
       <h4 class="fw-bold mb-0 text-primary-brand">ArkoSystem</h4>
     </div>
     <ul class="nav flex-column px-2">
+      <!-- Inicio / Dashboard -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'home'} ? ' active' : ''">
         <a th:href="@{/}" class="nav-link-custom">
-          <i class="fas fa-home me-2"></i>Inicio
+          <i class="fas fa-tachometer-alt me-2"></i>Panel de Control
         </a>
       </li>
-      <li class="nav-item mb-2">
-        <a th:href="@{/ventas}" class="nav-link-custom"><i class="fas fa-cash-register me-2"></i>Ventas</a>
+      
+      <!-- Ventas -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'sales'} ? ' active' : ''">
+        <a th:href="@{/ventas}" class="nav-link-custom">
+          <i class="fas fa-cash-register me-2"></i>Punto de Venta
+        </a>
       </li>
+      
+      <!-- Clientes -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'clients'} ? ' active' : ''">
         <a th:href="@{/view/clients}" class="nav-link-custom">
-          <i class="fas fa-users me-2"></i>Clientes
+          <i class="fas fa-user-friends me-2"></i>Clientes
         </a>
       </li>
-      <li class="nav-item mb-2">
-        <a th:href="@{/inventario}" class="nav-link-custom"><i class="fas fa-boxes me-2"></i>Inventario</a>
+      
+      <!-- Empleados -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'employee'} ? ' active' : ''">
+        <a th:href="@{/view/employee}" class="nav-link-custom">
+          <i class="fas fa-hard-hat me-2"></i>Empleados
+        </a>
       </li>
+<<<<<<< HEAD
       <li class="nav-item mb-2">
         <a th:href="@{/proveedores}" class="nav-link-custom"><i class="fas fa-truck me-2"></i>Proveedores</a>
+=======
+      
+      <!-- Inventario -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'inventory'} ? ' active' : ''">
+        <a th:href="@{/inventario}" class="nav-link-custom">
+          <i class="fas fa-warehouse me-2"></i>Inventario
+        </a>
       </li>
-      <li class="nav-item mb-2">
-        <a th:href="@{/reportes}" class="nav-link-custom"><i class="fas fa-chart-bar me-2"></i>Reportes</a>
+      
+      <!-- Proveedores -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
+        <a th:href="@{/proveedores}" class="nav-link-custom">
+          <i class="fas fa-shipping-fast me-2"></i>Proveedores
+
+      <li class="nav-item mb-2" th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
+        <a th:href="@{/view/suppliers}" class="nav-link-custom">
+          <i class="fas fa-truck me-2"></i>Proveedores
+
+        </a>
+>>>>>>> origin/Fer
       </li>
-      <li class="nav-item mb-2">
-        <a th:href="@{/configuracion}" class="nav-link-custom"><i class="fas fa-cog me-2"></i>Configuración</a>
+      
+      <!-- Reportes -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'reports'} ? ' active' : ''">
+        <a th:href="@{/reportes}" class="nav-link-custom">
+          <i class="fas fa-chart-line me-2"></i>Reportes
+        </a>
+      </li>
+      
+      <!-- Configuración -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'settings'} ? ' active' : ''">
+        <a th:href="@{/configuracion}" class="nav-link-custom">
+          <i class="fas fa-tools me-2"></i>Configuración
+        </a>
       </li>
     </ul>
+    
+    <!-- Sección inferior del sidebar con información adicional -->
+    <div class="sidebar-footer mt-auto p-3">
+      <div class="sidebar-user-info text-center">
+        <div class="user-avatar mb-2">
+          <i class="fas fa-user-circle fa-2x text-muted"></i>
+        </div>
+        <small class="text-muted">Sistema v1.0</small>
+      </div>
+    </div>
   </nav>
 </div>
