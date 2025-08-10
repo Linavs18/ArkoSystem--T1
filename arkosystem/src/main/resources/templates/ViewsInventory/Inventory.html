@@ -28,27 +28,41 @@
 
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-bold" style="color: black;">Clientes</h1>
+            <h1 class="fw-bold" style="color: black;">Productos</h1>
             <div class="mb-3">
-                <a th:href="@{/viewC/pdf}" class="btn btn-custom-warning me-2">
+                <a th:href="@{/viewI/pdf}" class="btn btn-custom-warning me-2">
                     <i class="fas fa-file-pdf"></i> Exportar PDF
                 </a>
-                <a th:href="@{/viewC/excel}" class="btn btn-custom-warning">
+                <a th:href="@{/viewI/excel}" class="btn btn-custom-warning">
                     <i class="fas fa-file-excel"></i> Exportar Excel
                 </a>
             </div>
         </div>
 
         <div class="mb-3">
-            <a th:href="@{/viewC/form}" class="btn btn-custom-warning me-2">
-                <i class="fas fa-plus"></i> Añadir Cliente
+            <a th:href="@{/viewI/form}" class="btn btn-custom-warning me-2">
+                <i class="fas fa-plus"></i> Añadir Productor
             </a>
         </div>
 
 
-        <div class="mb-3">
-            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre...">
-        </div>
+        <form th:action="@{/view/inventory}" method="get" class="d-flex align-items-center mb-3">
+            <label for="categoryId" class="me-2 mb-0">Filtros:</label>
+
+            <select id="categoryId"
+                    name="categoryId"
+                    class="form-select me-2"
+                    style="width: 20%; border: 1px solid #d4a017;"
+                    onchange="this.form.submit()">
+                <option value="">Todas las categorías</option>
+
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.description}"
+                        th:selected="${cat.id} == ${selectedCategoryId}">
+                </option>
+            </select>
+        </form>
 
         <!-- Contenedor principal -->
         <div id="inventoryTable" class="custom-table-container">
@@ -56,26 +70,28 @@
             <div class="row custom-table-header m-0">
                 <div class="col text-center">Id</div>
                 <div class="col text-center">Nombre</div>
-                <div class="col text-center">Teléfono</div>
-                <div class="col text-center">Dirección</div>
-                <div class="col text-center">Correo</div>
+                <div class="col text-center">Categoria</div>
+                <div class="col text-center">Precio</div>
+                <div class="col text-center">Stock</div>
+                <div class="col text-center">Proveedor</div>
                 <div class="col text-center">Acciones</div>
             </div>
 
             <!-- Filas dinámicas -->
-            <div th:each="clients : ${clients}" class="row custom-table-row m-0 align-items-center">
-                <div class="col text-center" th:text="${clients.id}"></div>
-                <div class="col text-center" th:text="${clients.name}"></div>
-                <div class="col text-center" th:text="${clients.phone}"></div>
-                <div class="col text-center" th:text="${clients.address}"></div>
-                <div class="col text-center" th:text="${clients.email}"></div>
+            <div th:each="inventory : ${inventories}" class="row custom-table-row m-0 align-items-center">
+                <div class="col text-center" th:text="${inventory.id}"></div>
+                <div class="col text-center" th:text="${inventory.name}"></div>
+                <div class="col text-center" th:text="${inventory.category != null ? inventory.category.description : 'Sin categoría'}"></div>
+                <div class="col text-center" th:text="'$ ' + ${#numbers.formatDecimal(inventory.price, 0, 'COMMA', 0, 'POINT')}"></div>
+                <div class="col text-center" th:text="${inventory.availableQuantity}"></div>
+                <div class="col text-center" th:text="${inventory.supplier != null ? inventory.supplier.name : 'Sin proveedor'}"></div>
 
                 <div class="col text-center">
-                    <a th:href="@{'/viewC/edit/' + ${clients.id}}"
+                    <a th:href="@{'/viewI/edit/' + ${inventory.id}}"
                        class="btn btn-sm btn-success me-1">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <form th:action="@{/viewC/delete/{id}(id=${clients.id})}"
+                    <form th:action="@{/viewI/delete/{id}(id=${inventory.id})}"
                           method="post"
                           style="display:inline;"
                           onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
@@ -91,18 +107,19 @@
 </div>
 
 <script>
-    document.getElementById('searchInput').addEventListener('keyup', function () {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll('#clientsTable .custom-table-row');
+    document.getElementById('categoryId').addEventListener('change', function() {
+      const categoryId = this.value;
+      const url = '/view/inventory?categoryId=' + encodeURIComponent(categoryId);
 
-        rows.forEach(row => {
-            let nameCell = row.querySelector('.client-name');
-            if (nameCell && nameCell.textContent.toLowerCase().includes(filter)) {
-                row.style.display = 'flex'; // Mostrar fila
-            } else {
-                row.style.display = 'none'; // Ocultar fila
-            }
-        });
+      fetch(url, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' } // opcional según cómo manejes en el servidor
+      })
+      .then(res => res.text())
+      .then(html => {
+        // Esperamos que la respuesta sea el fragmento HTML con las filas
+        document.getElementById('inventoryTable').innerHTML = html;
+      })
+      .catch(err => console.error('Error cargando productos:', err));
     });
 </script>
 </body>

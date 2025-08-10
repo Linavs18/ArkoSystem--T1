@@ -40,7 +40,7 @@
       <!-- Inventario -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'inventory'} ? ' active' : ''">
-        <a th:href="@{/inventario}" class="nav-link-custom">
+        <a th:href="@{/view/inventory}" class="nav-link-custom">
           <i class="fas fa-warehouse me-2"></i>Inventario
         </a>
       </li>
@@ -50,13 +50,18 @@
           th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
         <a th:href="@{/proveedores}" class="nav-link-custom">
           <i class="fas fa-shipping-fast me-2"></i>Proveedores
+
+      <li class="nav-item mb-2" th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
+        <a th:href="@{/view/suppliers}" class="nav-link-custom">
+          <i class="fas fa-truck me-2"></i>Proveedores
+
         </a>
       </li>
       
       <!-- Reportes -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'reports'} ? ' active' : ''">
-        <a th:href="@{/reportes}" class="nav-link-custom">
+        <a th:href="@{/view/reports}" class="nav-link-custom">
           <i class="fas fa-chart-line me-2"></i>Reportes
         </a>
       </li>
