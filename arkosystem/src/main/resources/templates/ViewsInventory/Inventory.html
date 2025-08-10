@@ -82,7 +82,7 @@
                 <div class="col text-center" th:text="${inventory.id}"></div>
                 <div class="col text-center" th:text="${inventory.name}"></div>
                 <div class="col text-center" th:text="${inventory.category != null ? inventory.category.description : 'Sin categoría'}"></div>
-                <div class="col text-center" th:text="${#numbers.formatDecimal(inventory.price, 0, 'COMMA', 0, 'POINT')}"></div>
+                <div class="col text-center" th:text="'$ ' + ${#numbers.formatDecimal(inventory.price, 0, 'COMMA', 0, 'POINT')}"></div>
                 <div class="col text-center" th:text="${inventory.availableQuantity}"></div>
                 <div class="col text-center" th:text="${inventory.supplier != null ? inventory.supplier.name : 'Sin proveedor'}"></div>
 
