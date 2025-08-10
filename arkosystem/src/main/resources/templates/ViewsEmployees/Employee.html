@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>ArkoSystem</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content-wrapper">
+        <!-- Título -->
+        <h1 class="text-warning mb-4">
+            <i class="bi bi-person-gear"></i> Lista de empleados
+        </h1>
+
+        <!-- Notificación de éxito -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <strong>¡Éxito!</strong> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Notificación de error -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong>Error:</strong> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Botón registrar -->
+        <div class="mb-4">
+            <a th:href="@{/viewE/form}" class="btn btn-warning">
+                <i class="bi bi-plus-circle"></i> Registrar empleado
+            </a>
+        </div>
+
+        <!-- Tabla de empleados -->
+        <div class="table-responsive shadow rounded">
+            <table class="table table-hover align-middle" style="background-color: #fff8e1;">
+                <thead style="background-color: #d4a017; color: white;">
+                <tr class="table-header">
+                    <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                    <th>ID</th>
+                    <th>Documento</th>
+                    <th>Nombre</th> 
+                    <th>Posición</th>
+                    <th>Salario</th>
+                    <th>Rol</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- CORREGIDO: Ahora los campos coinciden con la entidad Employee -->
+                <tr th:each="employee : ${employees}" class="table-row">
+                    <td class="text-center">
+                        <!-- Botón editar -->
+                        <a th:href="@{/viewE/edit/{id}(id=${employee.id})}"
+                           class="btn btn-success btn-sm me-1"
+                           title="Editar Empleado">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <!-- Botón eliminar -->
+                        <form th:action="@{/viewE/delete/{id}(id=${employee.id})}"
+                              method="post"
+                              style="display:inline;"
+                              onsubmit="return confirm('¿Está seguro que desea eliminar este empleado?')">
+                            <button type="submit"
+                                    class="btn btn-warning btn-sm"
+                                    title="Eliminar Empleado">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td th:text="${employee.id}"></td>
+                    <td th:text="${employee.document}"></td>
+                    <td th:text="${employee.name}"></td>
+                    <td th:text="${employee.position}"></td>
+                    <td th:text="${employee.salary}"></td>
+                    <td th:text="${employee.role}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mensaje cuando no hay empleados -->
+        <div th:if="${#lists.isEmpty(employees)}" class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i>
+            No hay empleados registrados en el sistema.
+        </div>
+
+        <style>
+            /* Color fila hover */
+            .table-hover tbody tr:hover {
+                background-color: #fff3cd !important;
+            }
+        </style>
+    </div>
+</div>
+</body>
+</html>
