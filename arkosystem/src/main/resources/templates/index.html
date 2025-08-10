@@ -98,7 +98,8 @@
               <div class="stats-content">
                 <p class="stats-label">Clientes Registrados</p>
                 <h4 class="stats-value">
-                  <span class="counter" data-target="847" th:data-target="${clientes ?: '847'}">0</span>
+                  <span class="counter" th:data-target="${clientCount}"
+                        th:text="${clientCount}"></span>
                 </h4>
                 <div class="stats-trend positive">
                   <i class="fas fa-user-plus"></i>
@@ -126,7 +127,8 @@
               <div class="stats-content">
                 <p class="stats-label">Productos en Inventario</p>
                 <h4 class="stats-value">
-                  <span class="counter" data-target="2341" th:data-target="${productos ?: '2341'}">0</span>
+                  <span class="counter" th:data-target="${productCount}"
+                        th:text="${productCount}"></span>
                 </h4>
                 <div class="stats-trend neutral">
                   <i class="fas fa-box"></i>
@@ -134,7 +136,7 @@
                 </div>
               </div>
               <div class="stats-action">
-                <a href="/inventario" class="btn btn-sm btn-warning">
+                <a href="/view/inventory" class="btn btn-sm btn-warning">
                   <i class="fas fa-eye me-1"></i>Ver Inventario
                 </a>
               </div>
@@ -154,17 +156,18 @@
               <div class="stats-content">
                 <p class="stats-label">Productos con Stock Bajo</p>
                 <h4 class="stats-value text-danger">
-                  <span class="counter" data-target="23" th:data-target="${stockBajo ?: '23'}">0</span>
+                  <span class="counter" th:data-target="${lowStockCount}"
+                        th:text="${lowStockCount}"></span>
                 </h4>
                 <div class="stats-trend negative">
                   <i class="fas fa-exclamation-triangle"></i>
-                  <span>Requiere atención inmediata</span>
+                  <span th:if="${lowStockCount > 0}"> Requiere atención inmediata</span>
                 </div>
               </div>
               <div class="stats-action">
-                <button class="btn btn-sm btn-danger" onclick="showLowStockAlert()">
+                <a href="/view/reports" class="btn btn-sm btn-danger">
                   <i class="fas fa-bell me-1"></i>Ver Alertas
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -274,8 +277,7 @@
                   </div>
                   <div class="notification-content">
                     <strong>Stock Bajo</strong>
-                    <p>23 productos necesitan reposición</p>
-                    <small class="text-muted">Hace 15 minutos</small>
+                    <p th:text="${lowStockCount} + ' productos necesitan reposición'"></p>
                   </div>
                 </div>
 
