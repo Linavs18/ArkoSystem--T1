@@ -38,4 +38,9 @@ public class ControllerInventory {
     public void deleteInventoryItem(@PathVariable Long id) {
         inventoryRepository.deleteById(id);
     }
+
+    @GetMapping("/low-stock")
+    public List<Inventory> getLowStockItems() {
+        return inventoryRepository.findLowStockItems();
+    }
 }

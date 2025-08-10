@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>ArkoSystem</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content-wrapper">
+
+        <!-- Notificaciones de éxito -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <strong>¡Éxito!</strong> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Notificaciones de error -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong>Error:</strong> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-bold" style="color: black;">Productos</h1>
+            <div class="mb-3">
+                <a th:href="@{/viewI/pdf}" class="btn btn-custom-warning me-2">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </a>
+                <a th:href="@{/viewI/excel}" class="btn btn-custom-warning">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <a th:href="@{/viewI/form}" class="btn btn-custom-warning me-2">
+                <i class="fas fa-plus"></i> Añadir Productor
+            </a>
+        </div>
+
+
+        <form th:action="@{/view/inventory}" method="get" class="d-flex align-items-center mb-3">
+            <label for="categoryId" class="me-2 mb-0">Filtros:</label>
+
+            <select id="categoryId"
+                    name="categoryId"
+                    class="form-select me-2"
+                    style="width: 20%; border: 1px solid #d4a017;"
+                    onchange="this.form.submit()">
+                <option value="">Todas las categorías</option>
+
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.description}"
+                        th:selected="${cat.id} == ${selectedCategoryId}">
+                </option>
+            </select>
+        </form>
+
+        <!-- Contenedor principal -->
+        <div id="inventoryTable" class="custom-table-container">
+            <!-- Cabecera -->
+            <div class="row custom-table-header m-0">
+                <div class="col text-center">Id</div>
+                <div class="col text-center">Nombre</div>
+                <div class="col text-center">Categoria</div>
+                <div class="col text-center">Precio</div>
+                <div class="col text-center">Stock</div>
+                <div class="col text-center">Proveedor</div>
+                <div class="col text-center">Acciones</div>
+            </div>
+
+            <!-- Filas dinámicas -->
+            <div th:each="inventory : ${inventories}" class="row custom-table-row m-0 align-items-center">
+                <div class="col text-center" th:text="${inventory.id}"></div>
+                <div class="col text-center" th:text="${inventory.name}"></div>
+                <div class="col text-center" th:text="${inventory.category != null ? inventory.category.description : 'Sin categoría'}"></div>
+                <div class="col text-center" th:text="${#numbers.formatDecimal(inventory.price, 0, 'COMMA', 0, 'POINT')}"></div>
+                <div class="col text-center" th:text="${inventory.availableQuantity}"></div>
+                <div class="col text-center" th:text="${inventory.supplier != null ? inventory.supplier.name : 'Sin proveedor'}"></div>
+
+                <div class="col text-center">
+                    <a th:href="@{'/viewI/edit/' + ${inventory.id}}"
+                       class="btn btn-sm btn-success me-1">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form th:action="@{/viewI/delete/{id}(id=${inventory.id})}"
+                          method="post"
+                          style="display:inline;"
+                          onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}"/>
+                        <button type="submit" class="btn btn-sm btn-warning" title="Eliminar">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('categoryId').addEventListener('change', function() {
+      const categoryId = this.value;
+      const url = '/view/inventory?categoryId=' + encodeURIComponent(categoryId);
+
+      fetch(url, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' } // opcional según cómo manejes en el servidor
+      })
+      .then(res => res.text())
+      .then(html => {
+        // Esperamos que la respuesta sea el fragmento HTML con las filas
+        document.getElementById('inventoryTable').innerHTML = html;
+      })
+      .catch(err => console.error('Error cargando productos:', err));
+    });
+</script>
+</body>
+</html>
