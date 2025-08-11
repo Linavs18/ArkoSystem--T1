@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>ArkoSystem - Inicio</title>
+  <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Tu archivo JavaScript principal -->
+  <script th:src="@{/assets/js/scripts.js}" defer></script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="content-wrapper error-fullscreen">
+            <img src="/assets/img/Error403.png" alt="Error 403" class="error-logo">
+        </div>
+    </div>
+</body>
+</html>
