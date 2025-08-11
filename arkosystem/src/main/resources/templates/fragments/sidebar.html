@@ -16,11 +16,10 @@
       <!-- Ventas -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'sales'} ? ' active' : ''">
-        <a th:href="@{/ventas}" class="nav-link-custom">
-          <i class="fas fa-cash-register me-2"></i>Punto de Venta
+        <a th:href="@{/view/sales}" class="nav-link-custom">
+          <i class="fas fa-cash-register me-2"></i>Ventas
         </a>
       </li>
-      
       <!-- Clientes -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'clients'} ? ' active' : ''">
@@ -36,7 +35,7 @@
           <i class="fas fa-hard-hat me-2"></i>Empleados
         </a>
       </li>
-      
+
       <!-- Inventario -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'inventory'} ? ' active' : ''">
@@ -46,17 +45,10 @@
       </li>
       
       <!-- Proveedores -->
-      <li class="nav-item mb-2"
-          th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
-        <a th:href="@{/proveedores}" class="nav-link-custom">
-          <i class="fas fa-shipping-fast me-2"></i>Proveedores
-
-      <li class="nav-item mb-2" th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
-        <a th:href="@{/view/suppliers}" class="nav-link-custom">
-          <i class="fas fa-truck me-2"></i>Proveedores
-
-        </a>
-      </li>
+        <li class="nav-item mb-2" th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
+            <a th:href="@{/view/suppliers}" class="nav-link-custom">
+                <i class="fas fa-truck me-2"></i>Proveedores
+            </a>
       
       <!-- Reportes -->
       <li class="nav-item mb-2"
