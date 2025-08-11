@@ -3,42 +3,42 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <title th:text="${supplier.id} ? 'Editar Proveedor' : 'Nuevo Proveedor'">Proveedores</title>
+  <title th:text="${supplier.id} ? 'Editar Proveedor' : 'Nuevo Proveedor'">Proveedores</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="content-wrapper">
-        <h1 class="mb-4" th:text="${supplier.id} ? 'Editar Proveedor' : 'Nuevo Proveedor'"></h1>
+  <div class="content-wrapper">
+    <h1 class="mb-4" th:text="${supplier.id} ? 'Editar Proveedor' : 'Nuevo Proveedor'"></h1>
 
-        <form th:action="@{/view/suppliers/save}" th:object="${supplier}" method="post">
-            <input type="hidden" th:field="*{id}"/>
+    <form th:action="@{/view/suppliers/save}" th:object="${supplier}" method="post">
+      <input type="hidden" th:field="*{id}"/>
 
-            <div class="mb-3">
-                <label class="form-label">Nombre</label>
-                <input type="text" th:field="*{name}" class="form-control" required>
-            </div>
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input type="text" th:field="*{name}" class="form-control" required>
+      </div>
 
-            <div class="mb-3">
-                <label class="form-label">Teléfono</label>
-                <input type="text" th:field="*{phone}" class="form-control" required>
-            </div>
+      <div class="mb-3">
+        <label class="form-label">Teléfono</label>
+        <input type="text" th:field="*{phone}" class="form-control" required>
+      </div>
 
-            <div class="mb-3">
-                <label class="form-label">Dirección</label>
-                <input type="text" th:field="*{address}" class="form-control" required>
-            </div>
+      <div class="mb-3">
+        <label class="form-label">Dirección</label>
+        <input type="text" th:field="*{address}" class="form-control" required>
+      </div>
 
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" th:field="*{email}" class="form-control">
-            </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" th:field="*{email}" class="form-control">
+      </div>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <a th:href="@{/view/suppliers}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
-    </div>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a th:href="@{/view/suppliers}" class="btn btn-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
 </div>
 </body>
 </html>

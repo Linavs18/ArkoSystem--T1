@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/view/suppliers") // Ruta base añadida
-public class ViewSupplier {
+@RequestMapping("/view/suppliers")
+public class ViewSuppliers {
 
     @Autowired
     private RepositorySuppliers supplierRepository;
