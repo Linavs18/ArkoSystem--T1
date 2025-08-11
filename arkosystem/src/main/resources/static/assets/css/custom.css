@@ -1179,3 +1179,8 @@ html, body {
     max-height: 300%;
     object-fit: contain;
 }
+
+.card img {
+    height: 200px;
+    object-fit: cover;
+}

@@ -25,7 +25,11 @@ public class Inventory {
     @JoinColumn(name = "supplier_id")
     private Suppliers supplier;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // GETTERS AND SETTERS
+
 
     public Long getId() {
         return id;
@@ -73,6 +77,14 @@ public class Inventory {
 
     public void setMinStock(int minStock) {
         this.minStock = minStock;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Suppliers getSupplier() {

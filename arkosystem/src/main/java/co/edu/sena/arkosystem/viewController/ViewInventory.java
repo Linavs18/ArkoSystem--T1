@@ -17,8 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -32,6 +38,10 @@ public class ViewInventory {
 
     @Autowired
     RepositorySuppliers supplierRepository;
+
+    private static final String UPLOAD_DIR = "src/main/resources/static/assets/img/uploads/";
+
+    private static final String DEFAULT_IMAGE = "/assets/img/uploads/Caja_vacia.jpg";
 
     @GetMapping("/view/inventory")
     public String list(@RequestParam(required = false) Long categoryId, Model model) {
@@ -62,9 +72,26 @@ public class ViewInventory {
     }
 
     @PostMapping("/viewI/save")
-    public String save(@ModelAttribute Inventory inventory, RedirectAttributes ra) {
+    public String save(@ModelAttribute Inventory inventory,
+                       @RequestParam(value = "image", required = false) MultipartFile image,
+                       RedirectAttributes ra) throws IOException {
+
+        // Guardar imagen si se sube, o asignar la predeterminada
+        if (image != null && !image.isEmpty()) {
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) uploadDir.mkdirs();
+
+            String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+            Path filePath = Paths.get(UPLOAD_DIR, fileName);
+            Files.write(filePath, image.getBytes());
+
+            inventory.setImageUrl("/assets/img/uploads/" + fileName);
+        } else if (inventory.getImageUrl() == null || inventory.getImageUrl().isEmpty()) {
+            inventory.setImageUrl(DEFAULT_IMAGE);
+        }
+
         inventoryRepository.save(inventory);
-        ra.addFlashAttribute("success", "Producto Guardado");
+        ra.addFlashAttribute("success", "Producto guardado correctamente");
         return "redirect:/view/inventory";
     }
 
