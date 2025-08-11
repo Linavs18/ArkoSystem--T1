@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>ArkoSystem - Nueva Venta</title>
+  <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    /* ===== Hover en Botones ===== */
+    .btn-hover-scale {
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .btn-hover-scale:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Botón de IA con efecto especial */
+    #generateDescriptionBtn:hover {
+      background-color: #00bcd4 !important;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    /* Botón de agregar producto */
+    #addProductBtn:hover {
+      background-color: #fbc02d !important;
+      transform: scale(1.05);
+    }
+
+    /* ===== Hover en Tarjetas (Cards) ===== */
+    .card-hover {
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12) !important;
+    }
+
+    /* ===== Campos de formulario con foco y hover ===== */
+    .form-control:hover {
+      border-color: #d4a017;
+      box-shadow: 0 0 0 0.2rem rgba(212, 160, 23, 0.15);
+    }
+    .form-control:focus {
+      border-color: #d4a017;
+      box-shadow: 0 0 0 0.2rem rgba(212, 160, 23, 0.25);
+      outline: 0;
+    }
+
+    /* ===== Hover en filas del carrito ===== */
+    #cartItems tr {
+      transition: background-color 0.2s ease;
+    }
+    #cartItems tr:hover {
+      background-color: #fff3e0 !important;
+      cursor: default;
+    }
+
+    /* ===== Tabla del carrito con borde suave y hover ===== */
+    .table-hover-custom {
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .table-hover-custom th {
+      font-weight: 600;
+    }
+
+    /* ===== Botones de acción en el carrito ===== */
+    .btn-action {
+      transition: all 0.2s ease;
+      opacity: 0.8;
+    }
+    .btn-action:hover {
+      transform: scale(1.1);
+      opacity: 1;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Efecto en botones principales (Cancelar / Completar) ===== */
+    .btn-lg {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-primary:hover {
+      background-color: #0d6efd;
+      transform: scale(1.03);
+    }
+    .btn-secondary:hover {
+      background-color: #6c757d;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="content-wrapper">
+
+    <!-- Título -->
+    <h1 class="text-warning mb-4 animate__animated animate__fadeIn">
+      <i class="bi bi-cart-plus"></i> Registrar Nueva Venta
+    </h1>
+
+    <!-- Alertas -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle-fill"></i>
+      <strong>¡Éxito!</strong> <span th:text="${success}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <strong>Error:</strong> <span th:text="${error}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Formulario -->
+    <form th:action="@{/view/sales/save}" th:object="${sale}" method="post">
+      <input type="hidden" th:field="*{id}" />
+
+      <!-- Detalles de la Venta -->
+      <div class="card shadow rounded mb-4 card-hover">
+        <div class="card-header" style="background-color: #d4a017; color: white;">
+          <h5 class="mb-0">Detalles de la Venta</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="clientId" class="form-label">Cliente</label>
+              <select id="clientId" th:field="*{client}" class="form-select form-control">
+                <option value="">Seleccione un Cliente</option>
+                <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name}"></option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="employeeId" class="form-label">Empleado</label>
+              <select id="employeeId" th:field="*{employee}" class="form-select form-control">
+                <option value="">Seleccione un Empleado</option>
+                <option th:each="employee : ${employees}" th:value="${employee.id}" th:text="${employee.name}"></option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Productos -->
+      <div class="card shadow rounded mb-4 card-hover">
+        <div class="card-header" style="background-color: #d4a017; color: white;">
+          <h5 class="mb-0">Productos</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+              <label for="productId" class="form-label">ID o Nombre del Producto</label>
+              <input type="text" class="form-control" id="productId" placeholder="Escribe para buscar...">
+            </div>
+            <div class="col-md-5">
+              <label for="quantity" class="form-label">Cantidad</label>
+              <input type="number" class="form-control" id="quantity" value="1" min="1">
+            </div>
+            <div class="col-md-2 d-grid">
+              <button type="button" class="btn btn-warning btn-hover-scale" id="addProductBtn">
+                <i class="bi bi-plus-lg"></i> Agregar
+              </button>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12 d-grid">
+              <button type="button" class="btn btn-info btn-hover-scale" id="generateDescriptionBtn">
+                Generar Descripción con IA ✨
+              </button>
+              <div id="loadingIndicator" class="mt-2 text-center" style="display: none;">
+                <div class="spinner-border text-info" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+              <div id="descriptionOutput" class="mt-2">
+                <textarea id="generatedDescription" class="form-control" rows="3" placeholder="La descripción generada aparecerá aquí..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carrito de compras -->
+      <div class="table-responsive shadow rounded" style="border-radius: 8px !important;">
+        <table class="table table-hover align-middle table-hover-custom" style="background-color: #fff8e1;">
+          <thead style="background-color: #d4a017; color: white;">
+          <tr>
+            <th>ID</th>
+            <th>Nombre del Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+          </thead>
+          <tbody id="cartItems">
+          <!-- Filas generadas dinámicamente -->
+          </tbody>
+          <tfoot>
+          <tr style="background-color: #ffecb3;">
+            <td colspan="4" class="text-end fw-bold">Total Venta:</td>
+            <td id="totalAmount" class="fw-bold fs-5">0.00</td>
+            <td></td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="d-flex justify-content-end mt-4">
+        <a th:href="@{/view/sales}" class="btn btn-secondary btn-lg shadow me-3 btn-hover-scale">
+          <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+        <button type="submit" class="btn btn-primary btn-lg shadow btn-hover-scale">
+          <i class="bi bi-send-fill"></i> Completar Venta
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const generateDescriptionBtn = document.getElementById('generateDescriptionBtn');
+    const productIdInput = document.getElementById('productId');
+    const generatedDescriptionTextarea = document.getElementById('generatedDescription');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    generateDescriptionBtn.addEventListener('click', async () => {
+      const productName = productIdInput.value.trim();
+
+      if (!productName) {
+        alert('Por favor, introduce un nombre o ID de producto.');
+        return;
+      }
+
+      loadingIndicator.style.display = 'block';
+      generatedDescriptionTextarea.value = '';
+
+      // ⚠️ Cambia esto por tu API Key real (NO en producción directa)
+      const apiKey = "TU_API_KEY_DE_GEMINI";
+      if (apiKey === "TU_API_KEY_DE_GEMINI") {
+        alert("Error: Configura tu API Key de Gemini.");
+        loadingIndicator.style.display = 'none';
+        return;
+      }
+
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{
+          parts: [{
+            text: `Genera una descripción de marketing atractiva y creativa en español para el siguiente producto: ${productName}. La descripción debe ser breve (2 o 3 frases) y enfocada en los beneficios para el cliente.`
+          }]
+        }]
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`Error ${response.status}`);
+
+        const result = await response.json();
+        if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+          generatedDescriptionTextarea.value = result.candidates[0].content.parts[0].text.trim();
+        } else {
+          generatedDescriptionTextarea.value = "No se pudo generar la descripción.";
+        }
+      } catch (error) {
+        console.error('Error con Gemini API:', error);
+        generatedDescriptionTextarea.value = "Error al generar descripción.";
+      } finally {
+        loadingIndicator.style.display = 'none';
+      }
+    });
+  });
+</script>
+</body>
+</html>

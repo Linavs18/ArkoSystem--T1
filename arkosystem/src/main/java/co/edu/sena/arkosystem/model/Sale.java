@@ -1,6 +1,8 @@
 package co.edu.sena.arkosystem.model;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "sale")
@@ -25,6 +27,10 @@ public class Sale {
 
     @Column(name = "payment_method")
     private String paymentMethod;
+
+    // Relación con los detalles de venta
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SaleDetails> saleDetails;
 
     // GETTERS AND SETTERS
 
@@ -82,5 +88,13 @@ public class Sale {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public List<SaleDetails> getSaleDetails() {
+        return saleDetails;
+    }
+
+    public void setSaleDetails(List<SaleDetails> saleDetails) {
+        this.saleDetails = saleDetails;
     }
 }

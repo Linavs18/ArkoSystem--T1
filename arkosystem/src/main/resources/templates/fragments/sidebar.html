@@ -16,11 +16,10 @@
       <!-- Ventas -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'sales'} ? ' active' : ''">
-        <a th:href="@{/ventas}" class="nav-link-custom">
-          <i class="fas fa-cash-register me-2"></i>Punto de Venta
+        <a th:href="@{/view/sales}" class="nav-link-custom">
+          <i class="fas fa-cash-register me-2"></i>Ventas
         </a>
       </li>
-      
       <!-- Clientes -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'clients'} ? ' active' : ''">

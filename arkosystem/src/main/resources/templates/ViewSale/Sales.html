@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>ArkoSystem - Ventas</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css  "/>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content-wrapper">
+
+        <!-- Notificaciones -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Encabezado -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0"><i class="fas fa-cash-register me-2"></i>Ventas</h2>
+            <div>
+                <a th:href="@{/view/sales/pdf}" class="btn btn-custom-warning me-2">
+                    <i class="fas fa-file-pdf me-1"></i> Exportar
+                </a>
+            </div>
+        </div>
+
+        <!-- Botón Nueva Venta debajo del título -->
+        <div class="mb-4">
+            <a th:href="@{/view/sales/form}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Nueva Venta
+            </a>
+        </div>
+
+        <!-- Tabla de ventas -->
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="custom-table-header">
+                        <tr>
+                            <th class="text-center" style="width: 5%">ID</th>
+                            <th class="text-center" style="width: 12%">Fecha</th>
+                            <th style="width: 20%">Cliente</th>
+                            <th style="width: 20%">Empleado</th>
+                            <th class="text-center" style="width: 8%">Productos</th>
+                            <th class="text-end" style="width: 15%">Total</th>
+                            <th class="text-center" style="width: 10%">Estado</th>
+                            <th class="text-center" style="width: 10%">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="sale : ${sales}" class="custom-table-row">
+                            <td class="text-center" th:text="${sale.id}"></td>
+                            <td class="text-center" th:text="${#temporals.format(sale.saleDate, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td class="text-truncate" th:text="${sale.client?.name}" th:title="${sale.client?.name}"></td>
+                            <td class="text-truncate" th:text="${sale.employee?.name}" th:title="${sale.employee?.name}"></td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary py-1 px-2"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        th:attr="data-bs-target='#products-'+${sale.id},
+                                                    aria-expanded='false',
+                                                    aria-controls='products-'+${sale.id}">
+                                    <span th:text="${sale.saleDetails?.size() ?: 0}"></span>
+                                    <i class="fas fa-box-open ms-1"></i>
+                                </button>
+                            </td>
+                            <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(sale.total, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <td class="text-center">
+                                    <span class="badge d-inline-block py-1 px-2"
+                                          style="min-width: 85px;"
+                                          th:class="${sale.status == 'Completada'} ? 'bg-success' :
+                                                    (${sale.status == 'Cancelada'} ? 'bg-danger' : 'bg-warning')"
+                                          th:text="${sale.status} ?: 'Pendiente'">
+                                    </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a th:href="@{/view/sales/edit/{id}(id=${sale.id})}"
+                                       class="btn btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form th:action="@{/view/sales/delete/{id}(id=${sale.id})}"
+                                          method="post"
+                                          onsubmit="return confirm('¿Eliminar esta venta?');">
+                                        <button type="submit" class="btn btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Detalles de productos -->
+                        <tr th:each="sale : ${sales}">
+                            <td colspan="8" class="p-0 border-0">
+                                <div class="collapse" th:id="'products-'+${sale.id}">
+                                    <div class="p-3 bg-light">
+                                        <h5 class="mb-3"><i class="fas fa-boxes me-2"></i>Detalles de Productos</h5>
+                                        <table class="table table-sm table-bordered">
+                                            <thead class="table-secondary">
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th class="text-center">Cantidad</th>
+                                                <th class="text-end">P. Unitario</th>
+                                                <th class="text-end">Subtotal</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="detail : ${sale.saleDetails}">
+                                                <td th:text="${detail.product?.name} ?: 'N/A'"></td>
+                                                <td class="text-center" th:text="${detail.quantity}"></td>
+                                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(detail.unitPrice, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(detail.subtotal, 1, 'COMMA', 2, 'POINT')}"></td>
+                                            </tr>
+                                            <tr class="table-active">
+                                                <td colspan="3" class="text-end fw-bold">Total Venta:</td>
+                                                <td class="text-end fw-bold" th:text="'$' + ${#numbers.formatDecimal(sale.total, 1, 'COMMA', 2, 'POINT')}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${sales?.empty}">
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fas fa-info-circle me-2"></i>
+                                No se encontraron ventas registradas
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts necesarios -->
+<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Estilos adicionales -->
+<style>
+    /* Contenedor de tabla personalizado */
+    .table-responsive {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-top: 10px;
+    }
+
+    /* Encabezado de tabla personalizado */
+    .custom-table-header {
+        background-color: #d4a017;
+        color: white;
+        font-weight: bold;
+    }
+
+    /* Filas de tabla personalizadas */
+    .custom-table-row {
+        padding: 14px 0;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s;
+    }
+
+    .custom-table-row:hover {
+        background-color: #f9f9f9;
+    }
+
+    /* Botón Exportar personalizado */
+    .btn-custom-warning {
+        background-color: #d4a017;
+        color: white;
+        border: none;
+        font-weight: 500;
+    }
+
+    .btn-custom-warning:hover {
+        background-color: #c18f0f;
+        color: white;
+    }
+
+    /* Botón Nueva Venta */
+    .btn-primary {
+        background-color: #1e73be;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #155a94;
+    }
+
+    /* Botones de acción */
+    .btn-outline-primary {
+        border-color: #1e73be;
+        color: #1e73be;
+    }
+    .btn-outline-primary:hover {
+        background-color: #1e73be;
+        color: white;
+    }
+    .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    /* Badges de estado */
+    .badge.bg-success {
+        background-color: #28a745 !important;
+    }
+    .badge.bg-warning {
+        background-color: #d4a017 !important;
+        color: white !important;
+    }
+    .badge.bg-danger {
+        background-color: #dc3545 !important;
+    }
+
+    /* Tooltip dorado */
+    [title]:hover:after {
+        position: absolute;
+        content: attr(title);
+        background: #d4a017;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        z-index: 100;
+        margin-top: -5px;
+        margin-left: 5px;
+        font-size: 0.85rem;
+    }
+</style>
+</body>
+</html>
