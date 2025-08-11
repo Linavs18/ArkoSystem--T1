@@ -405,7 +405,6 @@
     border: 1px solid #bbf7d0;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .login-card {
         margin: 20px;
@@ -457,7 +456,6 @@
     }
 }
 
-/* Paleta de colores */
 :root {
   --primary-brand: #FBC900;
   --secondary: #CFA500;
@@ -468,12 +466,11 @@
   --dark-extra: #151515;
 }
 
-/* Layout principal - Estructura fija */
 body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    overflow: hidden; /* Evita scroll del body */
+    overflow: hidden;
 }
 
 .g-sidenav-show {
@@ -481,7 +478,6 @@ body {
     height: 100vh;
 }
 
-/* Sidebar - Fijo y sin bordes redondeados */
 .sidebar-custom {
     position: fixed;
     top: 0;
@@ -494,7 +490,7 @@ body {
     z-index: 1040;
     display: flex;
     flex-direction: column;
-    border-radius: 0 !important; /* Sin bordes redondeados */
+    border-radius: 0 !important;
 }
 
 .sidebar-header {
@@ -534,7 +530,6 @@ body {
     text-decoration: none;
 }
 
-/* Contenido principal - Estructura flex */
 .main-content {
     margin-left: 220px;
     width: calc(100vw - 220px);
@@ -548,7 +543,7 @@ body {
 /* Topbar */
 .topbar-custom {
     background: #fff;
-    border-radius: 0 !important; /* Sin bordes redondeados */
+    border-radius: 0 !important;
     min-height: 56px;
     flex-shrink: 0;
     z-index: 1030;
@@ -556,16 +551,14 @@ body {
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* Contenedor principal del contenido */
 .container-fluid {
     flex: 1;
     padding: 1.5rem;
-    overflow-y: auto; /* Solo el contenido hace scroll */
+    overflow-y: auto;
     overflow-x: hidden;
-    margin-bottom: 60px; /* Espacio para el footer */
+    margin-bottom: 60px;
 }
 
-/* Footer - Fijo en la parte inferior */
 .footer-custom {
     background: var(--dark-base);
     color: #fff;
@@ -574,15 +567,14 @@ body {
     font-size: 1rem;
     position: fixed;
     bottom: 0;
-    left: 220px; /* Alineado con el contenido principal */
+    left: 220px;
     width: calc(100vw - 220px);
     z-index: 1020;
     border: none !important;
-    border-radius: 0 !important; /* Sin bordes redondeados */
+    border-radius: 0 !important;
     box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
 }
 
-/* Eliminar todos los bordes redondeados de Argon */
 .border-radius-lg,
 .border-radius-xl,
 .border-radius-md,
@@ -590,12 +582,10 @@ body {
     border-radius: 0 !important;
 }
 
-/* Asegurar que no haya scroll horizontal */
 html, body {
     overflow-x: hidden;
 }
 
-/* Elementos específicos */
 .text-primary-brand { color: var(--primary-brand) !important; }
 .text-accent { color: var(--accent) !important; }
 
@@ -666,7 +656,6 @@ html, body {
     box-shadow: 0 4px 8px rgba(180, 150, 50, 0.3);
 }
 
-/* Responsive para dispositivos móviles */
 @media (max-width: 768px) {
     .sidebar-custom {
         width: 100%;
@@ -880,7 +869,6 @@ html, body {
     margin-top: 0.5rem;
 }
 
-/* Gráfica mejorada */
 .chart-card-improved {
     border-radius: 12px !important;
 }
@@ -906,7 +894,6 @@ html, body {
     color: #2d3748;
 }
 
-/* Acciones rápidas */
 .quick-access-card {
     border-radius: 12px !important;
 }
@@ -976,7 +963,6 @@ html, body {
     transform: translateX(3px);
 }
 
-/* Panel de notificaciones */
 .notifications-card {
     border-radius: 12px !important;
 }
@@ -1036,7 +1022,6 @@ html, body {
     font-size: 0.75rem;
 }
 
-/* Animación pulse mejorada */
 .pulse {
     animation: pulseImproved 2s infinite;
 }
@@ -1056,7 +1041,6 @@ html, body {
     }
 }
 
-/* Breadcrumb mejorado */
 .breadcrumb .breadcrumb-item a {
     color: var(--accent);
     text-decoration: none;
@@ -1067,7 +1051,6 @@ html, body {
     color: var(--primary-brand);
 }
 
-/* Responsive mejoras */
 @media (max-width: 768px) {
     .welcome-section-improved {
         flex-direction: column;
@@ -1133,57 +1116,66 @@ html, body {
     }
 }
 
-/* Estilo general de la tarjeta contenedora */
-        .custom-table-container {
-            border: 1px solid #d4a017;
-            border-radius: 12px;
-            overflow: hidden;
-        }
+.custom-table-container {
+    border: 1px solid #d4a017;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-        /* Encabezado */
-        .custom-table-header {
-            background-color: white;
-            font-weight: bold;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f1f1;
-        }
+.custom-table-header {
+    background-color: white;
+    font-weight: bold;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f1f1;
+}
 
-        /* Filas */
-        .custom-table-row {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f1f1;
-            background-color: white;
-        }
+.custom-table-row {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f1f1;
+    background-color: white;
+}
 
-        /* Hover en filas */
-        .custom-table-row:hover {
-            background-color: #fafafa ;
-        }
+.custom-table-row:hover {
+    background-color: #fafafa ;
+}
 
-        /* Botones estilo imagen */
-        .btn-custom-warning {
-            background-color: #d4a017 !important;
-            color: white;
-            font-weight: bold;
-            border: none;
-        }
+.btn-custom-warning {
+    background-color: #d4a017 !important;
+    color: white;
+    font-weight: bold;
+    border: none;
+}
 
-        .btn-custom-warning:hover {
-            background-color: #b58b14;
-            color: white;
-        }
+.btn-custom-warning:hover {
+    background-color: #b58b14;
+    color: white;
+}
 
-        .custom-select {
-            border: 2px solid #d4a017; /* color dorado */
-            border-radius: 12px;
-            padding: 8px 12px;
-            background-color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            transition: all 0.2s ease-in-out;
-        }
+.custom-select {
+    border: 2px solid #d4a017;
+    border-radius: 12px;
+    padding: 8px 12px;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease-in-out;
+}
 
-        .custom-select:focus {
-            border-color: #b8900f; /* más oscuro al enfocar */
-            box-shadow: 0 0 8px rgba(212, 160, 23, 0.5);
-        }
+.custom-select:focus {
+    border-color: #b8900f;
+    box-shadow: 0 0 8px rgba(212, 160, 23, 0.5);
+}
 
+.error-fullscreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 56px - 60px);
+    width: 100%;
+    background-color: #f8f9fa;
+}
+
+.error-fullscreen img {
+    max-width: 300%;
+    max-height: 300%;
+    object-fit: contain;
+}
