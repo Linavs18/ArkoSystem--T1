@@ -33,7 +33,7 @@ function setupSalesChart() {
     if (!chartElement) return;
     const ctx = chartElement.getContext('2d');
     const weekData = [1200000, 1900000, 800000, 1400000, 2100000, 2800000, 2200000];
-    const monthData = [15000000, 18000000, 22000000, 19000000, 25000000, 28000000, 30000000, 
+    const monthData = [15000000, 18000000, 22000000, 19000000, 25000000, 28000000, 30000000,
                       32000000, 29000000, 35000000, 38000000, 40000000];
     let currentChart = new Chart(ctx, {
         type: 'line',
@@ -102,7 +102,7 @@ function setupSalesChart() {
                 currentChart.data.labels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
                 currentChart.data.datasets[0].data = weekData;
             } else if (period === 'month') {
-                currentChart.data.labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+                currentChart.data.labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
                                           'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
                 currentChart.data.datasets[0].data = monthData;
             }
@@ -369,3 +369,93 @@ window.ArkoSystem = {
     ClientManager,
     InventoryManager
 };
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejo de pestañas
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!this.classList.contains('active')) {
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+            }
+        });
+    });
+
+    // Efectos de los iconos en los inputs
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            const icon = this.parentElement.querySelector('.form-icon');
+            if (icon) {
+                icon.style.color = '#d4a017';
+            }
+        });
+
+        input.addEventListener('blur', function() {
+            const icon = this.parentElement.querySelector('.form-icon');
+            if (icon && !this.value) {
+                icon.style.color = '#6c757d';
+            }
+        });
+    });
+
+    // Auto-ocultar alertas después de 5 segundos
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+});
+
+// Validación del formulario
+document.querySelector('.login-form').addEventListener('submit', function(e) {
+    const email = this.querySelector('input[name="username"]');
+    const password = this.querySelector('input[name="password"]');
+
+    if (!email.value.trim()) {
+        e.preventDefault();
+        email.focus();
+        showMessage('Por favor, ingrese su correo electrónico.', 'error');
+        return;
+    }
+
+    if (!password.value.trim()) {
+        e.preventDefault();
+        password.focus();
+        showMessage('Por favor, ingrese su contraseña.', 'error');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    const submitBtn = this.querySelector('.btn-login');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Iniciando sesión...';
+    submitBtn.disabled = true;
+
+    // Si hay un error, restaurar el botón
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 3000);
+});
+
+function showMessage(message, type) {
+    const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+    const icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert ${alertClass}`;
+    alertDiv.innerHTML = `<i class="fas ${icon} me-2"></i>${message}`;
+
+    const form = document.querySelector('.login-form');
+    form.parentNode.insertBefore(alertDiv, form);
+
+    setTimeout(() => {
+        alertDiv.style.transition = 'opacity 0.5s ease';
+        alertDiv.style.opacity = '0';
+        setTimeout(() => alertDiv.remove(), 500);
+    }, 3000);
+}

@@ -1,7 +1,7 @@
 package co.edu.sena.arkosystem.controller;
 
 import co.edu.sena.arkosystem.model.Roles;
-import co.edu.sena.arkosystem.repository.RepositoryRoles;
+import co.edu.sena.arkosystem.repository.RepositoryRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public class ControllerRoles {
 
     @Autowired
-    private RepositoryRoles rolesRepository;
+    private RepositoryRole rolesRepository;
 
     @GetMapping
     public List<Roles> getAllRoles() {

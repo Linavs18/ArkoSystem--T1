@@ -1,8 +1,6 @@
 package co.edu.sena.arkosystem.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -10,11 +8,15 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String password;
-    
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Roles role;
 
@@ -57,4 +59,6 @@ public class Users {
     public void setRole(Roles role) {
         this.role = role;
     }
+
+    
 }

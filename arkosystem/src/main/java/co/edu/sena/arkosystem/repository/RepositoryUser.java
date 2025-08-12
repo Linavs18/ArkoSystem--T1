@@ -1,12 +1,12 @@
 package co.edu.sena.arkosystem.repository;
 
-import co.edu.sena.arkosystem.model.Roles;
+import co.edu.sena.arkosystem.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Roles, Long> {
-    Optional<Roles> findByName(String name);
+public interface RepositoryUser extends JpaRepository<Users, Long> {
+    Optional<Users> findByEmail(String email);
 }
