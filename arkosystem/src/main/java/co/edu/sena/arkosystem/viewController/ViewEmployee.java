@@ -28,11 +28,30 @@ public class ViewEmployee {
         model.addAttribute("activePage", "employee");
         model.addAttribute("employee", new Employee());
         model.addAttribute("employees", employeeRepository.findAll());
+        model.addAttribute("availableRoles", new String[]{"Administrador", "Empleado", "Cliente"});
         return "ViewsEmployees/employee_form";
     }
 
     @PostMapping("/viewE/save")
     public String save(@ModelAttribute Employee employee, RedirectAttributes ra) {
+        String roleStr = employee.getRole();
+        if (roleStr != null) {
+            switch (roleStr.toUpperCase()) {
+                case "ADMIN":
+                    employee.setRole("4");
+                    break;
+                case "EMPLOYEE":
+                    employee.setRole("7");
+                    break;
+                case "CLIENT":
+                    employee.setRole("6");
+                    break;
+                default:
+                    employee.setRole("7");
+                    break;
+            }
+        }
+        
         employeeRepository.save(employee);
         ra.addFlashAttribute("success", "Empleado Guardado");
         return "redirect:/view/employee";
@@ -41,9 +60,26 @@ public class ViewEmployee {
     @GetMapping("/viewE/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
         Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee != null) {
+            String roleNum = employee.getRole();
+            if (roleNum != null) {
+                switch (roleNum) {
+                    case "4":
+                        employee.setRole("Administrador");
+                        break;
+                    case "7":
+                        employee.setRole("Empleado");
+                        break;
+                    case "6":
+                        employee.setRole("Cliente");
+                        break;
+                }
+            }
+        }
         model.addAttribute("activePage", "employee");
         model.addAttribute("employee", employee);
         model.addAttribute("employees", employeeRepository.findAll());
+        model.addAttribute("availableRoles", new String[]{"Administrador", "Empleado", "Cliente"});
         return "ViewsEmployees/employee_form";
     }
 
