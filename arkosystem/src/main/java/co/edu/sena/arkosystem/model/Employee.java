@@ -13,6 +13,7 @@ public class Employee {
     private String position;
     private double salary;
     private String role;
+    private String email;
 
     // GETTERS AND SETTERS
 
@@ -62,5 +63,13 @@ public class Employee {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
