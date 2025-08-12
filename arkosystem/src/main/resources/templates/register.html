@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse - ArkoSystem</title>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Argon Dashboard CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+</head>
+<body class="body-login">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="row g-0 h-100">
+                <div class="col-lg-6 login-left">
+                    <div class="sena-logo-circle">
+                        <img th:src="@{/assets/img/sena-logo-negro.png}" alt="SENA Logo" style="width:100px;height:100px;">
+                    </div>
+                    <h2 class="system-title">ArkoSystem</h2>
+                    <p class="system-subtitle">
+                        Sistema integral de gestión para ferreterías.
+                        Controla tu inventario, gestiona ventas y administra tu negocio de forma eficiente.
+                    </p>
+                    <div class="system-features">
+                        <div class="feature-item">
+                            <i class="fas fa-boxes"></i>
+                            <span>Inventario</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Ventas</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-users"></i>
+                            <span>Clientes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 login-right">
+                    <div class="text-center">
+                        <img th:src="@{/assets/img/arkosystem-logo.png}" alt="ArkoSystem Logo" class="logo-arko">
+                    </div>
+                    <div class="login-tabs">
+                        <a th:href="@{/login}" class="tab-button">Iniciar sesión</a>
+                        <span class="tab-button active">Registrarse</span>
+                    </div>
+                    <form class="form-login form-login-register" th:action="@{/register}" th:object="${user}" method="post" autocomplete="off">
+                        <div class="row">
+                            <div class="form-group mb-3 col-lg-12">
+                                <span class="form-icon"><i class="fas fa-user"></i></span>
+                                <input type="text" th:field="*{name}" class="form-control" placeholder="Nombre completo" required>
+                            </div>
+                            <div class="form-group mb-3 col-lg-6">
+                                <span class="form-icon"><i class="fas fa-envelope"></i></span>
+                                <input type="email" th:field="*{email}" class="form-control" placeholder="Correo electrónico" required>
+                            </div>
+                            <div class="form-group mb-3 col-lg-6">
+                                <span class="form-icon"><i class="fas fa-envelope"></i></span>
+                                <input type="email" name="emailConfirm" class="form-control" placeholder="Confirmar correo electrónico" required>
+                            </div>
+                            <div class="form-group mb-3 col-lg-6">
+                                <div class="input-password-wrapper">
+                                    <span class="form-icon"><i class="fas fa-lock"></i></span>
+                                    <input type="password" th:field="*{password}" id="password" class="form-control password-input" placeholder="Contraseña" required>
+                                    <i class="fa fa-eye toggle-password-icon" toggle="#password" style="cursor:pointer;position:absolute;right:15px;top:50%;transform:translateY(-50%);"></i>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3 col-lg-6">
+                                <div class="input-password-wrapper">
+                                    <span class="form-icon"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="passwordConfirm" id="password_confirmation" class="form-control password-input" placeholder="Confirmar contraseña" required>
+                                    <i class="fa fa-eye toggle-password-icon" toggle="#password_confirmation" style="cursor:pointer;position:absolute;right:15px;top:50%;transform:translateY(-50%);"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-login w-100 mt-3">Registrarse</button>
+                        <div class="forgot-password text-center mt-2">
+                            <a th:href="@{/login}">Ya tengo una cuenta</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.toggle-password-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = document.querySelector(this.getAttribute('toggle'));
+                if (input.type === "password") {
+                    input.type = "text";
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                } else {
+                    input.type = "password";
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

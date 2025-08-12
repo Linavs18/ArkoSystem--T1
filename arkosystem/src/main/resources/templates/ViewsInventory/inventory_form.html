@@ -14,7 +14,9 @@
         <h1 style="color: #CFA500;" th:text="${inventory.id == null} ? 'Registrar Productos' : 'Editar Productos'"></h1>
 
         <!-- Formulario de guardado -->
-        <form th:action="@{/viewI/save}" th:object="${inventory}" method="post" novalidate>
+        <form th:action="@{/viewI/save}" th:object="${inventory}"
+              method="post" enctype="multipart/form-data" novalidate>
+
             <!-- Campo oculto para conservar el ID al editar -->
             <input type="hidden" th:field="*{id}" />
 
@@ -32,7 +34,7 @@
                 <label class="form-label">Categoria</label>
                 <select th:field="*{category}" class="form-select" required>
                     <option value="" disabled selected>Seleccione una opción</option>
-                    <option th:each="j: ${category}" th:value="${j.id}" th:text="${j.description}">s</option>
+                    <option th:each="j: ${category}" th:value="${j.id}" th:text="${j.description}"></option>
                 </select>
             </div>
 
@@ -50,8 +52,13 @@
                 <label class="form-label">Proveedor</label>
                 <select th:field="*{supplier}" class="form-select" required>
                     <option value="" disabled selected>Seleccione una opción</option>
-                    <option th:each="j: ${supplier}" th:value="${j.id}" th:text="${j.name}">s</option>
+                    <option th:each="j: ${supplier}" th:value="${j.id}" th:text="${j.name}"></option>
                 </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Imagen del Producto</label>
+                <input type="file" name="image" class="form-control" accept="image/*" />
             </div>
 
             <!-- Botones -->
