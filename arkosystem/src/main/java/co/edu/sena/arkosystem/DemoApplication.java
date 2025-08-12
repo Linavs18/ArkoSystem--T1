@@ -31,8 +31,11 @@ public class DemoApplication {
             if (repoRole.findByName("ROLE_CLIENT").isEmpty()) {
                 repoRole.save(new Roles("ROLE_CLIENT", "Cliente del sistema"));
             }
+            // Añadir rol EMPLOYEE
+            if (repoRole.findByName("ROLE_EMPLOYEE").isEmpty()) {
+                repoRole.save(new Roles("ROLE_EMPLOYEE", "Empleado del sistema"));
+            }
             
-            // Crear usuario admin si no existe
             if (repoUser.findByEmail("admin@example.com").isEmpty()) {
                 Users admin = new Users();
                 admin.setName("Administrador");
@@ -40,6 +43,15 @@ public class DemoApplication {
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setRole(repoRole.findByName("ROLE_ADMIN").get());
                 repoUser.save(admin);
+            }
+
+            if (repoUser.findByEmail("employee@arkosystem.com").isEmpty()) {
+                Users employee = new Users();
+                employee.setName("Empleado");
+                employee.setEmail("employee@arkosystem.com");
+                employee.setPassword(passwordEncoder.encode("employee123"));
+                employee.setRole(repoRole.findByName("ROLE_EMPLOYEE").get());
+                repoUser.save(employee);
             }
         };
     }
