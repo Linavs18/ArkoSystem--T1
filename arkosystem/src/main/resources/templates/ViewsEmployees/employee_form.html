@@ -30,6 +30,13 @@
                 </div>
 
                 <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" th:field="*{email}" class="form-control" required 
+                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                           title="Por favor ingrese un correo electrónico válido" />
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label">Posición</label>
                     <input type="text" th:field="*{position}" class="form-control" required />
                 </div>
@@ -41,7 +48,13 @@
 
                 <div class="mb-3">
                     <label class="form-label">Rol</label>
-                    <input type="text" th:field="*{role}" class="form-control" required />
+                    <select th:field="*{role}" class="form-control" required>
+                        <option value="">Seleccione un rol</option>
+                        <option th:each="role : ${availableRoles}" 
+                                th:value="${role}" 
+                                th:text="${role}">
+                        </option>
+                    </select>
                 </div>
 
                 <!-- Botones -->
@@ -56,5 +69,19 @@
             </form>
         </div>
     </div>
+
+    <!-- Validación de correo electrónico -->
+    <script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const emailInput = document.querySelector('input[type="email"]');
+        const email = emailInput.value;
+        
+        if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+            e.preventDefault();
+            alert('Por favor ingrese un correo electrónico válido');
+            emailInput.focus();
+        }
+    });
+    </script>
 </body>
 </html>
