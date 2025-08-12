@@ -1,78 +1,98 @@
-<div th:fragment="sidebar">
+<div th:fragment="sidebar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <nav class="sidebar-custom d-flex flex-column">
     <div class="sidebar-header text-center py-4">
       <img src="/assets/img/ArkoSystem-logo.png" alt="Logo" class="sidebar-logo mb-2">
       <h4 class="fw-bold mb-0 text-primary-brand">ArkoSystem</h4>
     </div>
     <ul class="nav flex-column px-2">
-      <!-- Inicio / Dashboard -->
+      <!-- Dashboard - Solo CLIENT -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'home'} ? ' active' : ''">
+          th:classappend="${activePage == 'dashboard'} ? ' active' : ''"
+          sec:authorize="hasRole('CLIENT')">
+        <a th:href="@{/dashboard}" class="nav-link-custom">
+          <i class="fas fa-home me-2"></i>Dashboard
+        </a>
+      </li>
+
+      <!-- Panel de Control - Solo ADMIN y EMPLOYEE -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'home'} ? ' active' : ''"
+          sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
         <a th:href="@{/}" class="nav-link-custom">
           <i class="fas fa-tachometer-alt me-2"></i>Panel de Control
         </a>
       </li>
       
-      <!-- Ventas -->
+      <!-- Ventas - Solo ADMIN y EMPLOYEE -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'sales'} ? ' active' : ''">
+          th:classappend="${activePage == 'sales'} ? ' active' : ''"
+          sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
         <a th:href="@{/view/sales}" class="nav-link-custom">
           <i class="fas fa-cash-register me-2"></i>Ventas
         </a>
       </li>
-      <!-- Clientes -->
+
+      <!-- Clientes - Solo ADMIN y EMPLOYEE -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'clients'} ? ' active' : ''">
+          th:classappend="${activePage == 'clients'} ? ' active' : ''"
+          sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
         <a th:href="@{/view/clients}" class="nav-link-custom">
           <i class="fas fa-user-friends me-2"></i>Clientes
         </a>
       </li>
       
-      <!-- Empleados -->
+      <!-- Empleados - Solo ADMIN -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'employee'} ? ' active' : ''">
+          th:classappend="${activePage == 'employee'} ? ' active' : ''"
+          sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/view/employee}" class="nav-link-custom">
           <i class="fas fa-hard-hat me-2"></i>Empleados
         </a>
       </li>
 
-      <!-- Inventario -->
+      <!-- Inventario - Solo ADMIN y EMPLOYEE -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'inventory'} ? ' active' : ''">
+          th:classappend="${activePage == 'inventory'} ? ' active' : ''"
+          sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
         <a th:href="@{/view/inventory}" class="nav-link-custom">
           <i class="fas fa-warehouse me-2"></i>Inventario
         </a>
       </li>
       
-      <!-- Proveedores -->
-      <li class="nav-item mb-2" th:classappend="${activePage == 'suppliers'} ? ' active' : ''">
+      <!-- Proveedores - Solo ADMIN -->
+      <li class="nav-item mb-2"
+          th:classappend="${activePage == 'suppliers'} ? ' active' : ''"
+          sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/view/suppliers}" class="nav-link-custom">
           <i class="fas fa-truck me-2"></i>Proveedores
         </a>
       </li>
       
-      <!-- Reportes -->
+      <!-- Reportes - Solo ADMIN y EMPLOYEE -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'reports'} ? ' active' : ''">
+          th:classappend="${activePage == 'reports'} ? ' active' : ''"
+          sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
         <a th:href="@{/view/reports}" class="nav-link-custom">
           <i class="fas fa-chart-line me-2"></i>Reportes
         </a>
       </li>
       
-      <!-- Configuración -->
+      <!-- Configuración - Solo ADMIN -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'settings'} ? ' active' : ''">
+          th:classappend="${activePage == 'settings'} ? ' active' : ''"
+          sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/configuracion}" class="nav-link-custom">
           <i class="fas fa-tools me-2"></i>Configuración
         </a>
       </li>
       
-      <!-- Cerrar sesión -->
-      <li class="nav-item mb-2"
-          th:classappend="${activePage == 'settings'} ? ' active' : ''">
-        <a th:href="@{/logout}" class="nav-link-custom">
-          <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión
-        </a>
+      <!-- Cerrar sesión - Visible para todos -->
+      <li class="nav-item mb-2">
+          <form th:action="@{/logout}" method="POST" class="nav-link-custom p-0">
+              <button type="submit" class="btn nav-link-custom w-100 text-start">
+                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión
+              </button>
+          </form>
       </li>
     </ul>
     

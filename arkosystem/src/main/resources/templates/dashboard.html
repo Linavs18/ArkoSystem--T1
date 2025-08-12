@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/base}">
 <head>
     <title>ArkoSystem - Inicio</title>
@@ -13,8 +14,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="content-wrapper">
-
+    <!-- Vista específica para CLIENTE -->
+    <div sec:authorize="hasRole('CLIENT')" class="content-wrapper">
         <div class="row g-4">
             <div class="col-md-4" th:each="producto : ${productos}">
                 <div class="card shadow-sm h-100">
@@ -30,7 +31,13 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- Acceso denegado para roles no autorizados -->
+    <div sec:authorize="!hasRole('CLIENT')" class="content-wrapper">
+        <div class="alert alert-warning">
+            Esta vista es exclusiva para clientes. Por favor, utiliza el Panel de Control.
+        </div>
     </div>
 </div>
 </body>
