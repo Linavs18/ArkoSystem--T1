@@ -24,10 +24,12 @@ public class AuthController {
         return "register";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register") 
     public String registerSubmit(@ModelAttribute Users user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Roles role = repoRole.findByName("ROLE_USER").orElseThrow(() -> new RuntimeException("Rol no existe"));
+        // Asignamos el rol ROLE_CLIENT en lugar de ROLE_USER
+        Roles role = repoRole.findByName("ROLE_CLIENT")
+            .orElseThrow(() -> new RuntimeException("Rol de cliente no existe"));
         user.setRole(role);
         repoUser.save(user);
         return "redirect:/login?registered";
