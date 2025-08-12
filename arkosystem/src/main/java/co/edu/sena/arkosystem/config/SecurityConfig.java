@@ -51,31 +51,27 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/login",
                     "/register",
-                    "/forgot-password",
                     "/css/**",
                     "/js/**",
                     "/images/**",
                     "/assets/**",
                     "/webjars/**"
                 ).permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/dashboard").hasAnyRole("CLIENT", "ADMIN") // Solo permitir acceso al dashboard
+                .anyRequest().hasRole("ADMIN") // Todo lo demás requiere rol de admin
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .usernameParameter("email") // Coincide con name="email" en tu formulario
                 .passwordParameter("password")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/dashboard", true) // Redirigir al dashboard después del login
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
-            )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
-
-        // Permitir iframes (necesario para h2-console)
-        http.headers().frameOptions().sameOrigin();
+            );
 
         return http.build();
     }

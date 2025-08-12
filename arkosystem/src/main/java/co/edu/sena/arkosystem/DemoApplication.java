@@ -24,14 +24,14 @@ public class DemoApplication {
     @Bean
     CommandLineRunner initData(RepositoryRole repoRole, RepositoryUser repoUser) {
         return args -> {
-            // Crear roles si no existen
+            // Roles existentes
             if (repoRole.findByName("ROLE_ADMIN").isEmpty()) {
                 repoRole.save(new Roles("ROLE_ADMIN", "Administrador del sistema"));
             }
-            if (repoRole.findByName("ROLE_USER").isEmpty()) {
-                repoRole.save(new Roles("ROLE_USER", "Usuario estándar"));
+            if (repoRole.findByName("ROLE_CLIENT").isEmpty()) {
+                repoRole.save(new Roles("ROLE_CLIENT", "Cliente del sistema"));
             }
-
+            
             // Crear usuario admin si no existe
             if (repoUser.findByEmail("admin@example.com").isEmpty()) {
                 Users admin = new Users();
@@ -40,7 +40,6 @@ public class DemoApplication {
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setRole(repoRole.findByName("ROLE_ADMIN").get());
                 repoUser.save(admin);
-                System.out.println("Usuario admin creado: admin@example.com / admin123");
             }
         };
     }
