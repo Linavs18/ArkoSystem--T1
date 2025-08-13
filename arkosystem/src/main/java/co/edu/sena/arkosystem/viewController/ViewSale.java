@@ -41,15 +41,13 @@ public class ViewSale {
     @Autowired private RepositoryEmployee employeeRepository;
 
     @GetMapping("/sales")
-    public String listSales(Model model, HttpSession session, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        model.addAttribute("activePage", "sales");
+    public String listSales(Model model, HttpSession session,
+                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        if (userDetails != null) {
-            model.addAttribute("currentUsername", userDetails.getUsername());
+        // Verificación obligatoria de autenticación
+        if (userDetails == null) {
+            return "redirect:/login";
         }
-
-        try {
-            List<Clients> allClients = clientsRepository.findAll();
 
             List<Inventory> availableProducts = productRepository.findAll()
                     .stream()
@@ -62,26 +60,7 @@ public class ViewSale {
             model.addAttribute("products", availableProducts);
             model.addAttribute("employees", employees);
 
-            List<Map<String, Object>> cart = getCartFromSession(session);
-            model.addAttribute("cart", cart);
 
-            model.addAttribute("selectedClient", session.getAttribute("selectedClient"));
-            model.addAttribute("selectedEmployee", session.getAttribute("selectedEmployee"));
-            model.addAttribute("selectedPayment", session.getAttribute("selectedPayment"));
-
-            BigDecimal total = calculateCartTotal(cart);
-            model.addAttribute("total", total);
-
-            List<Sale> recentSales = saleRepository.findAll()
-                    .stream()
-                    .sorted((s1, s2) -> s2.getSaleDate().compareTo(s1.getSaleDate()))
-                    .limit(10)
-                    .collect(Collectors.toList());
-            model.addAttribute("recentSales", recentSales);
-
-        } catch (Exception e) {
-            model.addAttribute("error", "Error al cargar los datos: " + e.getMessage());
-        }
 
         return "ViewSale/Sales";
     }
@@ -97,14 +76,7 @@ public class ViewSale {
             @RequestParam(required = false) Integer quantity,
             HttpSession session,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            RedirectAttributes redirectAttrs
-    ) {
-        List<Map<String, Object>> cart = getCartFromSession(session);
 
-        try {
-            if (clientId != null) session.setAttribute("selectedClient", clientId);
-            if (employeeId != null) session.setAttribute("selectedEmployee", employeeId);
-            if (paymentMethod != null && !paymentMethod.isEmpty()) session.setAttribute("selectedPayment", paymentMethod);
 
             switch (action != null ? action : "") {
                 case "add": return handleAddToCart(productId, quantity, cart, session, redirectAttrs);
