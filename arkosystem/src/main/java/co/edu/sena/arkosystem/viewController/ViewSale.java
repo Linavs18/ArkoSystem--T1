@@ -2,125 +2,118 @@ package co.edu.sena.arkosystem.viewController;
 
 import co.edu.sena.arkosystem.model.*;
 import co.edu.sena.arkosystem.repository.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import co.edu.sena.arkosystem.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
+import java.time.LocalDateTime; // <-- ¡Nuevo import!
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/view/sales")
+@RequestMapping("/view")
 public class ViewSale {
 
-    @Autowired private RepositoryClients clientRepository;
-    @Autowired private RepositoryEmployee employeeRepository;
-    @Autowired private RepositoryInventory productRepository;
     @Autowired private RepositorySale saleRepository;
     @Autowired private RepositorySaleDetails saleDetailsRepository;
+    @Autowired private RepositoryInventory productRepository;
+    @Autowired private RepositoryClients clientsRepository;
+    @Autowired private RepositoryUser userRepository;
+    @Autowired private RepositoryEmployee employeeRepository;
 
-    @GetMapping("/form")
-    public String showForm(Model model) {
-        try {
-            List<Clients> clients = clientRepository.findAll();
-            List<Employee> employees = employeeRepository.findAll();
-            List<Inventory> products = productRepository.findAll();
+    @GetMapping("/sales")
+    public String listSales(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        model.addAttribute("activePage", "sales");
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            String productsJson = "[]";
-            try {
-                productsJson = objectMapper.writeValueAsString(products);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-            model.addAttribute("clients", clients);
-            model.addAttribute("employees", employees);
-            model.addAttribute("products", products);
-            model.addAttribute("productsJson", productsJson);
-            model.addAttribute("activePage", "sales");
-            return "ViewSale/SalesForm";
-        } catch (Exception e) {
-            model.addAttribute("error", "Error al cargar formulario: " + e.getMessage());
-            return "error";
+        if (userDetails != null) {
+            model.addAttribute("currentUsername", userDetails.getUsername());
         }
-    }
-    @PostMapping
-    public String createSale(@RequestParam("clientId") Long clientId,
-                             @RequestParam("employeeId") Long employeeId,
-                             @RequestParam("paymentMethod") String paymentMethod,
-                             @RequestParam("total") Double total,
-                             @RequestParam(value = "productDetails[].productId", required = false) List<Long> productIds,
-                             @RequestParam(value = "productDetails[].unitPrice", required = false) List<Double> unitPrices,
-                             @RequestParam(value = "productDetails[].quantity", required = false) List<Integer> quantities,
-                             RedirectAttributes redirectAttributes) {
+
         try {
-            if (productIds == null || productIds.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Debe agregar al menos un producto");
-                return "redirect:/view/sales/form";
-            }
+            List<Clients> allClients = clientsRepository.findAll();
+            List<Inventory> allProducts = productRepository.findAll();
 
+            List<String> clientNames = allClients.stream().map(Clients::getName).collect(Collectors.toList());
+            List<Inventory> availableProducts = allProducts.stream().filter(p -> p.getAvailableQuantity() > 0).collect(Collectors.toList());
 
-            Sale sale = new Sale();
-            Clients client = new Clients();
-            client.setId(clientId);
-            sale.setClient(client);
+            model.addAttribute("clientNames", clientNames);
+            model.addAttribute("products", availableProducts);
 
-            Employee employee = new Employee();
-            employee.setId(employeeId);
-            sale.setEmployee(employee);
-
-            sale.setPaymentMethod(paymentMethod);
-            sale.setTotal(total);
-            sale.setStatus("COMPLETED");
-            sale.setSaleDate(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
-
-            Sale savedSale = saleRepository.save(sale);
-
-            double calculatedTotal = 0.0;
-            for (int i = 0; i < productIds.size(); i++) {
-                if (productIds.get(i) != null && unitPrices.get(i) != null && quantities.get(i) != null) {
-                    SaleDetails detail = new SaleDetails();
-                    detail.setSale(savedSale);
-
-                    Inventory product = new Inventory();
-                    product.setId(productIds.get(i));
-                    detail.setProduct(product);
-
-                    detail.setUnitPrice(unitPrices.get(i));
-                    detail.setQuantity(quantities.get(i));
-
-                    saleDetailsRepository.save(detail);
-                    calculatedTotal += unitPrices.get(i) * quantities.get(i);
-                }
-            }
-
-            savedSale.setTotal(calculatedTotal);
-            saleRepository.save(savedSale);
-
-            redirectAttributes.addFlashAttribute("success", "Venta registrada exitosamente");
-            return "redirect:/view/sales";
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al registrar venta: " + e.getMessage());
-            return "redirect:/view/sales/form";
-        }
-    }
-
-    @GetMapping
-    public String listSales(Model model) {
-        try {
-            model.addAttribute("activePage", "sales");
             return "ViewSale/Sales";
+
         } catch (Exception e) {
-            model.addAttribute("error", "Error al cargar ventas: " + e.getMessage());
-            return "error";
+            e.printStackTrace();
+            model.addAttribute("error", "Error al cargar datos: " + e.getMessage());
+            model.addAttribute("clientNames", new ArrayList<>());
+            model.addAttribute("products", new ArrayList<>());
+            return "ViewSale/Sales";
+        }
+    }
+
+    @PostMapping("/process-sale")
+    @ResponseBody
+    public ResponseEntity<String> processSale(@RequestBody Map<String, Object> saleData, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        try {
+            String clientName = (String) saleData.get("client");
+            String paymentMethodStr = (String) saleData.get("paymentMethod");
+            List<Map<String, Object>> items = (List<Map<String, Object>>) saleData.get("items");
+            double total = Double.parseDouble(saleData.get("total").toString());
+
+            if (items == null || items.isEmpty()) {
+                return ResponseEntity.badRequest().body("No hay productos en la venta.");
+            }
+            if (clientName == null || clientName.isEmpty()) {
+                return ResponseEntity.badRequest().body("Debe seleccionar un cliente.");
+            }
+
+            Clients client = clientsRepository.findByName(clientName)
+                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado: " + clientName));
+
+            Users user = userRepository.findByEmail(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + userDetails.getUsername()));
+
+            Employee employee = employeeRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Empleado no encontrado para el usuario: " + user.getId()));
+
+            Sale newSale = new Sale();
+            newSale.setClient(client);
+            newSale.setSaleDate(LocalDateTime.now()); // <-- ¡Corrección aquí!
+            newSale.setTotal(total);
+            newSale.setPaymentMethod(paymentMethodStr);
+            newSale.setEmployee(employee);
+            newSale.setStatus("COMPLETED");
+
+            Sale savedSale = saleRepository.save(newSale);
+
+            for (Map<String, Object> item : items) {
+                Long productId = Long.valueOf(item.get("id").toString());
+                int quantity = Integer.parseInt(item.get("quantity").toString());
+
+                Inventory product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+                if (product.getAvailableQuantity() < quantity) {
+                    throw new RuntimeException("Stock insuficiente para el producto: " + product.getName());
+                }
+
+                SaleDetails saleDetails = new SaleDetails();
+                saleDetails.setSale(savedSale);
+                saleDetails.setProduct(product);
+                saleDetails.setQuantity(quantity);
+                saleDetails.setUnitPrice(product.getPrice());
+                saleDetailsRepository.save(saleDetails);
+
+                product.setAvailableQuantity(product.getAvailableQuantity() - quantity);
+                productRepository.save(product);
+            }
+
+            return ResponseEntity.ok("Venta registrada con éxito.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al registrar la venta: " + e.getMessage());
         }
     }
 }
