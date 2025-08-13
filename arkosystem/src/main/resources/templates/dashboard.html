@@ -15,7 +15,7 @@
 <body>
 <div layout:fragment="content">
     <!-- Vista específica para CLIENTE -->
-    <div sec:authorize="hasRole('CLIENT','EMPLOYEE')" class="content-wrapper">
+    <div sec:authorize="hasRole('CLIENT')" class="content-wrapper">
         <div class="row g-4">
             <div class="col-md-4" th:each="producto : ${productos}">
                 <div class="card shadow-sm h-100">
@@ -25,11 +25,16 @@
                     <div class="card-body">
                         <h5 class="card-title" th:text="${producto.name}">Nombre Producto</h5>
                         <p class="card-text text-primary fw-bold">
-                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}"></span>
+                            <span th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 2, 'POINT')}"></span>
                         </p>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div sec:authorize="!hasRole('CLIENT')" class="content-wrapper">
+        <div class="alert alert-warning">
+            Esta vista es exclusiva para clientes. Por favor, utiliza el Panel de Control.
         </div>
     </div>
 </div>
