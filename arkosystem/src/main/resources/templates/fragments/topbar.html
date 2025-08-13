@@ -1,5 +1,12 @@
 <nav th:fragment="topbar" class="topbar-custom d-flex align-items-center justify-content-between px-4 py-2 shadow-sm"
      id="navbarBlur" data-scroll="false" style="background-color: #343434; z-index: 1000;">
-    <div class="d-flex align-items-center gap-3">
+    <div class="d-flex align-items-center gap-2 ms-auto">
+        <span class="text-white fw-bold" sec:authentication="name"></span>
+        <!-- Imagen random de usuario -->
+        <img th:src="@{'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=random'}"
+             alt="Avatar"
+             class="rounded-circle"
+             style="width:40px; height:40px; object-fit:cover;">
     </div>
+
 </nav>

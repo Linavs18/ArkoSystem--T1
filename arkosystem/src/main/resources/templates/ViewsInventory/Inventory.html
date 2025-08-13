@@ -42,8 +42,14 @@
 
         <form th:action="@{/view/inventory}" method="get" class="d-flex align-items-center mb-3">
             <label for="categoryId" class="me-2 mb-0">Filtros:</label>
-            <select id="categoryId" name="categoryId" class="form-select me-2" data-filter="category">
+
+            <select id="categoryId"
+                    name="categoryId"
+                    class="form-select me-2"
+                    style="width: 20%; border: 1px solid #d4a017;"
+                    onchange="this.form.submit()">
                 <option value="">Todas las categorías</option>
+
                 <option th:each="cat : ${categories}"
                         th:value="${cat.id}"
                         th:text="${cat.description}"
@@ -93,5 +99,21 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('categoryId').addEventListener('change', function() {
+      const categoryId = this.value;
+      const url = '/view/inventory?categoryId=' + encodeURIComponent(categoryId);
+
+      fetch(url, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' } // opcional según cómo manejes en el servidor
+      })
+      .then(res => res.text())
+      .then(html => {
+        // Esperamos que la respuesta sea el fragmento HTML con las filas
+        document.getElementById('inventoryTable').innerHTML = html;
+      })
+      .catch(err => console.error('Error cargando productos:', err));
+    });
+</script>
 </body>
 </html>
