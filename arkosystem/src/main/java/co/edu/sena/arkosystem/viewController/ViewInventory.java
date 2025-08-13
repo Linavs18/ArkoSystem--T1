@@ -28,6 +28,14 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.List;
 
+/**
+ * Controlador de Spring para la gestión de productos del inventario.
+ * <p>
+ * Esta clase maneja las solicitudes HTTP relacionadas con el inventario, incluyendo
+ * la visualización, creación, edición, eliminación y exportación de productos a
+ * formatos PDF y Excel.
+ * </p>
+ */
 @Controller
 public class ViewInventory {
     @Autowired
@@ -43,6 +51,13 @@ public class ViewInventory {
 
     private static final String DEFAULT_IMAGE = "/assets/img/uploads/Caja_vacia.jpg";
 
+    /**
+     * Muestra la lista de productos del inventario, con la opción de filtrar por categoría.
+     *
+     * @param categoryId El ID de la categoría por la cual filtrar los productos (opcional).
+     * @param model      El objeto {@link Model} para agregar los datos a la vista.
+     * @return El nombre de la plantilla de la vista para el inventario.
+     */
     @GetMapping("/view/inventory")
     public String list(@RequestParam(required = false) Long categoryId, Model model) {
         model.addAttribute("activePage", "inventory");
@@ -61,6 +76,12 @@ public class ViewInventory {
         return "ViewsInventory/Inventory";
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo producto.
+     *
+     * @param model El objeto {@link Model} para agregar los datos del formulario a la vista.
+     * @return El nombre de la plantilla de la vista para el formulario de inventario.
+     */
     @GetMapping("viewI/form")
     public String form(Model model) {
         model.addAttribute("activePage", "inventory");
@@ -71,6 +92,18 @@ public class ViewInventory {
         return "ViewsInventory/inventory_form";
     }
 
+    /**
+     * Guarda un nuevo producto o actualiza uno existente.
+     * <p>
+     * Este método maneja la carga de imágenes para el producto y lo guarda en la base de datos.
+     * </p>
+     *
+     * @param inventory  El objeto {@link Inventory} a guardar.
+     * @param image      La imagen del producto subida a través del formulario (opcional).
+     * @param ra         El objeto {@link RedirectAttributes} para pasar mensajes de éxito en la redirección.
+     * @return Una redirección a la lista de inventario.
+     * @throws IOException si ocurre un error al procesar la imagen subida.
+     */
     @PostMapping("/viewI/save")
     public String save(@ModelAttribute Inventory inventory,
                        @RequestParam(value = "image", required = false) MultipartFile image,
@@ -95,6 +128,13 @@ public class ViewInventory {
         return "redirect:/view/inventory";
     }
 
+    /**
+     * Muestra el formulario para editar un producto existente.
+     *
+     * @param id    El ID del producto a editar.
+     * @param model El objeto {@link Model} para agregar el producto a la vista.
+     * @return El nombre de la plantilla de la vista para el formulario de inventario.
+     */
     @GetMapping("/viewI/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
         Inventory inventory = inventoryRepository.findById(id).orElse(null);
@@ -106,6 +146,13 @@ public class ViewInventory {
         return "ViewsInventory/inventory_form";
     }
 
+    /**
+     * Elimina un producto del inventario por su ID.
+     *
+     * @param id El ID del producto a eliminar.
+     * @param ra El objeto {@link RedirectAttributes} para pasar mensajes de éxito en la redirección.
+     * @return Una redirección a la lista de inventario.
+     */
     @PostMapping("viewI/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes ra) {
         inventoryRepository.deleteById(id);
@@ -113,6 +160,12 @@ public class ViewInventory {
         return "redirect:/view/inventory";
     }
 
+    /**
+     * Exporta la lista de inventario completa a un archivo PDF.
+     *
+     * @param response El objeto {@link HttpServletResponse} para escribir el archivo PDF.
+     * @throws Exception Si ocurre un error durante la generación del PDF.
+     */
     @GetMapping("/viewI/pdf")
     public void exportarPDF(HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
@@ -145,15 +198,21 @@ public class ViewInventory {
             table.addCell(f.getId().toString());
             table.addCell(f.getName());
             table.addCell(df.format(f.getPrice()));
-            table.addCell(f.getCategory() != null ? f.getCategory().getDescription() : "N/A"); // Protección contra null
+            table.addCell(f.getCategory() != null ? f.getCategory().getDescription() : "N/A");
             table.addCell(String.valueOf(f.getAvailableQuantity()));
-            table.addCell(f.getSupplier() != null ? f.getSupplier().getName() : "N/A"); // Protección contra null
+            table.addCell(f.getSupplier() != null ? f.getSupplier().getName() : "N/A");
         }
 
         document.add(table);
         document.close();
     }
 
+    /**
+     * Exporta la lista de inventario completa a un archivo Excel.
+     *
+     * @param response El objeto {@link HttpServletResponse} para escribir el archivo Excel.
+     * @throws Exception Si ocurre un error durante la generación del archivo Excel.
+     */
     @GetMapping("/viewI/excel")
     public void exportarExcel(HttpServletResponse response) throws Exception {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
