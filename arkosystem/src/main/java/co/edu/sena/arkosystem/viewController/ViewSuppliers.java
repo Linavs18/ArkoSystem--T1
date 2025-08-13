@@ -15,8 +15,13 @@ public class ViewSuppliers {
     private RepositorySuppliers supplierRepository;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("suppliers", supplierRepository.findAll());
+    public String list(@org.springframework.web.bind.annotation.RequestParam(name = "search", required = false) String search, Model model) {
+        if (search != null && !search.isEmpty()) {
+            model.addAttribute("suppliers", supplierRepository.findByNameContainingIgnoreCase(search));
+        } else {
+            model.addAttribute("suppliers", supplierRepository.findAll());
+        }
+        model.addAttribute("search", search);
         return "ViewsSuppliers/Suppliers";
     }
 

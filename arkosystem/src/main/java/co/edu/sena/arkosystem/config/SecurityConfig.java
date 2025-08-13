@@ -40,8 +40,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-<<<<<<< Updated upstream
-=======
 
     // Redirección post-login según rol
     @Bean
@@ -60,7 +58,6 @@ public class SecurityConfig {
             response.sendRedirect(redirectUrl);
         };
     }
->>>>>>> Stashed changes
 
     // Configuración de seguridad
     @Bean
@@ -68,46 +65,6 @@ public class SecurityConfig {
                                            DaoAuthenticationProvider authProvider) throws Exception {
 
         http
-<<<<<<< Updated upstream
-            .authenticationProvider(authProvider)
-            .authorizeHttpRequests(auth -> auth
-                // Recursos públicos
-                .requestMatchers(
-                    "/login",
-                    "/register",
-                    "/forgot-password",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**",
-                    "/assets/**",
-                    "/webjars/**"
-                ).permitAll()
-                // Ruta raíz redirige a login
-                .requestMatchers("/").permitAll()
-                // Rutas específicas por rol
-                    .requestMatchers("/dashboard/**").hasAnyRole("CLIENT")
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/view/**").hasAnyRole("ADMIN", "EMPLOYEE")
-                    .requestMatchers("/employee/**").hasRole("EMPLOYEE")
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .permitAll()
-            )
-            .exceptionHandling(exc -> exc
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.sendRedirect("/error");
-                })
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
-                .permitAll()
-            );
-=======
                 .authenticationProvider(authProvider)
                 .authorizeHttpRequests(auth -> auth
                         // Recursos públicos
@@ -148,7 +105,6 @@ public class SecurityConfig {
                                 response.sendRedirect("/error")
                         )
                 );
->>>>>>> Stashed changes
 
         return http.build();
     }

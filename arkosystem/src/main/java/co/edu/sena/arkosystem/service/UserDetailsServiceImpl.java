@@ -18,17 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Users user = repositoryUser.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
 
-<<<<<<< Updated upstream
-        String roleName = user.getRole() != null ? user.getRole().getName() : "ROLE_CLIENT";
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority(roleName))
-        );
-=======
         // ✅ Ahora devolvemos nuestra clase UserDetailsImpl
         return new UserDetailsImpl(user);
->>>>>>> Stashed changes
     }
 }
