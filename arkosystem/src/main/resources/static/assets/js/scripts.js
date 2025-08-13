@@ -1,3 +1,4 @@
+
 function formatNumber(num) {
     return num.toLocaleString('es-CO');
 }
@@ -459,3 +460,53 @@ function showMessage(message, type) {
         setTimeout(() => alertDiv.remove(), 500);
     }, 3000);
 }
+
+// ... (código JavaScript anterior para gestionar el carrito) ...
+
+// Event listener para el botón de registrar venta
+btnProcessSale.addEventListener('click', async () => {
+    if (Object.keys(cart).length === 0) {
+        alert('No hay productos en la venta para registrar.');
+        return;
+    }
+
+    const client = document.getElementById('clientSelect').value;
+    if (!client) {
+        alert('Por favor, seleccione un cliente.');
+        return;
+    }
+
+    const saleData = {
+        client: client,
+        paymentMethod: document.getElementById('paymentMethod').value,
+        items: Object.values(cart),
+        total: parseFloat(totalAmountSpan.textContent.substring(1))
+    };
+
+    try {
+        const response = await fetch('/view/process-sale', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(saleData)
+        });
+
+        const result = await response.text();
+
+        if (response.ok) {
+            alert('¡Venta registrada con éxito!');
+
+            // Limpiar el carrito y la UI después de registrar la venta
+            cart = {};
+            renderCart();
+            document.getElementById('clientSelect').value = '';
+        } else {
+            alert('Error: ' + result);
+        }
+
+    } catch (error) {
+        console.error('Error al registrar la venta:', error);
+        alert('Ocurrió un error inesperado al registrar la venta.');
+    }
+});
