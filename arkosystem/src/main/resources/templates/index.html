@@ -8,14 +8,12 @@
   <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Tu archivo JavaScript principal -->
   <script th:src="@{/assets/js/scripts.js}" defer></script>
 </head>
 <body>
   <div layout:fragment="content">
     <div class="content-wrapper">
 
-      <!-- Sección de bienvenida mejorada -->
       <div class="welcome-section-improved animate__animated animate__fadeInDown">
         <div class="welcome-icon">
           <i class="fas fa-tools"></i>
@@ -40,7 +38,6 @@
         </div>
       </div>
 
-      <!-- Breadcrumb -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 class="page-title">Panel de Control</h1>
@@ -54,7 +51,6 @@
         </nav>
       </div>
 
-      <!-- Tarjetas resumen mejoradas -->
       <div class="row g-4 mb-4">
         <div class="col-6 col-xl-3">
           <div class="card border-0 shadow h-100 stats-card-improved animate__animated animate__fadeInUp">
@@ -69,7 +65,7 @@
                 <p class="stats-label">Ventas Hoy</p>
                 <h4 class="stats-value">
                   <span class="currency">$</span>
-                  <span class="counter" data-target="1250000" th:data-target="${ventasHoy ?: '1250000'}">0</span>
+                  <span class="counter" th:data-target="${ventasHoy ?: '1250000'}">0</span>
                 </h4>
                 <div class="stats-trend positive">
                   <i class="fas fa-arrow-up"></i>
@@ -97,10 +93,7 @@
               </div>
               <div class="stats-content">
                 <p class="stats-label">Clientes Registrados</p>
-                <h4 class="stats-value">
-                  <span class="counter" th:data-target="${clientCount}"
-                        th:text="${clientCount}"></span>
-                </h4>
+                <h4 class="stats-value" th:text="${clientCount}"></h4>
                 <div class="stats-trend positive">
                   <i class="fas fa-user-plus"></i>
                   <span>+5 este mes</span>
@@ -126,10 +119,7 @@
               </div>
               <div class="stats-content">
                 <p class="stats-label">Productos en Inventario</p>
-                <h4 class="stats-value">
-                  <span class="counter" th:data-target="${productCount}"
-                        th:text="${productCount}"></span>
-                </h4>
+                <h4 class="stats-value" th:text="${productCount}"></h4>
                 <div class="stats-trend neutral">
                   <i class="fas fa-box"></i>
                   <span>92% disponible</span>
@@ -155,13 +145,10 @@
               </div>
               <div class="stats-content">
                 <p class="stats-label">Productos con Stock Bajo</p>
-                <h4 class="stats-value text-danger">
-                  <span class="counter" th:data-target="${lowStockCount}"
-                        th:text="${lowStockCount}"></span>
-                </h4>
-                <div class="stats-trend negative">
+                <h4 class="stats-value text-danger" th:text="${lowStockCount}"></h4>
+                <div class="stats-trend negative" th:if="${lowStockCount > 0}">
                   <i class="fas fa-exclamation-triangle"></i>
-                  <span th:if="${lowStockCount > 0}"> Requiere atención inmediata</span>
+                  <span>Requiere atención inmediata</span>
                 </div>
               </div>
               <div class="stats-action">
@@ -174,41 +161,12 @@
         </div>
       </div>
 
-      <!-- Sección de acceso rápido -->
       <div class="row g-4 mb-4">
-        <div class="col-lg-8">
-          <!-- Gráfica de ventas -->
-          <div class="card border-0 shadow chart-card-improved animate__animated animate__fadeIn">
-            <div class="card-header bg-white border-0 pb-0">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h3 class="card-title mb-1">
-                    <i class="fas fa-chart-line text-primary me-2"></i>
-                    Ventas de la Semana
-                  </h3>
-                  <p class="card-subtitle text-muted mb-0">Comparativa con la semana anterior</p>
-                </div>
-                <div class="chart-period">
-                  <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" class="btn btn-outline-primary active" data-period="week">Semana</button>
-                    <button type="button" class="btn btn-outline-primary" data-period="month">Mes</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-body pt-2">
-              <canvas id="ventasChart" height="300"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <!-- Panel de acciones rápidas -->
+        <div class="col-lg-6">
           <div class="card border-0 shadow quick-access-card animate__animated animate__fadeIn">
             <div class="card-header bg-white border-0">
               <h3 class="card-title mb-0">
-                <i class="fas fa-bolt text-warning me-2"></i>
-                Acceso Rápido
+                <i class="fas fa-bolt text-warning me-2"></i>Acceso Rápido
               </h3>
             </div>
             <div class="card-body">
@@ -223,7 +181,6 @@
                   </div>
                   <i class="fas fa-chevron-right quick-action-arrow"></i>
                 </a>
-
                 <a href="/view/clients" class="quick-action-link">
                   <div class="quick-action-icon bg-success">
                     <i class="fas fa-user-plus"></i>
@@ -234,7 +191,6 @@
                   </div>
                   <i class="fas fa-chevron-right quick-action-arrow"></i>
                 </a>
-
                 <a href="/inventario" class="quick-action-link">
                   <div class="quick-action-icon bg-warning">
                     <i class="fas fa-box-open"></i>
@@ -245,7 +201,6 @@
                   </div>
                   <i class="fas fa-chevron-right quick-action-arrow"></i>
                 </a>
-
                 <a href="/reportes" class="quick-action-link">
                   <div class="quick-action-icon bg-info">
                     <i class="fas fa-chart-bar"></i>
@@ -259,13 +214,13 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Panel de notificaciones -->
-          <div class="card border-0 shadow mt-4 notifications-card animate__animated animate__fadeIn">
+        <div class="col-lg-6">
+          <div class="card border-0 shadow notifications-card animate__animated animate__fadeIn">
             <div class="card-header bg-white border-0">
               <h3 class="card-title mb-0">
-                <i class="fas fa-bell text-info me-2"></i>
-                Notificaciones
+                <i class="fas fa-bell text-info me-2"></i>Notificaciones
                 <span class="badge bg-danger ms-2">3</span>
               </h3>
             </div>
@@ -280,7 +235,6 @@
                     <p th:text="${lowStockCount} + ' productos necesitan reposición'"></p>
                   </div>
                 </div>
-
                 <div class="notification-item">
                   <div class="notification-icon bg-success">
                     <i class="fas fa-shopping-cart"></i>
@@ -291,7 +245,6 @@
                     <small class="text-muted">Hace 1 hora</small>
                   </div>
                 </div>
-
                 <div class="notification-item">
                   <div class="notification-icon bg-primary">
                     <i class="fas fa-user-plus"></i>

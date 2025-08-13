@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -65,9 +64,12 @@ public class ViewSale {
         model.addAttribute("selectedClient", session.getAttribute("selectedClient"));
         model.addAttribute("selectedPayment", session.getAttribute("selectedPayment"));
 
-        double total = cart.stream().mapToDouble(item ->
-                (double) item.get("price") * (int) item.get("quantity")
-        ).sum();
+        // Total como BigDecimal
+        BigDecimal total = cart.stream()
+                .map(item -> ((BigDecimal) item.get("price"))
+                        .multiply(BigDecimal.valueOf((int) item.get("quantity"))))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         model.addAttribute("total", total);
 
         return "ViewSale/Sales";
@@ -81,7 +83,7 @@ public class ViewSale {
             @RequestParam(required = false) Long productId,
             @RequestParam(required = false) Integer quantity,
             HttpSession session,
-            @AuthenticationPrincipal  UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             RedirectAttributes redirectAttrs
     ) {
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
@@ -95,13 +97,18 @@ public class ViewSale {
             if ("add".equals(action) && productId != null && quantity != null) {
                 Inventory product = productRepository.findById(productId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
                 if (product.getAvailableQuantity() < quantity) {
-                    throw new RuntimeException("Stock insuficiente para el producto: " + product.getName());
+                    redirectAttrs.addFlashAttribute("error",
+                            "Stock insuficiente para el producto: " + product.getName() +
+                                    ". Disponible: " + product.getAvailableQuantity());
+                    return "redirect:/view/sales";
                 }
+
                 Map<String, Object> item = new HashMap<>();
                 item.put("id", product.getId());
                 item.put("name", product.getName());
-                item.put("price", product.getPrice());
+                item.put("price", product.getPrice()); // BigDecimal
                 item.put("quantity", quantity);
                 cart.add(item);
 
@@ -125,12 +132,10 @@ public class ViewSale {
                 Employee employee = employeeRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new RuntimeException("Empleado no encontrado para el usuario: " + user.getId()));
 
+                // Calcular total con BigDecimal
                 BigDecimal total = cart.stream()
-                        .map(itemCart -> {
-                            BigDecimal price = new BigDecimal(itemCart.get("price").toString());
-                            Integer quantityInteger = (Integer) itemCart.get("quantity");
-                            return price.multiply(BigDecimal.valueOf(quantityInteger));
-                        })
+                        .map(item -> ((BigDecimal) item.get("price"))
+                                .multiply(BigDecimal.valueOf((int) item.get("quantity"))))
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 Sale newSale = new Sale();

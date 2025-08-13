@@ -44,7 +44,9 @@
 
         <!-- Buscador -->
         <div class="mb-3">
-            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre...">
+            <form method="get" action="/view/employee">
+                <input type="text" id="searchInput" name="search" class="form-control" placeholder="Buscar por nombre..." th:value="${search}">
+            </form>
         </div>
 
         <!-- Contenedor principal -->
