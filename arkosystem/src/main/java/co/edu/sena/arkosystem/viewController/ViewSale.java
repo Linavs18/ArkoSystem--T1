@@ -2,20 +2,10 @@ package co.edu.sena.arkosystem.viewController;
 
 import co.edu.sena.arkosystem.model.*;
 import co.edu.sena.arkosystem.repository.*;
-import co.edu.sena.arkosystem.security.UserDetailsImpl;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -23,14 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/view")
+@RequestMapping("/view/sales")
 public class ViewSale {
 
     @Autowired private RepositorySale saleRepository;
@@ -40,96 +28,95 @@ public class ViewSale {
     @Autowired private RepositoryUser userRepository;
     @Autowired private RepositoryEmployee employeeRepository;
 
-    @GetMapping("/sales")
-    public String listSales(Model model, HttpSession session,
-                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @GetMapping
+    public String listSales(Model model, HttpSession session) {
+        model.addAttribute("activePage", "sales");
+        model.addAttribute("clients", clientsRepository.findAll());
+        model.addAttribute("products", productRepository.findAll()
+                .stream()
+                .filter(p -> p.getAvailableQuantity() > 0)
+                .collect(Collectors.toList()));
+        model.addAttribute("employees", employeeRepository.findAll());
 
-        // Verificación obligatoria de autenticación
-        if (userDetails == null) {
-            return "redirect:/login";
-        }
+        List<Map<String, Object>> cart = getCart(session);
+        model.addAttribute("cart", cart);
+        model.addAttribute("total", calculateTotal(cart));
 
-            List<Inventory> availableProducts = productRepository.findAll()
-                    .stream()
-                    .filter(p -> p.getAvailableQuantity() > 0)
-                    .collect(Collectors.toList());
+        model.addAttribute("selectedClient", session.getAttribute("selectedClient"));
+        model.addAttribute("selectedEmployee", session.getAttribute("selectedEmployee"));
+        model.addAttribute("selectedPayment", session.getAttribute("selectedPayment"));
 
-            List<Employee> employees = employeeRepository.findAll();
-
-            model.addAttribute("clients", allClients);
-            model.addAttribute("products", availableProducts);
-            model.addAttribute("employees", employees);
-
-
+        model.addAttribute("recentSales", saleRepository.findAll()
+                .stream()
+                .sorted((a, b) -> b.getSaleDate().compareTo(a.getSaleDate()))
+                .limit(10)
+                .collect(Collectors.toList()));
 
         return "ViewSale/Sales";
     }
 
-    @PostMapping("/sales")
-    @Transactional
-    public String handleSale(
-            @RequestParam(required = false) String action,
+    @PostMapping
+    public String handleAction(
+            @RequestParam String action,
             @RequestParam(required = false) Long clientId,
             @RequestParam(required = false) Long employeeId,
             @RequestParam(required = false) String paymentMethod,
             @RequestParam(required = false) Long productId,
             @RequestParam(required = false) Integer quantity,
             HttpSession session,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            RedirectAttributes ra,
+            HttpServletRequest request) {
+        try {
+            if (clientId != null) session.setAttribute("selectedClient", clientId);
+            if (employeeId != null) session.setAttribute("selectedEmployee", employeeId);
+            if (paymentMethod != null && !paymentMethod.isEmpty()) session.setAttribute("selectedPayment", paymentMethod);
 
-
-            switch (action != null ? action : "") {
-                case "add": return handleAddToCart(productId, quantity, cart, session, redirectAttrs);
-                case "remove": return handleRemoveFromCart(productId, cart, session, redirectAttrs);
-                case "clear": return handleClearCart(session, redirectAttrs);
-                case "register": return handleRegisterSale(cart, clientId, employeeId, paymentMethod, session, userDetails, redirectAttrs);
-                default: redirectAttrs.addFlashAttribute("error", "Acción no válida");
+            switch (action) {
+                case "add":
+                    return addToCart(productId, quantity, session, ra);
+                case "remove":
+                    return removeFromCart(productId, session, ra);
+                case "clear":
+                    return clearCart(session, ra);
+                case "register":
+                    return registerSale(session, ra, request);
+                default:
+                    ra.addFlashAttribute("error", "Acción no válida");
+                    return "redirect:/view/sales";
             }
-
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("error", "Error: " + e.getMessage());
+            e.printStackTrace(); // para depuración en consola
+            ra.addFlashAttribute("error", "Ocurrió un error: " + e.getMessage());
+            return "redirect:/view/sales";
         }
-
-        return "redirect:/view/sales";
     }
 
-    private String handleAddToCart(Long productId, Integer quantity, List<Map<String, Object>> cart,
-                                 HttpSession session, RedirectAttributes redirectAttrs) {
+    private String addToCart(Long productId, Integer quantity, HttpSession session, RedirectAttributes ra) {
         if (productId == null || quantity == null || quantity <= 0) {
-            redirectAttrs.addFlashAttribute("error", "Datos de producto inválidos");
+            ra.addFlashAttribute("error", "Datos inválidos para añadir producto");
             return "redirect:/view/sales";
         }
 
-        Optional<Inventory> productOpt = productRepository.findById(productId);
-        if (!productOpt.isPresent()) {
-            redirectAttrs.addFlashAttribute("error", "Producto no encontrado");
-            return "redirect:/view/sales";
-        }
-
-        Inventory product = productOpt.get();
+        Inventory product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
         if (product.getAvailableQuantity() < quantity) {
-            redirectAttrs.addFlashAttribute("error",
-                    "Stock insuficiente para " + product.getName() +
-                            ". Disponible: " + product.getAvailableQuantity());
+            ra.addFlashAttribute("error", "Stock insuficiente. Disponible: " + product.getAvailableQuantity());
             return "redirect:/view/sales";
         }
 
-        Optional<Map<String, Object>> existingItem = cart.stream()
-                .filter(item -> productId.equals(item.get("id")))
+        List<Map<String, Object>> cart = getCart(session);
+        Optional<Map<String, Object>> existing = cart.stream()
+                .filter(i -> i.get("id").equals(productId))
                 .findFirst();
 
-        if (existingItem.isPresent()) {
-            Map<String, Object> item = existingItem.get();
-            int newQuantity = (Integer) item.get("quantity") + quantity;
-
-            if (newQuantity > product.getAvailableQuantity()) {
-                redirectAttrs.addFlashAttribute("error",
-                        "No se puede agregar más cantidad. Stock disponible: " + product.getAvailableQuantity());
+        if (existing.isPresent()) {
+            int newQty = (Integer) existing.get().get("quantity") + quantity;
+            if (newQty > product.getAvailableQuantity()) {
+                ra.addFlashAttribute("error", "No hay suficiente stock");
                 return "redirect:/view/sales";
             }
-
-            item.put("quantity", newQuantity);
+            existing.get().put("quantity", newQty);
         } else {
             Map<String, Object> item = new HashMap<>();
             item.put("id", product.getId());
@@ -140,107 +127,115 @@ public class ViewSale {
         }
 
         session.setAttribute("cart", cart);
-        redirectAttrs.addFlashAttribute("success", "Producto agregado al carrito");
+        ra.addFlashAttribute("success", "Producto agregado");
         return "redirect:/view/sales";
     }
 
-    private String handleRemoveFromCart(Long productId, List<Map<String, Object>> cart,
-                                      HttpSession session, RedirectAttributes redirectAttrs) {
-        if (productId == null) {
-            redirectAttrs.addFlashAttribute("error", "ID de producto inválido");
-            return "redirect:/view/sales";
-        }
-
-        boolean removed = cart.removeIf(item -> productId.equals(item.get("id")));
-
-        if (removed) {
+    private String removeFromCart(Long productId, HttpSession session, RedirectAttributes ra) {
+        List<Map<String, Object>> cart = getCart(session);
+        if (cart.removeIf(i -> i.get("id").equals(productId))) {
             session.setAttribute("cart", cart);
-            redirectAttrs.addFlashAttribute("success", "Producto eliminado del carrito");
+            ra.addFlashAttribute("success", "Producto eliminado");
         } else {
-            redirectAttrs.addFlashAttribute("error", "Producto no encontrado en el carrito");
+            ra.addFlashAttribute("error", "Producto no encontrado en el carrito");
         }
-
         return "redirect:/view/sales";
     }
 
-    private String handleClearCart(HttpSession session, RedirectAttributes redirectAttrs) {
+    private String clearCart(HttpSession session, RedirectAttributes ra) {
         session.setAttribute("cart", new ArrayList<>());
-        redirectAttrs.addFlashAttribute("success", "Carrito vaciado");
+        ra.addFlashAttribute("success", "Carrito vacío");
         return "redirect:/view/sales";
     }
 
     @Transactional
-    private String handleRegisterSale(List<Map<String, Object>> cart, Long clientId, Long employeeId,
-                                    String paymentMethod, HttpSession session, UserDetailsImpl userDetails,
-                                    RedirectAttributes redirectAttrs) {
+    private String registerSale(HttpSession session, RedirectAttributes ra, HttpServletRequest request) {
 
-        if (cart.isEmpty()) throw new RuntimeException("No hay productos en el carrito");
-        if (clientId == null) throw new RuntimeException("Debe seleccionar un cliente");
-        if (paymentMethod == null || paymentMethod.isEmpty()) throw new RuntimeException("Debe seleccionar un método de pago");
+        try {
+            List<Map<String, Object>> cart = getCart(session);
+            if (cart.isEmpty()) {
+                ra.addFlashAttribute("error", "El carrito está vacío");
+                return "redirect:/view/sales";
+            }
 
-        Optional<Clients> clientOpt = clientsRepository.findById(clientId);
-        if (!clientOpt.isPresent()) throw new RuntimeException("Cliente no encontrado");
 
-        Employee employee = null;
-        if (employeeId != null) {
-            employee = employeeRepository.findById(employeeId)
+
+            Long clientId = (Long) session.getAttribute("selectedClient");
+            String paymentMethod = (String) session.getAttribute("selectedPayment");
+
+            if (clientId == null) {
+                ra.addFlashAttribute("error", "Debe seleccionar un cliente");
+                return "redirect:/view/sales";
+            }
+            if (paymentMethod == null || paymentMethod.isEmpty()) {
+                ra.addFlashAttribute("error", "Debe seleccionar un método de pago");
+                return "redirect:/view/sales";
+            }
+
+            String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
+            Users user = userRepository.findByEmail(emailUsuario)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            Employee employee = employeeRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-        } else {
-            Optional<Users> userOpt = userRepository.findByEmail(userDetails.getUsername());
-            if (userOpt.isPresent()) {
-                employee = employeeRepository.findByUserId(userOpt.get().getId()).orElse(null);
+
+            Clients client = clientsRepository.findById(clientId)
+                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+            BigDecimal total = calculateTotal(cart);
+
+
+
+
+            Sale sale = new Sale();
+            sale.setClient(client);
+            sale.setEmployee(employee);
+            sale.setSaleDate(LocalDateTime.now());
+            sale.setPaymentMethod(paymentMethod);
+            sale.setStatus("COMPLETED");
+            sale.setTotal(total);
+
+            saleRepository.save(sale);
+
+            for (Map<String, Object> item : cart) {
+                Inventory product = productRepository.findById((Long) item.get("id"))
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+                if (product.getAvailableQuantity() < (Integer) item.get("quantity")) {
+                    throw new RuntimeException("Stock insuficiente para " + product.getName());
+                }
+
+                SaleDetails detail = new SaleDetails();
+                detail.setSale(sale);
+                detail.setProduct(product);
+                detail.setQuantity((Integer) item.get("quantity"));
+                detail.setUnitPrice((BigDecimal) item.get("price"));
+
+                saleDetailsRepository.save(detail);
+
+                product.setAvailableQuantity(product.getAvailableQuantity() - (Integer) item.get("quantity"));
+                productRepository.save(product);
+
+
             }
-            if (employee == null) throw new RuntimeException("No se pudo determinar el empleado");
+
+            session.removeAttribute("cart");
+            session.removeAttribute("selectedClient");
+            session.removeAttribute("selectedEmployee");
+            session.removeAttribute("selectedPayment");
+
+
+
+            ra.addFlashAttribute("success", "Venta registrada con éxito. ID: " + sale.getId());
+            return "redirect:/view/sales";
+        } catch (Exception e) {
+            e.printStackTrace();
+            ra.addFlashAttribute("error", "Error al registrar la venta: " + e.getMessage());
+            return "redirect:/view/sales";
         }
-
-        BigDecimal total = calculateCartTotal(cart);
-
-        Sale newSale = new Sale();
-        newSale.setClient(clientOpt.get());
-        newSale.setEmployee(employee);
-        newSale.setSaleDate(LocalDateTime.now());
-        newSale.setTotal(total);
-        newSale.setPaymentMethod(paymentMethod);
-        newSale.setStatus("COMPLETED");
-
-        Sale savedSale = saleRepository.save(newSale);
-
-        for (Map<String, Object> item : cart) {
-            Long productId = (Long) item.get("id");
-            Integer itemQuantity = (Integer) item.get("quantity");
-            BigDecimal itemPrice = (BigDecimal) item.get("price");
-
-            Inventory product = productRepository.findById(productId)
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-            if (product.getAvailableQuantity() < itemQuantity) {
-                throw new RuntimeException("Stock insuficiente para " + product.getName());
-            }
-
-            SaleDetails saleDetail = new SaleDetails();
-            saleDetail.setSale(savedSale);
-            saleDetail.setProduct(product);
-            saleDetail.setQuantity(itemQuantity);
-            saleDetail.setUnitPrice(itemPrice);
-            saleDetailsRepository.save(saleDetail);
-
-            product.setAvailableQuantity(product.getAvailableQuantity() - itemQuantity);
-            productRepository.save(product);
-        }
-
-        session.setAttribute("cart", new ArrayList<>());
-        session.removeAttribute("selectedClient");
-        session.removeAttribute("selectedEmployee");
-        session.removeAttribute("selectedPayment");
-
-        redirectAttrs.addFlashAttribute("success",
-                "Venta registrada correctamente. ID: " + savedSale.getId() + " - Total: $" + total);
-
-        return "redirect:/view/sales";
     }
 
     @SuppressWarnings("unchecked")
-    private List<Map<String, Object>> getCartFromSession(HttpSession session) {
+    private List<Map<String, Object>> getCart(HttpSession session) {
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
         if (cart == null) {
             cart = new ArrayList<>();
@@ -249,9 +244,9 @@ public class ViewSale {
         return cart;
     }
 
-    private BigDecimal calculateCartTotal(List<Map<String, Object>> cart) {
+    private BigDecimal calculateTotal(List<Map<String, Object>> cart) {
         return cart.stream()
-                .map(item -> ((BigDecimal) item.get("price")).multiply(BigDecimal.valueOf((Integer) item.get("quantity"))))
+                .map(i -> ((BigDecimal) i.get("price")).multiply(BigDecimal.valueOf((Integer) i.get("quantity"))))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
