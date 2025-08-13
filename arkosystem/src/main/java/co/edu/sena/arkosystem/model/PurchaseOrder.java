@@ -1,5 +1,7 @@
 package co.edu.sena.arkosystem.model;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +22,7 @@ public class PurchaseOrder {
     @Column(name = "order_date")
     private LocalDateTime orderDate = LocalDateTime.now();
 
-    private double total;
+    private BigDecimal total;
     private String status;
 
     // GETTERS AND SETTERS
@@ -57,11 +59,11 @@ public class PurchaseOrder {
         this.orderDate = orderDate;
     }
 
-    public double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 

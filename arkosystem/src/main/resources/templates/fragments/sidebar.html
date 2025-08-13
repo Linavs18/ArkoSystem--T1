@@ -7,14 +7,13 @@
     <ul class="nav flex-column px-2">
       <!-- Dashboard - Solo CLIENT -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'home'} ? ' active' : ''">
-
-        <a th:href="@{/dashboard}" class="nav-link-custom"
+          th:classappend="${activePage == 'dashboard'} ? ' active' : ''"
            sec:authorize="hasAnyRole('CLIENT','EMPLOYEE')">
-          <i class="fas fa-tachometer-alt me-2"></i>Home
+        <a th:href="@{/dashboard}" class="nav-link-custom">
+          <i class="fas fa-tachometer-alt me-2"></i>Dashboard
         </a>
-
-        <!-- Solo para admin -->
+      </li>
+      <li class="nav-item mb-2">
         <a th:href="@{/}" class="nav-link-custom"
            sec:authorize="hasRole('ADMIN')">
           <i class="fas fa-tachometer-alt me-2"></i>Panel de Control

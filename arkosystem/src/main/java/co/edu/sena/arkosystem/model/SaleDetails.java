@@ -1,6 +1,8 @@
 package co.edu.sena.arkosystem.model;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "sale_details")
 public class SaleDetails {
@@ -19,10 +21,10 @@ public class SaleDetails {
     private int quantity;
 
     @Column(name = "unit_price")
-    private double unitPrice;
+    private BigDecimal unitPrice;
 
     @Column(name = "subtotal", insertable = false, updatable = false)
-    private double subtotal;
+    private BigDecimal subtotal;
 
     // GETTERS AND SETTERS
 
@@ -58,19 +60,19 @@ public class SaleDetails {
         this.quantity = quantity;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
-    public double getSubtotal() {
+    public BigDecimal getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(double subtotal) {
+    public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
     }
 }
