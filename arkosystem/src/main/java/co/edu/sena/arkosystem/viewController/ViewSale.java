@@ -4,11 +4,11 @@ import co.edu.sena.arkosystem.model.*;
 import co.edu.sena.arkosystem.repository.*;
 import co.edu.sena.arkosystem.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -43,12 +43,14 @@ public class ViewSale {
         model.addAttribute("clientNames", allClients.stream().map(Clients::getName).collect(Collectors.toList()));
         model.addAttribute("products", availableProducts);
 
-        // Recuperar carrito de sesión
+        // Carrito
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
-        }
+        if (cart == null) cart = new ArrayList<>();
         model.addAttribute("cart", cart);
+
+        // Cliente y pago seleccionados
+        model.addAttribute("selectedClient", session.getAttribute("selectedClient"));
+        model.addAttribute("selectedPayment", session.getAttribute("selectedPayment"));
 
         double total = cart.stream().mapToDouble(item ->
                 (double) item.get("price") * (int) item.get("quantity")
@@ -66,15 +68,17 @@ public class ViewSale {
             @RequestParam(required = false) Long productId,
             @RequestParam(required = false) Integer quantity,
             HttpSession session,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            Model model
+            @AuthenticationPrincipal  UserDetailsImpl userDetails,
+            RedirectAttributes redirectAttrs
     ) {
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
-        }
+        if (cart == null) cart = new ArrayList<>();
 
         try {
+            // Guardar cliente y pago
+            if (client != null && !client.isEmpty()) session.setAttribute("selectedClient", client);
+            if (paymentMethod != null && !paymentMethod.isEmpty()) session.setAttribute("selectedPayment", paymentMethod);
+
             if ("add".equals(action) && productId != null && quantity != null) {
                 Inventory product = productRepository.findById(productId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -87,17 +91,17 @@ public class ViewSale {
                 item.put("price", product.getPrice());
                 item.put("quantity", quantity);
                 cart.add(item);
+
             } else if ("remove".equals(action) && productId != null) {
                 cart.removeIf(p -> p.get("id").equals(productId));
+
             } else if ("clear".equals(action)) {
                 cart.clear();
+
             } else if ("register".equals(action)) {
-                if (cart.isEmpty()) {
-                    throw new RuntimeException("No hay productos en el carrito.");
-                }
-                if (client == null || client.isEmpty()) {
-                    throw new RuntimeException("Debe seleccionar un cliente.");
-                }
+                if (cart.isEmpty()) throw new RuntimeException("No hay productos en el carrito.");
+                if (client == null || client.isEmpty()) throw new RuntimeException("Debe seleccionar un cliente.");
+                if (paymentMethod == null || paymentMethod.isEmpty()) throw new RuntimeException("Debe seleccionar un método de pago.");
 
                 Clients selectedClient = clientsRepository.findByName(client)
                         .orElseThrow(() -> new RuntimeException("Cliente no encontrado: " + client));
@@ -138,9 +142,12 @@ public class ViewSale {
                 }
 
                 cart.clear();
+                session.removeAttribute("selectedClient");
+                session.removeAttribute("selectedPayment");
+                redirectAttrs.addFlashAttribute("success", "Venta registrada correctamente.");
             }
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
         }
 
         session.setAttribute("cart", cart);
