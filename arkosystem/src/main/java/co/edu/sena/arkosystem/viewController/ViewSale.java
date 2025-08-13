@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -129,9 +131,13 @@ public class ViewSale {
                 Employee employee = employeeRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new RuntimeException("Empleado no encontrado para el usuario: " + user.getId()));
 
-                double total = cart.stream().mapToDouble(itemCart ->
-                        (double) itemCart.get("price") * (int) itemCart.get("quantity")
-                ).sum();
+                BigDecimal total = cart.stream()
+                        .map(itemCart -> {
+                            BigDecimal price = new BigDecimal(itemCart.get("price").toString());
+                            Integer quantityInteger = (Integer) itemCart.get("quantity");
+                            return price.multiply(BigDecimal.valueOf(quantityInteger));
+                        })
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 Sale newSale = new Sale();
                 newSale.setClient(selectedClient);
@@ -151,7 +157,7 @@ public class ViewSale {
                     saleDetails.setSale(savedSale);
                     saleDetails.setProduct(product);
                     saleDetails.setQuantity((int) item.get("quantity"));
-                    saleDetails.setUnitPrice((double) item.get("price"));
+                    saleDetails.setUnitPrice((BigDecimal) item.get("price"));
                     saleDetailsRepository.save(saleDetails);
 
                     product.setAvailableQuantity(product.getAvailableQuantity() - (int) item.get("quantity"));
