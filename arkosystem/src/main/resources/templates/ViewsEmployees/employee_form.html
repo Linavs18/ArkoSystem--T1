@@ -47,13 +47,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Rol</label>
-                    <select th:field="*{role}" class="form-control" required>
-                        <option value="">Seleccione un rol</option>
-                        <option th:each="role : ${availableRoles}" 
-                                th:value="${role}" 
-                                th:text="${role}">
-                        </option>
+                    <label class="form-label">Proveedor</label>
+                    <select th:field="*{role}" class="form-select" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        <option th:each="j: ${role}" th:value="${j.id}" th:text="${j.name}"></option>
                     </select>
                 </div>
 

@@ -2,6 +2,8 @@ package co.edu.sena.arkosystem.viewController;
 
 import co.edu.sena.arkosystem.model.Employee;
 import co.edu.sena.arkosystem.repository.RepositoryEmployee;
+import co.edu.sena.arkosystem.repository.RepositoryRole;
+import co.edu.sena.arkosystem.repository.RepositoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,11 @@ public class ViewEmployee {
     @Autowired
     RepositoryEmployee employeeRepository;
 
+    @Autowired
+    RepositoryRole roleRepository;
+
+    @Autowired
+    RepositoryUser userRepository;
     @GetMapping("/view/employee")
     public String list(Model model) {
         model.addAttribute("activePage", "employee");
@@ -27,59 +34,26 @@ public class ViewEmployee {
     public String form(Model model) {
         model.addAttribute("activePage", "employee");
         model.addAttribute("employee", new Employee());
+        model.addAttribute("role", roleRepository.findAll());
+        model.addAttribute("user", userRepository.findAll());
         model.addAttribute("employees", employeeRepository.findAll());
-        model.addAttribute("availableRoles", new String[]{"Administrador", "Empleado", "Cliente"});
         return "ViewsEmployees/employee_form";
     }
 
     @PostMapping("/viewE/save")
     public String save(@ModelAttribute Employee employee, RedirectAttributes ra) {
-        String roleStr = employee.getRole();
-        if (roleStr != null) {
-            switch (roleStr.toUpperCase()) {
-                case "ADMIN":
-                    employee.setRole("4");
-                    break;
-                case "EMPLOYEE":
-                    employee.setRole("7");
-                    break;
-                case "CLIENT":
-                    employee.setRole("6");
-                    break;
-                default:
-                    employee.setRole("7");
-                    break;
-            }
-        }
-        
         employeeRepository.save(employee);
-        ra.addFlashAttribute("success", "Empleado Guardado");
+        ra.addFlashAttribute("success", "Empleado guardado correctamente");
         return "redirect:/view/employee";
     }
 
     @GetMapping("/viewE/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
         Employee employee = employeeRepository.findById(id).orElse(null);
-        if (employee != null) {
-            String roleNum = employee.getRole();
-            if (roleNum != null) {
-                switch (roleNum) {
-                    case "4":
-                        employee.setRole("Administrador");
-                        break;
-                    case "7":
-                        employee.setRole("Empleado");
-                        break;
-                    case "6":
-                        employee.setRole("Cliente");
-                        break;
-                }
-            }
-        }
         model.addAttribute("activePage", "employee");
         model.addAttribute("employee", employee);
-        model.addAttribute("employees", employeeRepository.findAll());
-        model.addAttribute("availableRoles", new String[]{"Administrador", "Empleado", "Cliente"});
+        model.addAttribute("role", roleRepository.findAll());
+        model.addAttribute("user", userRepository.findAll());
         return "ViewsEmployees/employee_form";
     }
 
