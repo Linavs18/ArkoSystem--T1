@@ -45,6 +45,22 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return (request, response, authentication) -> {
+            var authorities = authentication.getAuthorities();
+            String redirectUrl = "/";
+
+            if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                redirectUrl = "/";
+            } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENT")
+                    || a.getAuthority().equals("ROLE_EMPLOYEE"))) {
+                redirectUrl = "/dashboard";
+            }
+
+            response.sendRedirect(redirectUrl);
+        };
+    }
 
     // Configuración de seguridad
     @Bean
@@ -66,7 +82,7 @@ public class SecurityConfig {
                 // Ruta raíz redirige a login
                 .requestMatchers("/").permitAll()
                 // Rutas específicas por rol
-                    .requestMatchers("/dashboard/**").hasAnyRole("CLIENT")
+                    .requestMatchers("/dashboard/**").hasAnyRole("CLIENT", "EMPLOYEE")
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/view/**").hasAnyRole("ADMIN", "EMPLOYEE")
                     .requestMatchers("/employee/**").hasRole("EMPLOYEE")
