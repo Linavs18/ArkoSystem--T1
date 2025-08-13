@@ -65,7 +65,7 @@
                 <div class="col text-center" th:text="${employee.document}"></div>
                 <div class="col text-center client-name" th:text="${employee.name}"></div>
                 <div class="col text-center" th:text="${employee.position}"></div>
-                <div class="col text-center" th:text="${employee.salary}"></div>
+                <div class="col text-center" th:text="'$ ' + ${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"></div>
 
                 <!-- Botones de acción -->
                 <div class="col text-center">
