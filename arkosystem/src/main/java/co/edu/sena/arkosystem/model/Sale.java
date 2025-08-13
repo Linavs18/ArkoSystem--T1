@@ -2,10 +2,7 @@ package co.edu.sena.arkosystem.model;
 
 import jakarta.persistence.*;
 
-<<<<<<< Updated upstream
 import java.math.BigDecimal;
-=======
->>>>>>> Stashed changes
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -9,13 +9,6 @@
 <body>
 <section layout:fragment="content">
 
-
-    <!-- Usuario logueado -->
-    <div class="d-flex justify-content-end align-items-center mb-3">
-        <span>Bienvenido, <strong th:text="${#authentication.name}">Usuario</strong></span>
-    </div>
-
-
     <div class="container mt-4">
         <!-- Mensajes -->
         <div th:if="${success}" class="alert alert-success-sale alert-dismissible fade show" role="alert">

@@ -24,9 +24,14 @@ public class ViewEmployee {
     @Autowired
     RepositoryUser userRepository;
     @GetMapping("/view/employee")
-    public String list(Model model) {
+    public String list(@org.springframework.web.bind.annotation.RequestParam(name = "search", required = false) String search, Model model) {
         model.addAttribute("activePage", "employee");
-        model.addAttribute("employees", employeeRepository.findAll());
+        if (search != null && !search.isEmpty()) {
+            model.addAttribute("employees", employeeRepository.findByNameContainingIgnoreCase(search));
+        } else {
+            model.addAttribute("employees", employeeRepository.findAll());
+        }
+        model.addAttribute("search", search);
         return "ViewsEmployees/Employee";
     }
 

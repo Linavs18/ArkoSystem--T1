@@ -30,10 +30,15 @@ public class ViewClients
     RepositoryClients clientsRepository;
 
     @GetMapping("/view/clients")
-    public String list(Model model)
+    public String list(@org.springframework.web.bind.annotation.RequestParam(name = "search", required = false) String search, Model model)
     {
         model.addAttribute("activePage", "clients");
-        model.addAttribute("clients", clientsRepository.findAll());
+        if (search != null && !search.isEmpty()) {
+            model.addAttribute("clients", clientsRepository.findByNameContainingIgnoreCase(search));
+        } else {
+            model.addAttribute("clients", clientsRepository.findAll());
+        }
+        model.addAttribute("search", search);
         return "ViewsClients/Clients";
     }
 

@@ -20,10 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -136,19 +132,10 @@ public class ViewSale {
                 Employee employee = employeeRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new RuntimeException("Empleado no encontrado para el usuario: " + user.getId()));
 
-<<<<<<< Updated upstream
-                BigDecimal total = cart.stream()
-                        .map(itemCart -> {
-                            BigDecimal price = new BigDecimal(itemCart.get("price").toString());
-                            Integer quantityInteger = (Integer) itemCart.get("quantity");
-                            return price.multiply(BigDecimal.valueOf(quantityInteger));
-                        })
-=======
                 // Calcular total con BigDecimal
                 BigDecimal total = cart.stream()
                         .map(item -> ((BigDecimal) item.get("price"))
                                 .multiply(BigDecimal.valueOf((int) item.get("quantity"))))
->>>>>>> Stashed changes
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 Sale newSale = new Sale();
