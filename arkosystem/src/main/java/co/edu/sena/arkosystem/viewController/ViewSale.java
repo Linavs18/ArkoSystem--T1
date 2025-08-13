@@ -3,6 +3,15 @@ package co.edu.sena.arkosystem.viewController;
 import co.edu.sena.arkosystem.model.*;
 import co.edu.sena.arkosystem.repository.*;
 import co.edu.sena.arkosystem.security.UserDetailsImpl;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,7 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -158,5 +169,98 @@ public class ViewSale {
 
         session.setAttribute("cart", cart);
         return "redirect:/view/sales";
+    }
+
+    @GetMapping("/sales/pdf")
+    public void exportarPDF(HttpServletResponse response) throws Exception {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=Ventas.pdf");
+
+        List<Sale> saleList = saleRepository.findAll();
+        DecimalFormat df = new DecimalFormat("#,###");
+
+        Document document = new Document();
+        PdfWriter.getInstance(document, response.getOutputStream());
+
+        document.open();
+        document.add(new Paragraph("Lista de Ventas"));
+        document.add(new Paragraph(" "));
+
+        PdfPTable table = new PdfPTable(7);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10);
+
+        // Encabezados
+        table.addCell("Id");
+        table.addCell("Fecha");
+        table.addCell("Cliente");
+        table.addCell("Empleado");
+        table.addCell("Productos");
+        table.addCell("Total");
+        table.addCell("Estadoo");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        // Filas
+        for (Sale f : saleList) {
+            table.addCell(f.getId().toString());
+            table.addCell(f.getSaleDate().format(formatter));
+            table.addCell(f.getClient().getName());
+            table.addCell(f.getEmployee().getName());
+            table.addCell(String.valueOf(f.getSaleDetails().size()));
+            table.addCell(df.format(f.getTotal()));
+            table.addCell(f.getStatus());
+
+        }
+
+        document.add(table);
+        document.close();
+    }
+
+    @GetMapping("/sales/excel")
+    public void exportarExcel(HttpServletResponse response) throws Exception {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=Ventas.xlsx");
+
+        List<Sale> saleList = saleRepository.findAll();
+        DecimalFormat df = new DecimalFormat("#,###");
+
+        List<Sale> salesList = saleRepository.findAll();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Inventory");
+
+        // Crear encabezado - Corregido para inventario
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("ID");
+        headerRow.createCell(1).setCellValue("Fecha");
+        headerRow.createCell(2).setCellValue("Cliente");
+        headerRow.createCell(3).setCellValue("Empleado");
+        headerRow.createCell(4).setCellValue("Productos");
+        headerRow.createCell(5).setCellValue("Total");
+        headerRow.createCell(6).setCellValue("Estado");
+
+
+        // Agregar datos
+        int rowNum = 1;
+        for (Sale sale : salesList) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(sale.getId());
+            row.createCell(1).setCellValue(sale.getSaleDate().format(dateFormatter));
+            row.createCell(2).setCellValue(sale.getClient() != null ? sale.getClient().getName() : "N/A");
+            row.createCell(3).setCellValue(sale.getEmployee() != null ? sale.getEmployee().getName() : "N/A");
+            row.createCell(4).setCellValue(sale.getSaleDetails() != null ? sale.getSaleDetails().size() : 0);
+            row.createCell(5).setCellValue(sale.getTotal() != null ? sale.getTotal().doubleValue() : 0.0);
+            row.createCell(6).setCellValue(sale.getStatus());
+        }
+
+        // Autoajustar columnas
+        for (int i = 0; i < 7; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 }
