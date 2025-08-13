@@ -18,28 +18,10 @@ public class ControllerDashboard {
     @Autowired
     private RepositoryInventory inventoryRepository;
 
-    @Autowired
-    private RepositoryUser repoUser;
-
     @GetMapping("/dashboard")
-    public String dashboard(Principal principal, Model model) {
-        String email = principal.getName();
-        Users usuario = repoUser.findByEmail(email).orElse(null);
-
-        if (usuario != null && (
-                usuario.getRole().getName().equals("ROLE_CLIENT") ||
-                        usuario.getRole().getName().equals("ROLE_EMPLOYEE")
-        )) {
-            // Datos del usuario
-            model.addAttribute("usuario", usuario);
-
-            // Datos de inventario
-            List<Inventory> productos = inventoryRepository.findAll();
-            model.addAttribute("productos", productos);
-
-            return "dashboard"; // vista dashboard.html
-        }
-
-        return "redirect:/error";
+    public String dashboard(Model model) {
+        List<Inventory> productos = inventoryRepository.findAll();
+        model.addAttribute("productos", productos);
+        return "dashboard";
     }
 }
