@@ -1,6 +1,7 @@
 package co.edu.sena.arkosystem.model;
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "employees")
 public class Employee {
@@ -8,14 +9,25 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private long document;
-    private String name;
-    private String position;
-    private double salary;
-    private String role;
+
+    @Column(unique = true)
     private String email;
 
-    // GETTERS AND SETTERS
+    private String name;
+
+    private String position;
+
+    private double salary;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Roles role;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
 
     public Long getId() {
         return id;
@@ -31,6 +43,14 @@ public class Employee {
 
     public void setDocument(long document) {
         this.document = document;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {
@@ -57,19 +77,19 @@ public class Employee {
         this.salary = salary;
     }
 
-    public String getRole() {
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    public Roles getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Roles role) {
         this.role = role;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }
