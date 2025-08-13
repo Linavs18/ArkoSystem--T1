@@ -1,6 +1,8 @@
 package co.edu.sena.arkosystem.model;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 
 @Entity
 @Table(name = "employees")
@@ -19,7 +21,7 @@ public class Employee {
 
     private String position;
 
-    private double salary;
+    private BigDecimal salary;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
@@ -69,11 +71,11 @@ public class Employee {
         this.position = position;
     }
 
-    public double getSalary() {
+    public BigDecimal getSalary() {
         return salary;
     }
 
-    public void setSalary(double salary) {
+    public void setSalary(BigDecimal salary) {
         this.salary = salary;
     }
 
