@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="error-container">
+            <img src="/assets/img/Error.png" alt="Error" class="error-image animate__animated animate__fadeIn">
+            <h1 class="error-title animate__animated animate__fadeIn animate__delay-1s">¡Ups! Algo salió mal</h1>
+            <p class="error-message animate__animated animate__fadeIn animate__delay-1s">
+                Ha ocurrido algo inesperado. Por favor, inténtalo de nuevo más tarde.
+            </p>
+            <a href="javascript:history.back()" class="btn-back-error animate__animated animate__fadeIn animate__delay-2s">
+                <i class="fas fa-arrow-left me-2"></i>Volver atrás
+            </a>
+        </div>
+    </div>
+</body>
+</html>
