@@ -1280,3 +1280,36 @@ html, body {
     background-color: #1a223a;
     transform: translateY(-2px);
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.pagination div {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.pagination div.active {
+    background-color: #d4a017;
+    color: white;
+}
+
+.pagination div:not(.active):hover {
+    background-color: #f8f9fa;
+}
+
+.pagination div.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

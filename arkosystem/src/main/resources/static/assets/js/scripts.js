@@ -1,3 +1,4 @@
+
 function formatNumber(num) {
     return num.toLocaleString('es-CO');
 }
@@ -311,6 +312,69 @@ const SalesManager = {
     }
 };
 
+function setupPagination(containerId, itemsPerPage = 8) {
+    const container = document.getElementById(containerId);
+    const rows = container.getElementsByClassName('custom-table-row');
+    const totalPages = Math.ceil(rows.length / itemsPerPage);
+    
+    function showPage(pageNum) {
+        const start = (pageNum - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        
+        Array.from(rows).forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? 'flex' : 'none';
+        });
+        
+        updatePaginationButtons(pageNum);
+    }
+    
+    function updatePaginationButtons(currentPage) {
+        const paginationContainer = document.querySelector('.pagination');
+        paginationContainer.innerHTML = '';
+        
+        // Botón Previous
+        const prevButton = document.createElement('div');
+        prevButton.innerHTML = '«';
+        prevButton.className = currentPage === 1 ? 'disabled' : '';
+        prevButton.onclick = () => currentPage > 1 && showPage(currentPage - 1);
+        paginationContainer.appendChild(prevButton);
+        
+        // Números de página
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('div');
+            pageButton.innerText = i;
+            pageButton.className = i === currentPage ? 'active' : '';
+            pageButton.onclick = () => showPage(i);
+            paginationContainer.appendChild(pageButton);
+        }
+        
+        // Botón Next
+        const nextButton = document.createElement('div');
+        nextButton.innerHTML = '»';
+        nextButton.className = currentPage === totalPages ? 'disabled' : '';
+        nextButton.onclick = () => currentPage < totalPages && showPage(currentPage + 1);
+        paginationContainer.appendChild(nextButton);
+    }
+    
+    // Inicializar paginación
+    if (rows.length > 0) {
+        const paginationDiv = document.createElement('div');
+        paginationDiv.className = 'pagination';
+        container.parentNode.insertBefore(paginationDiv, container.nextSibling);
+        showPage(1);
+    }
+}
+
+// Inicializar paginación cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', function() {
+    const tables = ['clientsTable', 'employeesTable', 'inventoryTable', 'suppliersTable'];
+    tables.forEach(tableId => {
+        if (document.getElementById(tableId)) {
+            setupPagination(tableId);
+        }
+    });
+});
+
 function initializePageSpecificFunctions() {
     const currentPath = window.location.pathname;
     if (currentPath === '/' || currentPath === '/dashboard' || currentPath.includes('index')) {
@@ -459,3 +523,53 @@ function showMessage(message, type) {
         setTimeout(() => alertDiv.remove(), 500);
     }, 3000);
 }
+
+// ... (código JavaScript anterior para gestionar el carrito) ...
+
+// Event listener para el botón de registrar venta
+btnProcessSale.addEventListener('click', async () => {
+    if (Object.keys(cart).length === 0) {
+        alert('No hay productos en la venta para registrar.');
+        return;
+    }
+
+    const client = document.getElementById('clientSelect').value;
+    if (!client) {
+        alert('Por favor, seleccione un cliente.');
+        return;
+    }
+
+    const saleData = {
+        client: client,
+        paymentMethod: document.getElementById('paymentMethod').value,
+        items: Object.values(cart),
+        total: parseFloat(totalAmountSpan.textContent.substring(1))
+    };
+
+    try {
+        const response = await fetch('/view/process-sale', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(saleData)
+        });
+
+        const result = await response.text();
+
+        if (response.ok) {
+            alert('¡Venta registrada con éxito!');
+
+            // Limpiar el carrito y la UI después de registrar la venta
+            cart = {};
+            renderCart();
+            document.getElementById('clientSelect').value = '';
+        } else {
+            alert('Error: ' + result);
+        }
+
+    } catch (error) {
+        console.error('Error al registrar la venta:', error);
+        alert('Ocurrió un error inesperado al registrar la venta.');
+    }
+});
