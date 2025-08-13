@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Configuración - ArkoSystem</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content-wrapper">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <h1 class="mb-4">
+            <i class="fas fa-cog"></i> Configuración
+        </h1>
+
+        <div class="settings-card">
+            <div class="settings-header">
+                <h3><i class="fas fa-lock me-2"></i>Cambiar contraseña</h3>
+            </div>
+            <div class="settings-body">
+                <form th:action="@{/settings/change-password}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña actual</label>
+                        <input type="password" name="currentPassword" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nueva contraseña</label>
+                        <input type="password" name="newPassword" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirmar nueva contraseña</label>
+                        <input type="password" name="confirmPassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-save-settings">
+                        <i class="fas fa-key me-2"></i>Cambiar contraseña
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
