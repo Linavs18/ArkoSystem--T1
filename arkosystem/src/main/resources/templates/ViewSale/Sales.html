@@ -98,18 +98,6 @@
         <h4>Total: $<span id="totalVenta" th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')}"></span></h4>
 
         <!-- Campo para monto pagado y cambio -->
-        <form id="payment-form">
-            <div class="mb-3">
-                <label for="montoPagado" class="form-label">Monto Recibido (Efectivo)</label>
-                <input type="number" class="form-control form-control-lg" id="montoPagado" placeholder="0"
-                       required min="0" step="0.01">
-            </div>
-            <div class="text-center mt-3">
-                <h3 class="fw-bold">Cambio:</h3>
-                <h2 id="cambioCalculado" class="display-5 fw-bold text-success">$0</h2>
-            </div>
-        </form>
-        <!-- Botones -->
         <div>
             <form th:action="@{/view/sales}" method="post" class="d-inline">
                 <input type="hidden" name="action" value="clear">
@@ -149,62 +137,66 @@
 
 </div>
 
-    <!-- Exportaciones -->
-    <div class="mt-2 mb-5">
-        <a th:href="@{/view/sales/pdf}" class="btn btn-danger me-2"><i class="fas fa-file-pdf"></i> Exportar PDF</a>
-        <a th:href="@{/view/sales/excel}" class="btn btn-success"><i class="fas fa-file-excel"></i> Exportar Excel</a>
-    </div>
-
 </section>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const montoPagadoInput = document.getElementById('montoPagado');
-        const cambioInput = document.getElementById('cambioCalculado');
-        const btnRegistrar = document.querySelector('.btn-success'); // tu botón "Registrar venta"
-        const totalVenta = parseFloat(
-            document.getElementById('totalVenta').textContent.replace(/[^0-9]/g, '') // Tomar total y limpiar símbolos
-        );
+    const montoPagadoInput = document.getElementById('montoPagado');
+    const cambioOutput = document.getElementById('cambioCalculado');
+    const btnRegistrar = document.querySelector('#miFormularioVenta .btn-success');
 
-        btnRegistrar.addEventListener('click', function (event) {
-            event.preventDefault(); // Evitamos envío inmediato
+    // Convertir el total de formato 315.000,00 a número
+    const totalVenta = parseFloat(
+        document.getElementById('totalVenta').textContent.replace(/\./g, '').replace(/,/g, '.')
+    );
 
-            const montoPagado = parseFloat(montoPagadoInput.value);
+    // Mostrar cambio en vivo con validación
+    montoPagadoInput.addEventListener('input', function () {
+        const montoPagado = parseFloat(this.value) || 0;
 
-            if (isNaN(montoPagado) || montoPagado <= 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Monto inválido',
-                    text: 'Debe ingresar un monto pagado en efectivo.'
-                });
-                return;
-            }
+        if (montoPagado < totalVenta) {
+            cambioOutput.textContent = '$0';
+            return; // No muestra cambio si es menor
+        }
 
-            if (montoPagado < totalVenta) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Monto insuficiente',
-                    text: 'El monto pagado es menor que el total de la venta.'
-                });
-                return;
-            }
-
-            const cambio = montoPagado - totalVenta;
-            cambioInput.value = cambio.toLocaleString('es-CO');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Pago recibido',
-                html: `<b>Total:</b> $${totalVenta.toLocaleString('es-CO')}<br>
-                       <b>Monto pagado:</b> $${montoPagado.toLocaleString('es-CO')}<br>
-                       <b>Cambio:</b> $${cambio.toLocaleString('es-CO')}`,
-                confirmButtonText: 'Registrar venta'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('miFormularioVenta').submit();
-                }
-            });
+        const cambio = montoPagado - totalVenta;
+        cambioOutput.textContent = cambio.toLocaleString('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0
         });
     });
+
+    // Al presionar registrar
+    btnRegistrar.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        const montoPagado = parseFloat(montoPagadoInput.value) || 0;
+
+        if (montoPagado < totalVenta) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Monto insuficiente',
+                text: 'El monto pagado es menor que el total de la venta.'
+            });
+            return;
+        }
+
+        const cambio = montoPagado - totalVenta;
+        Swal.fire({
+            icon: 'success',
+            title: 'Pago recibido',
+            html: `<b>Total:</b> $${totalVenta.toLocaleString('es-CO')}<br>
+                   <b>Monto pagado:</b> $${montoPagado.toLocaleString('es-CO')}<br>
+                   <b>Cambio:</b> $${cambio.toLocaleString('es-CO')}`,
+            confirmButtonText: 'Registrar venta'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('miFormularioVenta').submit();
+            }
+        });
+    });
+});
+
 </script>
 
 </body>
