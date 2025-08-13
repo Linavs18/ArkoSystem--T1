@@ -1313,3 +1313,81 @@ html, body {
     cursor: not-allowed;
     opacity: 0.5;
 }
+
+.btn-warning-sale {
+    background-color: #d4a017;
+    color: white;
+    font-weight: 500;
+    border: none;
+}
+.btn-warning-sale:hover {
+    background-color: #c18f0f;
+    color: white;
+}
+.btn-success-sale {
+    background-color: #28a745;
+    color: white;
+    font-weight: 500;
+    border: none;
+}
+.btn-success-sale:hover {
+    background-color: #218838;
+    color: white;
+}
+.btn-danger-sale {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+.btn-danger-sale:hover {
+    background-color: #b02a37;
+    color: white;
+}
+
+.card-sale {
+    border-radius: 10px;
+    overflow: hidden;
+}
+.card-header-sale {
+    background-color: #d4a017;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.custom-table-container-sale {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.custom-table-header-sale {
+    background-color: #d4a017;
+    color: white;
+    font-weight: bold;
+    padding: 12px 0;
+}
+.custom-table-row-sale {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+.custom-table-row-sale:hover {
+    background-color: #f9f9f9;
+}
+
+.alert-success-sale {
+    background-color: #d1e7dd;
+    border: 1px solid #badbcc;
+    color: #0f5132;
+}
+.alert-danger-sale {
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    color: #842029;
+}
+
+.total-container-sale {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
