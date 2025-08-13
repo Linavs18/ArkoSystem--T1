@@ -9,11 +9,10 @@
 <body>
 <section layout:fragment="content">
 
-    <!-- Usuario logueado -->
-    <div class="d-flex justify-content-end align-items-center mb-3">
-        <span>Bienvenido, <strong th:text="${#authentication.name}">Usuario</strong></span>
-    </div>
-
+        <!-- Usuario logueado -->
+        <div class="d-flex justify-content-end align-items-center mb-3">
+            <span>Bienvenido, <strong th:text="${#authentication.name}">Usuario</strong></span>
+        </div>
     <div class="container mt-4">
 
         <!-- Mensajes -->
@@ -117,19 +116,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Script para registrar venta automáticamente -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const registerBtn = document.querySelector("form input[value='register']")?.closest("form");
-            if(registerBtn){
-                registerBtn.addEventListener("submit", function() {
-                    alert("Venta registrada con éxito");
-                });
-            }
-        });
-    </script>
-
 </section>
 </body>
 </html>
