@@ -78,7 +78,24 @@ public class ViewSale {
             // Guardar cliente y pago
             if (client != null && !client.isEmpty()) session.setAttribute("selectedClient", client);
             if (paymentMethod != null && !paymentMethod.isEmpty()) session.setAttribute("selectedPayment", paymentMethod);
+            if ("add".equals(action) && productId != null && quantity != null) {
+                Inventory product = productRepository.findById(productId)
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
+                if (product.getAvailableQuantity() < quantity) {
+                    redirectAttrs.addFlashAttribute("error",
+                            "Stock insuficiente para el producto: " + product.getName() +
+                                    ". Disponible: " + product.getAvailableQuantity());
+                    return "redirect:/view/sales";
+                }
+
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", product.getId());
+                item.put("name", product.getName());
+                item.put("price", product.getPrice());
+                item.put("quantity", quantity);
+                cart.add(item);
+            }
             if ("add".equals(action) && productId != null && quantity != null) {
                 Inventory product = productRepository.findById(productId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -153,4 +170,5 @@ public class ViewSale {
         session.setAttribute("cart", cart);
         return "redirect:/view/sales";
     }
+
 }
