@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -54,9 +57,12 @@ public class ViewSale {
         model.addAttribute("selectedClient", session.getAttribute("selectedClient"));
         model.addAttribute("selectedPayment", session.getAttribute("selectedPayment"));
 
-        double total = cart.stream().mapToDouble(item ->
-                (double) item.get("price") * (int) item.get("quantity")
-        ).sum();
+        // Total como BigDecimal
+        BigDecimal total = cart.stream()
+                .map(item -> ((BigDecimal) item.get("price"))
+                        .multiply(BigDecimal.valueOf((int) item.get("quantity"))))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         model.addAttribute("total", total);
 
         return "ViewSale/Sales";
@@ -70,7 +76,7 @@ public class ViewSale {
             @RequestParam(required = false) Long productId,
             @RequestParam(required = false) Integer quantity,
             HttpSession session,
-            @AuthenticationPrincipal  UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             RedirectAttributes redirectAttrs
     ) {
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
@@ -80,6 +86,7 @@ public class ViewSale {
             // Guardar cliente y pago
             if (client != null && !client.isEmpty()) session.setAttribute("selectedClient", client);
             if (paymentMethod != null && !paymentMethod.isEmpty()) session.setAttribute("selectedPayment", paymentMethod);
+
             if ("add".equals(action) && productId != null && quantity != null) {
                 Inventory product = productRepository.findById(productId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -94,20 +101,7 @@ public class ViewSale {
                 Map<String, Object> item = new HashMap<>();
                 item.put("id", product.getId());
                 item.put("name", product.getName());
-                item.put("price", product.getPrice());
-                item.put("quantity", quantity);
-                cart.add(item);
-            }
-            if ("add".equals(action) && productId != null && quantity != null) {
-                Inventory product = productRepository.findById(productId)
-                        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-                if (product.getAvailableQuantity() < quantity) {
-                    throw new RuntimeException("Stock insuficiente para el producto: " + product.getName());
-                }
-                Map<String, Object> item = new HashMap<>();
-                item.put("id", product.getId());
-                item.put("name", product.getName());
-                item.put("price", product.getPrice());
+                item.put("price", product.getPrice()); // BigDecimal
                 item.put("quantity", quantity);
                 cart.add(item);
 
@@ -131,12 +125,19 @@ public class ViewSale {
                 Employee employee = employeeRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new RuntimeException("Empleado no encontrado para el usuario: " + user.getId()));
 
+<<<<<<< Updated upstream
                 BigDecimal total = cart.stream()
                         .map(itemCart -> {
                             BigDecimal price = new BigDecimal(itemCart.get("price").toString());
                             Integer quantityInteger = (Integer) itemCart.get("quantity");
                             return price.multiply(BigDecimal.valueOf(quantityInteger));
                         })
+=======
+                // Calcular total con BigDecimal
+                BigDecimal total = cart.stream()
+                        .map(item -> ((BigDecimal) item.get("price"))
+                                .multiply(BigDecimal.valueOf((int) item.get("quantity"))))
+>>>>>>> Stashed changes
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 Sale newSale = new Sale();
@@ -176,5 +177,4 @@ public class ViewSale {
         session.setAttribute("cart", cart);
         return "redirect:/view/sales";
     }
-
 }
