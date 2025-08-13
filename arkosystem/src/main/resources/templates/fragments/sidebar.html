@@ -8,7 +8,7 @@
       <!-- Dashboard - Solo CLIENT -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'dashboard'} ? ' active' : ''"
-           sec:authorize="hasAnyRole('CLIENT','EMPLOYEE')">
+           sec:authorize="hasAnyRole('CLIENT')">
         <a th:href="@{/dashboard}" class="nav-link-custom">
           <i class="fas fa-tachometer-alt me-2"></i>Dashboard
         </a>
