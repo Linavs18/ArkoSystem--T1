@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,7 +44,7 @@ public class ControllerInventory {
 
     @PostMapping
     public Inventory createInventoryItem(@RequestParam("name") String name,
-                                         @RequestParam("price") Double price,
+                                         @RequestParam("price") BigDecimal price,
                                          @RequestParam("category_id") Long categoryId,
                                          @RequestParam("available_quantity") Integer availableQuantity,
                                          @RequestParam(value = "min_stock", required = false) Integer minStock,
@@ -76,7 +77,7 @@ public class ControllerInventory {
     @PutMapping("/{id}")
     public Inventory updateInventoryItem(@PathVariable Long id,
                                          @RequestParam("name") String name,
-                                         @RequestParam("price") Double price,
+                                         @RequestParam("price") BigDecimal price,
                                          @RequestParam("category_id") Long categoryId,
                                          @RequestParam("available_quantity") Integer availableQuantity,
                                          @RequestParam(value = "min_stock", required = false) Integer minStock,
