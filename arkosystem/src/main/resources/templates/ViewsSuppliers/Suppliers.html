@@ -30,6 +30,13 @@
       </div>
     </div>
 
+    <!-- Buscador -->
+    <div class="mb-3">
+      <form method="get" action="/view/suppliers">
+        <input type="text" id="searchInput" name="search" class="form-control" placeholder="Buscar por nombre..." th:value="${search}">
+      </form>
+    </div>
+
     <!-- Tabla de proveedores -->
     <div id="suppliersTable" class="custom-table-container">
       <!-- Cabecera -->
