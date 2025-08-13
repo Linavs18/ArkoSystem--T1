@@ -4,14 +4,10 @@
       layout:decorate="~{layout/base}">
 <head>
     <title>ArkoSystem</title>
-    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="content-wrapper">
-
         <!-- Notificaciones de éxito -->
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="bi bi-check-circle-fill"></i>
@@ -69,7 +65,7 @@
                 <div class="col text-center" th:text="${employee.document}"></div>
                 <div class="col text-center client-name" th:text="${employee.name}"></div>
                 <div class="col text-center" th:text="${employee.position}"></div>
-                <div class="col text-center" th:text="${employee.salary}"></div>
+                <div class="col text-center" th:text="'$ ' + ${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"></div>
 
                 <!-- Botones de acción -->
                 <div class="col text-center">
@@ -97,22 +93,5 @@
         </div>
     </div>
 </div>
-
-<!-- Script buscador -->
-<script>
-    document.getElementById('searchInput').addEventListener('keyup', function () {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll('#employeesTable .custom-table-row');
-
-        rows.forEach(row => {
-            let nameCell = row.querySelector('.client-name');
-            if (nameCell && nameCell.textContent.toLowerCase().includes(filter)) {
-                row.style.display = 'flex'; // Mostrar fila
-            } else {
-                row.style.display = 'none'; // Ocultar fila
-            }
-        });
-    });
-</script>
 </body>
 </html>

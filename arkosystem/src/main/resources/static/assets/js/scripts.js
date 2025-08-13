@@ -312,6 +312,69 @@ const SalesManager = {
     }
 };
 
+function setupPagination(containerId, itemsPerPage = 8) {
+    const container = document.getElementById(containerId);
+    const rows = container.getElementsByClassName('custom-table-row');
+    const totalPages = Math.ceil(rows.length / itemsPerPage);
+    
+    function showPage(pageNum) {
+        const start = (pageNum - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        
+        Array.from(rows).forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? 'flex' : 'none';
+        });
+        
+        updatePaginationButtons(pageNum);
+    }
+    
+    function updatePaginationButtons(currentPage) {
+        const paginationContainer = document.querySelector('.pagination');
+        paginationContainer.innerHTML = '';
+        
+        // Botón Previous
+        const prevButton = document.createElement('div');
+        prevButton.innerHTML = '«';
+        prevButton.className = currentPage === 1 ? 'disabled' : '';
+        prevButton.onclick = () => currentPage > 1 && showPage(currentPage - 1);
+        paginationContainer.appendChild(prevButton);
+        
+        // Números de página
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('div');
+            pageButton.innerText = i;
+            pageButton.className = i === currentPage ? 'active' : '';
+            pageButton.onclick = () => showPage(i);
+            paginationContainer.appendChild(pageButton);
+        }
+        
+        // Botón Next
+        const nextButton = document.createElement('div');
+        nextButton.innerHTML = '»';
+        nextButton.className = currentPage === totalPages ? 'disabled' : '';
+        nextButton.onclick = () => currentPage < totalPages && showPage(currentPage + 1);
+        paginationContainer.appendChild(nextButton);
+    }
+    
+    // Inicializar paginación
+    if (rows.length > 0) {
+        const paginationDiv = document.createElement('div');
+        paginationDiv.className = 'pagination';
+        container.parentNode.insertBefore(paginationDiv, container.nextSibling);
+        showPage(1);
+    }
+}
+
+// Inicializar paginación cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', function() {
+    const tables = ['clientsTable', 'employeesTable', 'inventoryTable', 'suppliersTable'];
+    tables.forEach(tableId => {
+        if (document.getElementById(tableId)) {
+            setupPagination(tableId);
+        }
+    });
+});
+
 function initializePageSpecificFunctions() {
     const currentPath = window.location.pathname;
     if (currentPath === '/' || currentPath === '/dashboard' || currentPath.includes('index')) {

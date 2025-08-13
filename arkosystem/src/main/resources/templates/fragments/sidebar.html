@@ -7,22 +7,20 @@
     <ul class="nav flex-column px-2">
       <!-- Dashboard - Solo CLIENT -->
       <li class="nav-item mb-2"
-          th:classappend="${activePage == 'dashboard'} ? ' active' : ''"
-          sec:authorize="hasRole('CLIENT')">
-        <a th:href="@{/dashboard}" class="nav-link-custom">
-          <i class="fas fa-home me-2"></i>Dashboard
-        </a>
-      </li>
+          th:classappend="${activePage == 'home'} ? ' active' : ''">
 
-      <!-- Panel de Control - Solo ADMIN y EMPLOYEE -->
-      <li class="nav-item mb-2"
-          th:classappend="${activePage == 'home'} ? ' active' : ''"
-          sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')">
-        <a th:href="@{/}" class="nav-link-custom">
+        <a th:href="@{/dashboard}" class="nav-link-custom"
+           sec:authorize="hasAnyRole('CLIENT','EMPLOYEE')">
+          <i class="fas fa-tachometer-alt me-2"></i>Home
+        </a>
+
+        <!-- Solo para admin -->
+        <a th:href="@{/}" class="nav-link-custom"
+           sec:authorize="hasRole('ADMIN')">
           <i class="fas fa-tachometer-alt me-2"></i>Panel de Control
         </a>
       </li>
-      
+
       <!-- Ventas - Solo ADMIN y EMPLOYEE -->
       <li class="nav-item mb-2"
           th:classappend="${activePage == 'sales'} ? ' active' : ''"

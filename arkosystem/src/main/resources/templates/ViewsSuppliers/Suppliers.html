@@ -4,15 +4,10 @@
       layout:decorate="~{layout/base}">
 <head>
   <title>Proveedores - ArkoSystem</title>
-  <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
-  <!-- Añadir Font Awesome para los iconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <div layout:fragment="content">
   <div class="content-wrapper">
-
     <!-- Notificaciones -->
     <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
       <strong>¡Éxito!</strong> <span th:text="${success}"></span>
@@ -50,7 +45,7 @@
       <!-- Filas -->
       <div th:each="supplier : ${suppliers}" class="row custom-table-row m-0 align-items-center">
         <div class="col text-center" th:text="${supplier.id}"></div>
-        <div class="col text-center" th:text="${supplier.name}"></div>
+        <div class="col text-center client-name" th:text="${supplier.name}"></div>
         <div class="col text-center" th:text="${supplier.phone}"></div>
         <div class="col text-center" th:text="${supplier.address}"></div>
         <div class="col text-center" th:text="${supplier.email}"></div>
@@ -82,52 +77,5 @@
     </div>
   </div>
 </div>
-
-<style>
-  .custom-table-container {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-top: 10px;
-  }
-
-  .custom-table-header {
-      background-color: #d4a017;
-      color: white;
-      font-weight: bold;
-      padding: 12px 0;
-  }
-
-  .custom-table-row {
-      padding: 14px 0;
-      border-bottom: 1px solid #eee;
-      transition: background-color 0.2s;
-  }
-
-  .custom-table-row:hover {
-      background-color: #f9f9f9;
-  }
-
-  .btn-custom-warning {
-      background-color: #d4a017;
-      color: white;
-      border: none;
-      font-weight: 500;
-  }
-
-  .btn-custom-warning:hover {
-      background-color: #c18f0f;
-      color: white;
-  }
-
-  /* Estilos para los iconos */
-  .btn-sm i {
-      font-size: 0.9rem;
-  }
-  .btn i {
-      margin-right: 0.3rem;
-  }
-</style>
 </body>
 </html>
