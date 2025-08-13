@@ -20,6 +20,13 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
+/**
+ * Controlador REST para la generación de reportes.
+ * <p>
+ * Esta clase proporciona endpoints para generar y exportar diferentes tipos de reportes,
+ * como la lista de productos con bajo stock, en formatos PDF y Excel.
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/reports")
 public class ControllerReports {
@@ -27,6 +34,17 @@ public class ControllerReports {
     @Autowired
     private RepositoryInventory inventoryRepository;
 
+    /**
+     * Exporta la lista de productos con bajo stock en formato PDF.
+     * <p>
+     * Responde a las peticiones GET a "/api/reports/low-stock/pdf".
+     * Genera un documento PDF que contiene una tabla con la información de los productos
+     * cuyo stock disponible es menor o igual a su stock mínimo.
+     * </p>
+     *
+     * @param response El objeto {@link HttpServletResponse} para escribir el contenido del archivo.
+     * @throws Exception Si ocurre un error durante la generación del PDF.
+     */
     @GetMapping("/low-stock/pdf")
     public void exportLowStockPdf(HttpServletResponse response) throws Exception {
         List<Inventory> lowStockList = inventoryRepository.findLowStockItems();
@@ -68,6 +86,17 @@ public class ControllerReports {
         document.close();
     }
 
+    /**
+     * Exporta la lista de productos con bajo stock en formato Excel.
+     * <p>
+     * Responde a las peticiones GET a "/api/reports/low-stock/excel".
+     * Genera un libro de trabajo de Excel (XLSX) con una hoja de cálculo que contiene
+     * los productos cuyo stock disponible es menor o igual a su stock mínimo.
+     * </p>
+     *
+     * @param response El objeto {@link HttpServletResponse} para escribir el contenido del archivo.
+     * @throws IOException Si ocurre un error durante la generación del archivo Excel.
+     */
     @GetMapping("/low-stock/excel")
     public void exportLowStockExcel(HttpServletResponse response) throws IOException {
         List<Inventory> lowStockList = inventoryRepository.findLowStockItems();
