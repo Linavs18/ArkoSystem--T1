@@ -51,7 +51,7 @@
                         <a th:href="@{/login}" class="tab-button">Iniciar sesión</a>
                         <span class="tab-button active">Registrarse</span>
                     </div>
-                    <form class="form-login form-login-register" th:action="@{/register}" th:object="${user}" method="post" autocomplete="off">
+                    <form class="form-login form-login-register login-form" th:action="@{/register}" th:object="${user}" method="post" autocomplete="off">
                         <div class="row">
                             <div class="form-group mb-3 col-lg-12">
                                 <span class="form-icon"><i class="fas fa-user"></i></span>
