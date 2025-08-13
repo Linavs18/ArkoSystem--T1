@@ -77,15 +77,13 @@
         </a>
       </li>
       
-      <!-- Configuración - Solo ADMIN -->
-      <li class="nav-item mb-2"
-          th:classappend="${activePage == 'settings'} ? ' active' : ''"
-          sec:authorize="hasRole('ADMIN')">
-        <a th:href="@{/configuracion}" class="nav-link-custom">
-          <i class="fas fa-tools me-2"></i>Configuración
+      <!-- Mi Cuenta - Visible para todos los usuarios autenticados -->
+      <li class="nav-item mb-2" th:classappend="${activePage == 'settings'} ? ' active' : ''">
+        <a th:href="@{/settings}" class="nav-link-custom">
+          <i class="fas fa-user-cog me-2"></i>Mi cuenta
         </a>
       </li>
-      
+
       <!-- Cerrar sesión - Visible para todos -->
       <li class="nav-item mb-2">
           <form th:action="@{/logout}" method="POST" class="nav-link-custom p-0">
