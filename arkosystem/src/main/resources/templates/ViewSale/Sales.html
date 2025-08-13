@@ -8,53 +8,62 @@
 </head>
 <body>
 <section layout:fragment="content">
+
+        <!-- Usuario logueado -->
+        <div class="d-flex justify-content-end align-items-center mb-3">
+            <span>Bienvenido, <strong th:text="${#authentication.name}">Usuario</strong></span>
+        </div>
     <div class="container mt-4">
 
-        <!-- Mensaje de error -->
+        <!-- Mensajes -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
         <!-- Formulario principal -->
         <form th:action="@{/view/sales}" method="post" class="mb-4">
-            <div class="row">
+            <input type="hidden" name="action" value="add">
+            <div class="row mb-3">
                 <!-- Cliente -->
                 <div class="col-md-4">
                     <label for="client">Cliente:</label>
-                    <select name="client" id="client" class="form-control">
+                    <select name="client" id="client" class="form-control" required>
                         <option value="">Seleccione un cliente</option>
-                        <option th:each="clientName : ${clientNames}" th:value="${clientName}" th:text="${clientName}"></option>
+                        <option th:each="clientName : ${clientNames}"
+                                th:value="${clientName}"
+                                th:text="${clientName}"
+                                th:selected="${clientName == selectedClient}">
+                        </option>
                     </select>
                 </div>
 
                 <!-- Método de pago -->
                 <div class="col-md-4">
                     <label for="paymentMethod">Método de pago:</label>
-                    <select name="paymentMethod" id="paymentMethod" class="form-control">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Tarjeta">Tarjeta</option>
-                        <option value="Transferencia">Transferencia</option>
+                    <select name="paymentMethod" id="paymentMethod" class="form-control" required>
+                        <option value="Efectivo" th:selected="${selectedPayment == 'Efectivo'}">Efectivo</option>
+                        <option value="Tarjeta" th:selected="${selectedPayment == 'Tarjeta'}">Tarjeta</option>
+                        <option value="Transferencia" th:selected="${selectedPayment == 'Transferencia'}">Transferencia</option>
                     </select>
                 </div>
             </div>
-        </form>
 
-        <!-- Productos -->
-        <h4 class="mt-4">Agregar producto</h4>
-        <form th:action="@{/view/sales}" method="post" class="row g-2 align-items-center">
-            <input type="hidden" name="action" value="add">
-            <div class="col-md-6">
-                <select name="productId" class="form-control" required>
-                    <option value="">Seleccione un producto</option>
-                    <option th:each="product : ${products}"
-                            th:value="${product.id}"
-                            th:text="${product.name + ' - $' + product.price}">
-                    </option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <input type="number" name="quantity" class="form-control" min="1" placeholder="Cantidad" required>
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">Añadir</button>
+            <!-- Productos -->
+            <div class="row g-2 align-items-center">
+                <div class="col-md-6">
+                    <select name="productId" class="form-control" required>
+                        <option value="">Seleccione un producto</option>
+                        <option th:each="product : ${products}"
+                                th:value="${product.id}"
+                                th:text="${product.name + ' - $' + product.price}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="quantity" class="form-control" min="1" placeholder="Cantidad" required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Añadir</button>
+                </div>
             </div>
         </form>
 
@@ -100,8 +109,8 @@
                 </form>
                 <form th:action="@{/view/sales}" method="post" class="d-inline">
                     <input type="hidden" name="action" value="register">
-                    <input type="hidden" name="client" th:value="${param.client}">
-                    <input type="hidden" name="paymentMethod" th:value="${param.paymentMethod}">
+                    <input type="hidden" name="client" th:value="${selectedClient}">
+                    <input type="hidden" name="paymentMethod" th:value="${selectedPayment}">
                     <button type="submit" class="btn btn-success">Registrar venta</button>
                 </form>
             </div>
