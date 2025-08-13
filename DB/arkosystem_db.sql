@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.clients: ~7 rows (aproximadamente)
 INSERT INTO `clients` (`id`, `name`, `phone`, `address`, `email`) VALUES
@@ -54,7 +54,8 @@ INSERT INTO `clients` (`id`, `name`, `phone`, `address`, `email`) VALUES
 	(4, 'Martha Lucía Gómez', '315-210-9876', 'Calle 123 #45-67, Cali', NULL),
 	(5, 'Inmobiliaria Santander', '305-098-7654', 'Carrera 27 #89-12, Bucaramanga', NULL),
 	(6, 'Alberto de Jesús Ramírez', '311-987-6543', 'Avenida 15 #23-45, Pereira', NULL),
-	(7, 'Remodelaciones JM S.A.S', '322-876-5432', 'Calle 89 #56-78, Manizales', NULL);
+	(7, 'Remodelaciones JM S.A.S', '322-876-5432', 'Calle 89 #56-78, Manizales', NULL),
+	(14, 'Lina', '', '', 'nosemk9@gmail.com');
 
 -- Volcando estructura para tabla arkosystem_db.employees
 CREATE TABLE IF NOT EXISTS `employees` (
@@ -74,18 +75,16 @@ CREATE TABLE IF NOT EXISTS `employees` (
   KEY `FK_employees_users` (`user_id`),
   CONSTRAINT `FK_employees_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_employees_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.employees: ~8 rows (aproximadamente)
 INSERT INTO `employees` (`id`, `document`, `email`, `name`, `position`, `salary`, `role_id`, `user_id`, `role`) VALUES
-	(1, 1234567890, 'carlos.henao@empresa.com', 'Carlos Alberto Henao', 'Hardware Store Manager', 4200000, 1, 1, NULL),
-	(2, 2345678901, 'miguel.rodri@empresa.com', 'Miguel Ángel Rodríguez', 'Specialized Salesperson', 2600000, 3, 2, NULL),
-	(3, 3456789012, 'rosa.jimenez@empresa.com', 'Rosa María Jiménez', 'Head Cashier', 1400000, 3, 3, NULL),
-	(4, 4567890123, 'jairomorales@empresa.com', 'Jairo Enrique Morales', 'Warehouse Supervisor', 3100000, 3, 4, NULL),
-	(5, 5678901234, 'sandramilena@empresa.com', 'Sandra Milena Vargas', 'Counter Salesperson', 1700000, 3, 5, NULL),
-	(6, 6789012345, 'alvaro.castillo@empresa.com', 'Álvaro Javier Castillo', 'Administrator', 3600000, 3, 6, NULL),
-	(8, 1234, 'pepapig@empresa.com', 'Pepa Pig', 'Cajera', 1500000, 3, 9, NULL),
-	(16, 21324, 'papa.cerdito@empresa.com', 'Papa cerdito', 'Administrador', 3000000, 1, 17, NULL);
+	(2, 2345678901, 'miguel.rodri@empresa.com', 'Miguel Ángel Rodríguez', 'Specialized Salesperson', 2600000, 7, 2, NULL),
+	(4, 4567890123, 'jairomorales@empresa.com', 'Jairo Enrique Morales', 'Warehouse Supervisor', 3100000, 7, 4, NULL),
+	(5, 5678901234, 'sandramilena@empresa.com', 'Sandra Milena Vargas', 'Counter Salesperson', 1700000, 7, 5, NULL),
+	(6, 6789012345, 'alvaro.castillo@empresa.com', 'Álvaro Javier Castillo', 'Administrator', 3600000, 7, 6, NULL),
+	(8, 1234, 'pepapig@empresa.com', 'Pepa Pig', 'Cajera', 1500000, 7, 9, NULL),
+	(25, 13434, 'mamacerdita@empresa.com', 'Mama Cerdita', 'cajera', 2000000, 7, 30, NULL);
 
 -- Volcando estructura para tabla arkosystem_db.inventory
 CREATE TABLE IF NOT EXISTS `inventory` (
@@ -179,16 +178,13 @@ CREATE TABLE IF NOT EXISTS `role` (
   `description` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.role: ~6 rows (aproximadamente)
 INSERT INTO `role` (`id`, `description`, `name`) VALUES
-	(1, 'ADMIN', ''),
-	(2, 'CLIENTE', ''),
-	(3, 'EMPLEADO', ''),
 	(4, 'Administrador del sistema', 'ROLE_ADMIN'),
-	(5, 'Usuario estándar', 'ROLE_USER'),
-	(6, 'Cliente del sistema', 'ROLE_CLIENT');
+	(6, 'Cliente del sistema', 'ROLE_CLIENT'),
+	(7, 'Empleado del sistema', 'ROLE_EMPLOYEE');
 
 -- Volcando estructura para tabla arkosystem_db.sale
 CREATE TABLE IF NOT EXISTS `sale` (
@@ -205,17 +201,17 @@ CREATE TABLE IF NOT EXISTS `sale` (
   CONSTRAINT `sale_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `sale_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `sale_chk_1` CHECK ((`total` >= 0.0))
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.sale: ~7 rows (aproximadamente)
 INSERT INTO `sale` (`id`, `client_id`, `employee_id`, `sale_date`, `total`, `status`, `payment_method`) VALUES
-	(1, 1, 2, '2025-08-06 02:13:18', 1890000, 'COMPLETED', 'TRANSFER'),
-	(2, 2, 5, '2025-08-06 02:13:18', 315000, 'COMPLETED', 'CASH'),
-	(3, 3, 2, '2025-08-06 02:13:18', 925000, 'COMPLETED', 'CREDIT_CARD'),
-	(4, 4, 3, '2025-08-06 02:13:18', 170000, 'PENDING', 'DEBIT_CARD'),
-	(5, 5, 2, '2025-08-06 02:13:18', 540000, 'COMPLETED', 'TRANSFER'),
-	(6, 6, 5, '2025-08-06 02:13:18', 85000, 'COMPLETED', 'CASH'),
-	(7, 7, 3, '2025-08-06 02:13:18', 225000, 'CANCELED', 'CREDIT_CARD');
+	(36, 1, 2, '2025-08-06 07:13:18', 1890000, 'COMPLETED', 'TRANSFER'),
+	(37, 2, 5, '2025-08-06 07:13:18', 315000, 'COMPLETED', 'CASH'),
+	(38, 3, 2, '2025-08-06 07:13:18', 925000, 'COMPLETED', 'CREDIT_CARD'),
+	(39, 4, 4, '2025-08-06 07:13:18', 170000, 'PENDING', 'DEBIT_CARD'),
+	(40, 5, 2, '2025-08-06 07:13:18', 540000, 'COMPLETED', 'TRANSFER'),
+	(41, 6, 5, '2025-08-06 07:13:18', 85000, 'COMPLETED', 'CASH'),
+	(42, 7, 4, '2025-08-06 07:13:18', 225000, 'CANCELED', 'CREDIT_CARD');
 
 -- Volcando estructura para tabla arkosystem_db.sale_details
 CREATE TABLE IF NOT EXISTS `sale_details` (
@@ -235,19 +231,6 @@ CREATE TABLE IF NOT EXISTS `sale_details` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.sale_details: ~12 rows (aproximadamente)
-INSERT INTO `sale_details` (`id`, `sale_id`, `product_id`, `quantity`, `unit_price`) VALUES
-	(1, 1, 3, 50, 18500),
-	(2, 1, 4, 20, 45000),
-	(3, 2, 1, 1, 35000),
-	(4, 2, 2, 1, 280000),
-	(5, 3, 3, 25, 18500),
-	(6, 3, 6, 5, 85000),
-	(7, 4, 5, 10, 12000),
-	(8, 4, 6, 1, 85000),
-	(9, 5, 4, 12, 45000),
-	(10, 6, 6, 1, 85000),
-	(11, 7, 7, 15, 8500),
-	(12, 7, 5, 8, 12000);
 
 -- Volcando estructura para tabla arkosystem_db.suppliers
 CREATE TABLE IF NOT EXISTS `suppliers` (
@@ -277,29 +260,30 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
   `role_id` bigint NOT NULL,
-  `document` varchar(255) DEFAULT NULL,
-  `lastname` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `FK_users_role` (`role_id`),
   CONSTRAINT `FK_users_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla arkosystem_db.users: ~13 rows (aproximadamente)
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `role_id`, `document`, `lastname`) VALUES
-	(1, 'Carlos Alberto Henao', 'carlos.henao@empresa.com', 'password', 1, NULL, NULL),
-	(2, 'Miguel Ángel Rodríguez', 'miguel.rodri@empresa.com', 'password', 3, NULL, NULL),
-	(3, 'Rosa María Jiménez', 'rosa.jimenez@empresa.com', 'password', 3, NULL, NULL),
-	(4, 'Jairo Enrique Morales', 'jairomorales@empresa.com', 'password', 3, NULL, NULL),
-	(5, 'Sandra Milena Vargas', 'sandramilena@empresa.com', 'password', 3, NULL, NULL),
-	(6, 'Álvaro Javier Castillo', 'alvaro.castillo@empresa.com', 'password', 3, NULL, NULL),
-	(7, 'Pedro Antonio Moreno', 'pedro.antonio@gmail.com', 'password', 2, NULL, NULL),
-	(8, 'Martha Lucía Gómez', 'martita123@gmail.com', 'password', 2, NULL, NULL),
-	(9, 'Pepa Pig', 'pepapig@empresa.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 3, NULL, NULL),
-	(17, 'Papa cerdito', 'papa.cerdito@empresa.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 1, NULL, NULL),
-	(24, 'Administrador', 'admin@example.com', '$2a$10$TAl608cGKZO0XrW8FzLdDeKIMk6DV2FFDww6KkHryerjOgmC9.aVS', 4, NULL, NULL),
-	(25, 'Juan Sebastian Rodriguez CRuz', 'Juansecruz9999@gmail.com', '$2a$10$Xa.Yd7tcuzOLHvHHqhaK/.e1/HqLEUH4zoArHDqsbWtIaGW.tIlS6', 5, NULL, NULL),
-	(26, 'Sebaaaas', 'sr1290853@gmail.com', '$2a$10$PdaIUhTb2X2cVtJlttYSpemKV0m7jJ5kA/Gce3945os898NXrLV6a', 6, NULL, NULL);
+-- Volcando datos para la tabla arkosystem_db.users: ~0 rows (aproximadamente)
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role_id`) VALUES
+	(1, 'Carlos Alberto Henao', 'carlos.henao@empresa.com', 'password', 4),
+	(2, 'Miguel Ángel Rodríguez', 'miguel.rodri@empresa.com', 'password', 7),
+	(3, 'Rosa María Jiménez', 'rosa.jimenez@empresa.com', 'password', 7),
+	(4, 'Jairo Enrique Morales', 'jairomorales@empresa.com', 'password', 7),
+	(5, 'Sandra Milena Vargas', 'sandramilena@empresa.com', 'password', 7),
+	(6, 'Álvaro Javier Castillo', 'alvaro.castillo@empresa.com', 'password', 7),
+	(7, 'Pedro Antonio Moreno', 'pedro.antonio@gmail.com', 'password', 7),
+	(8, 'Martha Lucía Gómez', 'martita123@gmail.com', 'password', 7),
+	(9, 'Pepa Pig', 'pepapig@empresa.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 6),
+	(17, 'Papa cerdito', 'papa.cerdito@empresa.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 4),
+	(24, 'Administrador', 'admin@example.com', '$2a$10$TAl608cGKZO0XrW8FzLdDeKIMk6DV2FFDww6KkHryerjOgmC9.aVS', 4),
+	(25, 'Juan Sebastian Rodriguez CRuz', 'Juansecruz9999@gmail.com', '$2a$10$Xa.Yd7tcuzOLHvHHqhaK/.e1/HqLEUH4zoArHDqsbWtIaGW.tIlS6', 7),
+	(26, 'Sebaaaas', 'sr1290853@gmail.com', '$2a$10$PdaIUhTb2X2cVtJlttYSpemKV0m7jJ5kA/Gce3945os898NXrLV6a', 6),
+	(27, 'Lina', 'nosemk9@gmail.com', '$2a$10$QKVZPt9pK.v9CCCZnrIbt.dtgo4WUEcY4ZOJ/vVuJvRMTMg8eApTK', 6),
+	(28, 'Empleado', 'employee@arkosystem.com', '$2a$10$LkzkR3FG8hg9quWo3gJtue2WQ7C8aFsDMYKFECjHEb8n8t4LgzVm.', 7),
+	(30, 'Mama Cerdita', 'mamacerdita@empresa.com', 'password', 7);
 
 -- Volcando estructura para disparador arkosystem_db.after_employee_delete
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
@@ -314,9 +298,10 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `after_user_insert_client` AFTER INSERT ON `users` FOR EACH ROW BEGIN
-    IF NEW.role_id = 2 THEN
-        INSERT INTO clients (user_id, phone, address)
-        VALUES (NEW.id, '', '');
+    -- Si el rol es 2 (CLIENTE), insertar en clients
+    IF NEW.role_id = 6 THEN
+        INSERT INTO clients (id, name, phone, address, email)
+        VALUES (NULL, NEW.name, '', '', NEW.email);
     END IF;
 END//
 DELIMITER ;
@@ -328,14 +313,15 @@ DELIMITER //
 CREATE TRIGGER `before_employee_insert` BEFORE INSERT ON `employees` FOR EACH ROW BEGIN
     DECLARE new_user_id BIGINT;
 
-    -- Si no se pasa user_id, lo creamos
-    IF NEW.user_id IS NULL THEN
-        INSERT INTO users (name, email, password, role_id)
-        VALUES (NEW.name, NEW.email, 'password', NEW.role_id);
+    -- Crear usuario antes de insertar el empleado
+    INSERT INTO users (name, email, password, role_id)
+    VALUES (NEW.name, NEW.email, 'password', NEW.role_id);
 
-        SET new_user_id = LAST_INSERT_ID();
-        SET NEW.user_id = new_user_id;
-    END IF;
+    -- Obtener el ID del nuevo usuario
+    SET new_user_id = LAST_INSERT_ID();
+
+    -- Asignar ese ID al campo user_id del empleado
+    SET NEW.user_id = new_user_id;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
