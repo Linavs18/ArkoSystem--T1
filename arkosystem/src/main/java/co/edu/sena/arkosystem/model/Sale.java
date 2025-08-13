@@ -1,6 +1,8 @@
 package co.edu.sena.arkosystem.model;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class Sale {
     @Column(name = "sale_date")
     private LocalDateTime saleDate = LocalDateTime.now();
 
-    private double total;
+    private BigDecimal total;
     private String status;
 
     @Column(name = "payment_method")
@@ -66,11 +68,11 @@ public class Sale {
         this.employee = employee;
     }
 
-    public double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 

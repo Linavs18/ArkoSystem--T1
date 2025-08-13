@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.clients: ~7 rows (aproximadamente)
 INSERT INTO `clients` (`id`, `name`, `phone`, `address`, `email`) VALUES
@@ -55,7 +55,7 @@ INSERT INTO `clients` (`id`, `name`, `phone`, `address`, `email`) VALUES
 	(5, 'Inmobiliaria Santander', '305-098-7654', 'Carrera 27 #89-12, Bucaramanga', NULL),
 	(6, 'Alberto de Jesús Ramírez', '311-987-6543', 'Avenida 15 #23-45, Pereira', NULL),
 	(7, 'Remodelaciones JM S.A.S', '322-876-5432', 'Calle 89 #56-78, Manizales', NULL),
-	(14, 'Lina', '', '', 'nosemk9@gmail.com');
+	(16, 'lina', '', '', 'hola@gmail.com');
 
 -- Volcando estructura para tabla arkosystem_db.employees
 CREATE TABLE IF NOT EXISTS `employees` (
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `position` varchar(255) DEFAULT NULL,
-  `salary` double NOT NULL,
+  `salary` decimal(38,2) DEFAULT NULL,
   `role_id` bigint NOT NULL,
   `user_id` bigint DEFAULT NULL,
   `role` varchar(255) DEFAULT NULL,
@@ -75,22 +75,20 @@ CREATE TABLE IF NOT EXISTS `employees` (
   KEY `FK_employees_users` (`user_id`),
   CONSTRAINT `FK_employees_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_employees_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.employees: ~8 rows (aproximadamente)
 INSERT INTO `employees` (`id`, `document`, `email`, `name`, `position`, `salary`, `role_id`, `user_id`, `role`) VALUES
-	(2, 2345678901, 'miguel.rodri@empresa.com', 'Miguel Ángel Rodríguez', 'Specialized Salesperson', 2600000, 7, 2, NULL),
-	(4, 4567890123, 'jairomorales@empresa.com', 'Jairo Enrique Morales', 'Warehouse Supervisor', 3100000, 7, 4, NULL),
-	(5, 5678901234, 'sandramilena@empresa.com', 'Sandra Milena Vargas', 'Counter Salesperson', 1700000, 7, 5, NULL),
-	(6, 6789012345, 'alvaro.castillo@empresa.com', 'Álvaro Javier Castillo', 'Administrator', 3600000, 7, 6, NULL),
-	(8, 1234, 'pepapig@empresa.com', 'Pepa Pig', 'Cajera', 1500000, 7, 9, NULL),
-	(25, 13434, 'mamacerdita@empresa.com', 'Mama Cerdita', 'cajera', 2000000, 7, 30, NULL);
+	(2, 2345678901, 'miguel.rodri@empresa.com', 'Miguel Ángel Rodríguez', 'Specialized Salesperson', 2600000.00, 7, 2, NULL),
+	(4, 4567890123, 'jairomorales@empresa.com', 'Jairo Enrique Morales', 'Warehouse Supervisor', 3100000.00, 7, 4, NULL),
+	(5, 5678901234, 'sandramilena@empresa.com', 'Sandra Milena Vargas', 'Counter Salesperson', 1700000.00, 7, 5, NULL),
+	(29, 2323, 'blackcloverq999@gmail.com', 'prueba 2', 'limpiador', 123345656767879.00, 7, 34, NULL);
 
 -- Volcando estructura para tabla arkosystem_db.inventory
 CREATE TABLE IF NOT EXISTS `inventory` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `price` double NOT NULL,
+  `price` decimal(38,2) DEFAULT NULL,
   `category_id` bigint NOT NULL,
   `available_quantity` int NOT NULL,
   `min_stock` int DEFAULT '5',
@@ -105,16 +103,16 @@ CREATE TABLE IF NOT EXISTS `inventory` (
 
 -- Volcando datos para la tabla arkosystem_db.inventory: ~10 rows (aproximadamente)
 INSERT INTO `inventory` (`id`, `name`, `price`, `category_id`, `available_quantity`, `min_stock`, `supplier_id`, `image_url`) VALUES
-	(1, 'Corona 16oz Carpenter Hammer', 35000, 1, 45, 10, 1, '/assets/img/uploads/Caja_vacia.jpg'),
-	(2, 'Makita HP1640 Impact Drill', 280000, 2, 5, 5, 8, '/assets/img/uploads/1754929148514_D_NQ_NP_916306-MCO73835146842_012024-O.webp'),
-	(3, 'Argos Cement x 50kg', 18500, 3, 150, 20, 3, '/assets/img/uploads/Caja_vacia.jpg'),
-	(4, 'Pavco 4" x 6m PVC Pipe', 45000, 4, 80, 15, 4, '/assets/img/uploads/Caja_vacia.jpg'),
-	(5, 'Philips 9W LED Bulb', 12000, 5, 200, 25, 5, '/assets/img/uploads/Caja_vacia.jpg'),
-	(6, 'Pintuco Viniltex White Gallon Paint', 85000, 6, 30, 8, 6, '/assets/img/uploads/Caja_vacia.jpg'),
-	(7, '1" Self-Tapping Screws x100 units', 8500, 7, 120, 20, 7, '/assets/img/uploads/Caja_vacia.jpg'),
-	(12, 'prueba 3', 242453, 4, 20, 54, 11, '/assets/img/uploads/1754930654500_Arkosystemlogo.jpg'),
-	(17, 'telecospio ultra sonico', 2343, 1, 32, 56, 9, '/assets/img/uploads/1754933127816_Elbit-Systems-space-telescope-for-Israels-Ultraviolet-Transient-Astronomy-Satellite-ULTRASAT.webp'),
-	(18, 'pulidora', 2347383, 4, 10, 10, 10, '/assets/img/uploads/1754933650403_Imagen de WhatsApp 2025-03-11 a las 07.32.41_d2d3c8eb.jpg');
+	(1, 'Corona 16oz Carpenter Hammer', 35000.00, 1, 45, 10, 1, '/assets/img/uploads/Caja_vacia.jpg'),
+	(2, 'Makita HP1640 Impact Drill', 280000.00, 2, 5, 5, 8, '/assets/img/uploads/1754929148514_D_NQ_NP_916306-MCO73835146842_012024-O.webp'),
+	(3, 'Argos Cement x 50kg', 18500.00, 3, 150, 20, 3, '/assets/img/uploads/Caja_vacia.jpg'),
+	(4, 'Pavco 4" x 6m PVC Pipe', 45000.00, 4, 80, 15, 4, '/assets/img/uploads/Caja_vacia.jpg'),
+	(5, 'Philips 9W LED Bulb', 12000.00, 5, 200, 25, 5, '/assets/img/uploads/Caja_vacia.jpg'),
+	(6, 'Pintuco Viniltex White Gallon Paint', 85000.00, 6, 30, 8, 6, '/assets/img/uploads/Caja_vacia.jpg'),
+	(7, '1" Self-Tapping Screws x100 units', 8500.00, 7, 120, 20, 7, '/assets/img/uploads/Caja_vacia.jpg'),
+	(12, 'prueba 3', 242453.00, 4, 20, 54, 11, '/assets/img/uploads/1754930654500_Arkosystemlogo.jpg'),
+	(17, 'telecospio ultra sonico', 2343.00, 1, 32, 56, 9, '/assets/img/uploads/1754933127816_Elbit-Systems-space-telescope-for-Israels-Ultraviolet-Transient-Astronomy-Satellite-ULTRASAT.webp'),
+	(18, 'pulidora', 2347383.00, 4, 10, 10, 10, '/assets/img/uploads/1754933650403_Imagen de WhatsApp 2025-03-11 a las 07.32.41_d2d3c8eb.jpg');
 
 -- Volcando estructura para tabla arkosystem_db.order_details
 CREATE TABLE IF NOT EXISTS `order_details` (
@@ -122,8 +120,8 @@ CREATE TABLE IF NOT EXISTS `order_details` (
   `order_id` bigint NOT NULL,
   `product_id` bigint NOT NULL,
   `quantity` int NOT NULL,
-  `unit_price` double NOT NULL,
-  `subtotal` double GENERATED ALWAYS AS ((`quantity` * `unit_price`)) STORED,
+  `unit_price` decimal(20,6) NOT NULL,
+  `subtotal` decimal(20,6) GENERATED ALWAYS AS ((`quantity` * `unit_price`)) STORED,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uk_order_product` (`order_id`,`product_id`) USING BTREE,
   KEY `order_details_ibfk_2` (`product_id`) USING BTREE,
@@ -135,17 +133,17 @@ CREATE TABLE IF NOT EXISTS `order_details` (
 
 -- Volcando datos para la tabla arkosystem_db.order_details: ~11 rows (aproximadamente)
 INSERT INTO `order_details` (`id`, `order_id`, `product_id`, `quantity`, `unit_price`) VALUES
-	(1, 1, 3, 150, 18500),
-	(2, 2, 1, 5, 35000),
-	(3, 2, 2, 1, 280000),
-	(4, 3, 4, 30, 45000),
-	(5, 4, 5, 15, 12000),
-	(6, 4, 7, 10, 8500),
-	(7, 5, 6, 9, 85000),
-	(8, 5, 3, 5, 18500),
-	(9, 6, 1, 3, 35000),
-	(10, 6, 7, 8, 8500),
-	(11, 7, 5, 30, 12000);
+	(1, 1, 3, 150, 18500.000000),
+	(2, 2, 1, 5, 35000.000000),
+	(3, 2, 2, 1, 280000.000000),
+	(4, 3, 4, 30, 45000.000000),
+	(5, 4, 5, 15, 12000.000000),
+	(6, 4, 7, 10, 8500.000000),
+	(7, 5, 6, 9, 85000.000000),
+	(8, 5, 3, 5, 18500.000000),
+	(9, 6, 1, 3, 35000.000000),
+	(10, 6, 7, 8, 8500.000000),
+	(11, 7, 5, 30, 12000.000000);
 
 -- Volcando estructura para tabla arkosystem_db.purchase_order
 CREATE TABLE IF NOT EXISTS `purchase_order` (
@@ -153,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order` (
   `client_id` bigint NOT NULL,
   `employee_id` bigint NOT NULL,
   `order_date` datetime NOT NULL DEFAULT (now()),
-  `total` double NOT NULL,
+  `total` decimal(20,6) NOT NULL DEFAULT (0),
   `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `purchase_order_ibfk_1` (`client_id`),
@@ -164,13 +162,13 @@ CREATE TABLE IF NOT EXISTS `purchase_order` (
 
 -- Volcando datos para la tabla arkosystem_db.purchase_order: ~7 rows (aproximadamente)
 INSERT INTO `purchase_order` (`id`, `client_id`, `employee_id`, `order_date`, `total`, `status`) VALUES
-	(1, 1, 4, '2025-08-05 21:13:39', 2775000, 'DELIVERED'),
-	(2, 2, 4, '2025-08-05 21:13:39', 420000, 'SHIPPED'),
-	(3, 3, 4, '2025-08-05 21:13:39', 1350000, 'PAID'),
-	(4, 4, 4, '2025-08-05 21:13:39', 255000, 'PENDING'),
-	(5, 5, 4, '2025-08-05 21:13:39', 810000, 'DELIVERED'),
-	(6, 6, 4, '2025-08-05 21:13:39', 170000, 'PAID'),
-	(7, 7, 4, '2025-08-05 21:13:39', 360000, 'CANCELED');
+	(1, 1, 4, '2025-08-05 21:13:39', 2775000.000000, 'DELIVERED'),
+	(2, 2, 4, '2025-08-05 21:13:39', 420000.000000, 'SHIPPED'),
+	(3, 3, 4, '2025-08-05 21:13:39', 1350000.000000, 'PAID'),
+	(4, 4, 4, '2025-08-05 21:13:39', 255000.000000, 'PENDING'),
+	(5, 5, 4, '2025-08-05 21:13:39', 810000.000000, 'DELIVERED'),
+	(6, 6, 4, '2025-08-05 21:13:39', 170000.000000, 'PAID'),
+	(7, 7, 4, '2025-08-05 21:13:39', 360000.000000, 'CANCELED');
 
 -- Volcando estructura para tabla arkosystem_db.role
 CREATE TABLE IF NOT EXISTS `role` (
@@ -192,7 +190,7 @@ CREATE TABLE IF NOT EXISTS `sale` (
   `client_id` bigint NOT NULL,
   `employee_id` bigint NOT NULL,
   `sale_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `total` double NOT NULL,
+  `total` decimal(20,6) NOT NULL DEFAULT (0),
   `status` varchar(255) DEFAULT NULL,
   `payment_method` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
@@ -205,13 +203,13 @@ CREATE TABLE IF NOT EXISTS `sale` (
 
 -- Volcando datos para la tabla arkosystem_db.sale: ~7 rows (aproximadamente)
 INSERT INTO `sale` (`id`, `client_id`, `employee_id`, `sale_date`, `total`, `status`, `payment_method`) VALUES
-	(36, 1, 2, '2025-08-06 07:13:18', 1890000, 'COMPLETED', 'TRANSFER'),
-	(37, 2, 5, '2025-08-06 07:13:18', 315000, 'COMPLETED', 'CASH'),
-	(38, 3, 2, '2025-08-06 07:13:18', 925000, 'COMPLETED', 'CREDIT_CARD'),
-	(39, 4, 4, '2025-08-06 07:13:18', 170000, 'PENDING', 'DEBIT_CARD'),
-	(40, 5, 2, '2025-08-06 07:13:18', 540000, 'COMPLETED', 'TRANSFER'),
-	(41, 6, 5, '2025-08-06 07:13:18', 85000, 'COMPLETED', 'CASH'),
-	(42, 7, 4, '2025-08-06 07:13:18', 225000, 'CANCELED', 'CREDIT_CARD');
+	(36, 1, 2, '2025-08-06 07:13:18', 1890000.000000, 'COMPLETED', 'TRANSFER'),
+	(37, 2, 5, '2025-08-06 07:13:18', 315000.000000, 'COMPLETED', 'CASH'),
+	(38, 3, 2, '2025-08-06 07:13:18', 925000.000000, 'COMPLETED', 'CREDIT_CARD'),
+	(39, 4, 4, '2025-08-06 07:13:18', 170000.000000, 'PENDING', 'DEBIT_CARD'),
+	(40, 5, 2, '2025-08-06 07:13:18', 540000.000000, 'COMPLETED', 'TRANSFER'),
+	(41, 6, 5, '2025-08-06 07:13:18', 85000.000000, 'COMPLETED', 'CASH'),
+	(42, 7, 4, '2025-08-06 07:13:18', 225000.000000, 'CANCELED', 'CREDIT_CARD');
 
 -- Volcando estructura para tabla arkosystem_db.sale_details
 CREATE TABLE IF NOT EXISTS `sale_details` (
@@ -219,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `sale_details` (
   `sale_id` bigint NOT NULL,
   `product_id` bigint NOT NULL,
   `quantity` int NOT NULL,
-  `unit_price` double NOT NULL,
+  `unit_price` decimal(20,6) NOT NULL,
   `subtotal` double GENERATED ALWAYS AS ((`quantity` * `unit_price`)) STORED,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_sale_product` (`sale_id`,`product_id`),
@@ -264,26 +262,21 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email` (`email`),
   KEY `FK_users_role` (`role_id`),
   CONSTRAINT `FK_users_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla arkosystem_db.users: ~0 rows (aproximadamente)
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role_id`) VALUES
-	(1, 'Carlos Alberto Henao', 'carlos.henao@empresa.com', 'password', 4),
-	(2, 'Miguel Ángel Rodríguez', 'miguel.rodri@empresa.com', 'password', 7),
-	(3, 'Rosa María Jiménez', 'rosa.jimenez@empresa.com', 'password', 7),
-	(4, 'Jairo Enrique Morales', 'jairomorales@empresa.com', 'password', 7),
-	(5, 'Sandra Milena Vargas', 'sandramilena@empresa.com', 'password', 7),
-	(6, 'Álvaro Javier Castillo', 'alvaro.castillo@empresa.com', 'password', 7),
-	(7, 'Pedro Antonio Moreno', 'pedro.antonio@gmail.com', 'password', 7),
-	(8, 'Martha Lucía Gómez', 'martita123@gmail.com', 'password', 7),
-	(9, 'Pepa Pig', 'pepapig@empresa.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 6),
+	(2, 'Miguel Ángel Rodríguez', 'miguel.rodri@empresa.com', '$2b$10$DP561HfDtrobYdJoMtxNZOH5RNgye1Yjl0C72WvK7pFSG4SffjWSe', 7),
+	(4, 'Jairo Enrique Morales', 'jairomorales@empresa.com', '$2b$10$DP561HfDtrobYdJoMtxNZOH5RNgye1Yjl0C72WvK7pFSG4SffjWSe', 7),
+	(5, 'Sandra Milena Vargas', 'sandramilena@empresa.com', '$2b$10$DP561HfDtrobYdJoMtxNZOH5RNgye1Yjl0C72WvK7pFSG4SffjWSe', 7),
 	(17, 'Papa cerdito', 'papa.cerdito@empresa.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 4),
 	(24, 'Administrador', 'admin@example.com', '$2a$10$TAl608cGKZO0XrW8FzLdDeKIMk6DV2FFDww6KkHryerjOgmC9.aVS', 4),
 	(25, 'Juan Sebastian Rodriguez CRuz', 'Juansecruz9999@gmail.com', '$2a$10$Xa.Yd7tcuzOLHvHHqhaK/.e1/HqLEUH4zoArHDqsbWtIaGW.tIlS6', 7),
 	(26, 'Sebaaaas', 'sr1290853@gmail.com', '$2a$10$PdaIUhTb2X2cVtJlttYSpemKV0m7jJ5kA/Gce3945os898NXrLV6a', 6),
-	(27, 'Lina', 'nosemk9@gmail.com', '$2a$10$QKVZPt9pK.v9CCCZnrIbt.dtgo4WUEcY4ZOJ/vVuJvRMTMg8eApTK', 6),
+	(27, 'Lina', 'nosemk9@gmail.com', '$2a$10$QKVZPt9pK.v9CCCZnrIbt.dtgo4WUEcY4ZOJ/vVuJvRMTMg8eApTK', 7),
 	(28, 'Empleado', 'employee@arkosystem.com', '$2a$10$LkzkR3FG8hg9quWo3gJtue2WQ7C8aFsDMYKFECjHEb8n8t4LgzVm.', 7),
-	(30, 'Mama Cerdita', 'mamacerdita@empresa.com', 'password', 7);
+	(34, 'prueba 2', 'blackcloverq999@gmail.com', '$2b$10$DP561HfDtrobYdJoMtxNZOH5RNgye1Yjl0C72WvK7pFSG4SffjWSe', 7),
+	(35, 'lina', 'hola@gmail.com', '$2a$10$G43jC42SigRaY0RsvIHxFO04mFKkGl.wPBtouHQfVg08XclzwIttm', 6);
 
 -- Volcando estructura para disparador arkosystem_db.after_employee_delete
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
@@ -315,7 +308,7 @@ CREATE TRIGGER `before_employee_insert` BEFORE INSERT ON `employees` FOR EACH RO
 
     -- Crear usuario antes de insertar el empleado
     INSERT INTO users (name, email, password, role_id)
-    VALUES (NEW.name, NEW.email, 'password', NEW.role_id);
+    VALUES (NEW.name, NEW.email, '$2b$10$DP561HfDtrobYdJoMtxNZOH5RNgye1Yjl0C72WvK7pFSG4SffjWSe', NEW.role_id);
 
     -- Obtener el ID del nuevo usuario
     SET new_user_id = LAST_INSERT_ID();
