@@ -3,10 +3,106 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <title>ArkoSystem - Ventas</title>
+    <title>ArkoSystem - Nueva Venta</title>
     <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
     <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <style>
+        /* Estilos para hacer coincidir los bordes con el listado de clientes */
+        .custom-table-container {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+
+        .custom-table-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.75rem;
+            font-weight: bold;
+        }
+
+        .custom-table-row {
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.75rem;
+        }
+
+        .custom-table-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Estilos específicos para el formulario de venta */
+        .product-card {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+        }
+
+        .quantity-control {
+            width: 120px;
+        }
+
+        .total-section {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .search-results {
+            position: absolute;
+            width: 100%;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 0.25rem 0.25rem;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .product-result {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .product-result:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Asegurar que todo el texto sea negro */
+        body, .form-control, .form-select, .table, .card, .alert {
+            color: black !important;
+        }
+
+        /* Estilos para los botones */
+        .btn-custom-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: black;
+        }
+
+        .btn-custom-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: black;
+        }
+
+        /* Estilos para las tarjetas */
+        .card {
+            border: 1px solid #dee2e6;
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content">
@@ -14,302 +110,347 @@
 
         <!-- Notificaciones -->
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            <span th:text="${success}"></span>
+            <strong>¡Éxito!</strong> <span th:text="${success}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
         <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <span th:text="${error}"></span>
+            <strong>Error:</strong> <span th:text="${error}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
         <!-- Encabezado -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="mb-0"><i class="fas fa-cash-register me-2"></i>Ventas</h2>
-            <div>
-                <a th:href="@{/view/sales/pdf}" class="btn btn-custom-warning me-2">
-                    <i class="fas fa-file-pdf me-1"></i> Exportar
-                </a>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-bold">Nueva Venta</h1>
         </div>
 
-        <!-- Botón Nueva Venta debajo del título -->
-        <div class="mb-4">
-            <a th:href="@{/view/sales/form}" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i> Nueva Venta
-            </a>
-        </div>
+        <!-- Formulario de Venta -->
+        <form th:action="@{/view/sales}" method="post" id="saleForm">
+            <div class="row mb-4">
+                <!-- Datos del Cliente -->
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Datos del Cliente</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Seleccionar Cliente *</label>
+                                <select class="form-select" name="clientId" required>
+                                    <option value="">Seleccione un cliente...</option>
+                                    <option th:each="client : ${clients}"
+                                            th:value="${client.id}"
+                                            th:text="${client.name} + ' - ' + ${client.phone}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Tabla de ventas -->
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="custom-table-header">
-                        <tr>
-                            <th class="text-center" style="width: 5%">ID</th>
-                            <th class="text-center" style="width: 12%">Fecha</th>
-                            <th style="width: 20%">Cliente</th>
-                            <th style="width: 20%">Empleado</th>
-                            <th class="text-center" style="width: 8%">Productos</th>
-                            <th class="text-end" style="width: 15%">Total</th>
-                            <th class="text-center" style="width: 10%">Estado</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="sale : ${sales}" class="custom-table-row">
-                            <td class="text-center" th:text="${sale.id}"></td>
-                            <td class="text-center" th:text="${#temporals.format(sale.saleDate, 'dd/MM/yyyy HH:mm')}"></td>
-                            <td class="text-truncate" th:text="${sale.client?.name}" th:title="${sale.client?.name}"></td>
-                            <td class="text-truncate" th:text="${sale.employee?.name}" th:title="${sale.employee?.name}"></td>
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-outline-primary py-1 px-2 product-toggle-btn"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        th:attr="data-bs-target='#products-'+${sale.id},
-                                                    aria-expanded='false',
-                                                    aria-controls='products-'+${sale.id}"
-                                        th:id="'btn-'+${sale.id}">
-                                    <span th:text="${sale.saleDetails?.size() ?: 0}"></span>
-                                    <i class="fas fa-box-open ms-1"></i>
-                                </button>
-                            </td>
-                            <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(sale.total, 1, 'COMMA', 2, 'POINT')}"></td>
-                            <td class="text-center">
-                                    <span class="badge d-inline-block py-1 px-2"
-                                          style="min-width: 85px;"
-                                          th:class="${sale.status == 'Completada'} ? 'bg-success' :
-                                                    (${sale.status == 'Cancelada'} ? 'bg-danger' : 'bg-warning')"
-                                          th:text="${sale.status} ?: 'Pendiente'">
-                                    </span>
-                            </td>
-                        </tr>
-                        <!-- Detalles de productos -->
-                        <tr th:each="sale : ${sales}" class="product-details-row" th:id="'details-'+${sale.id}">
-                            <td colspan="7" class="p-0 border-0">
-                                <div class="collapse" th:id="'products-'+${sale.id}">
-                                    <div class="p-3 bg-light">
-                                        <h5 class="mb-3"><i class="fas fa-boxes me-2"></i>Detalles de Productos</h5>
-                                        <table class="table table-sm table-bordered">
-                                            <thead class="table-secondary">
-                                            <tr>
-                                                <th>Producto</th>
-                                                <th class="text-center">Cantidad</th>
-                                                <th class="text-end">P. Unitario</th>
-                                                <th class="text-end">Subtotal</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr th:each="detail : ${sale.saleDetails}">
-                                                <td th:text="${detail.product?.name} ?: 'N/A'"></td>
-                                                <td class="text-center" th:text="${detail.quantity}"></td>
-                                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(detail.unitPrice, 1, 'COMMA', 2, 'POINT')}"></td>
-                                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(detail.subtotal, 1, 'COMMA', 2, 'POINT')}"></td>
-                                            </tr>
-                                            <tr class="table-active">
-                                                <td colspan="3" class="text-end fw-bold">Total Venta:</td>
-                                                <td class="text-end fw-bold" th:text="'$' + ${#numbers.formatDecimal(sale.total, 1, 'COMMA', 2, 'POINT')}"></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                <!-- Datos de la Venta -->
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Información de Venta</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Vendedor *</label>
+                                <select class="form-select" name="employeeId" required>
+                                    <option value="">Seleccione un vendedor...</option>
+                                    <option th:each="employee : ${employees}"
+                                            th:value="${employee.id}"
+                                            th:text="${employee.name} + ' (' + ${employee.position} + ')'">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Método de Pago *</label>
+                                        <select class="form-select" name="paymentMethod" required>
+                                            <option value="">Seleccione método...</option>
+                                            <option value="CASH">Efectivo</option>
+                                            <option value="CREDIT_CARD">Tarjeta Crédito</option>
+                                            <option value="DEBIT_CARD">Tarjeta Débito</option>
+                                            <option value="TRANSFER">Transferencia</option>
+                                        </select>
                                     </div>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr th:if="${sales?.empty}">
-                            <td colspan="7" class="text-center py-4 text-muted">
-                                <i class="fas fa-info-circle me-2"></i>
-                                No se encontraron ventas registradas
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Fecha</label>
+                                        <input type="text" class="form-control" th:value="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Productos -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Productos</h5>
+                    <button type="button" class="btn btn-custom-warning btn-sm" id="addProductBtn">
+                        <i class="fas fa-plus me-1"></i> Agregar Producto
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Buscador de Productos -->
+                    <div class="search-product mb-4">
+                        <input type="text" id="productSearch" class="form-control" placeholder="Buscar producto por nombre...">
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+
+                    <!-- Tabla de Productos -->
+                    <div class="custom-table-container">
+                        <div class="row custom-table-header m-0">
+                            <div class="col">Producto</div>
+                            <div class="col">Precio Unitario</div>
+                            <div class="col">Cantidad</div>
+                            <div class="col">Subtotal</div>
+                            <div class="col">Acciones</div>
+                        </div>
+
+                        <div id="productsContainer">
+                            <!-- Producto Base (se clonará) -->
+                            <div class="row custom-table-row m-0 align-items-center" id="productTemplate" style="display: none;">
+                                <div class="col">
+                                    <input type="hidden" name="productDetails[0].productId" value="" class="product-id">
+                                    <div class="product-name">Nombre del Producto</div>
+                                    <small class="text-muted product-code">Código: </small>
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control price-input" name="productDetails[0].unitPrice" step="0.01" min="0" readonly>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group quantity-control">
+                                        <button class="btn btn-outline-secondary minus-btn" type="button">-</button>
+                                        <input type="number" class="form-control text-center quantity-input" name="productDetails[0].quantity" value="1" min="1">
+                                        <button class="btn btn-outline-secondary plus-btn" type="button">+</button>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control subtotal-input" readonly>
+                                </div>
+                                <div class="col text-center">
+                                    <button type="button" class="btn btn-danger btn-sm remove-product">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Totales -->
+            <div class="row justify-content-end">
+                <div class="col-md-5">
+                    <div class="total-section">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span id="subtotalAmount">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>IVA (19%):</span>
+                            <span id="taxAmount">$0.00</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="mb-0">Total:</h5>
+                            <h4 class="mb-0" id="totalAmount">$0.00</h4>
+                            <input type="hidden" id="total" name="total" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="d-flex justify-content-end mt-4 gap-3">
+                <button type="reset" class="btn btn-secondary">
+                    Limpiar
+                </button>
+                <button type="submit" class="btn btn-custom-warning">
+                    Registrar Venta
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
-<!-- Scripts necesarios -->
+<!-- Scripts -->
 <script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
-
-<!-- Estilos adicionales -->
-<style>
-    /* Contenedor de tabla personalizado */
-    .table-responsive {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-top: 10px;
-    }
-
-    /* Encabezado de tabla personalizado */
-    .custom-table-header {
-        background-color: #d4a017;
-        color: white;
-        font-weight: bold;
-    }
-
-    /* Filas de tabla personalizadas */
-    .custom-table-row {
-        padding: 14px 0;
-        border-bottom: 1px solid #eee;
-        transition: background-color 0.2s;
-    }
-
-    .custom-table-row:hover {
-        background-color: #f9f9f9;
-    }
-
-    /* Botón Exportar personalizado */
-    .btn-custom-warning {
-        background-color: #d4a017;
-        color: white;
-        border: none;
-        font-weight: 500;
-    }
-
-    .btn-custom-warning:hover {
-        background-color: #c18f0f;
-        color: white;
-    }
-
-    /* Botón Nueva Venta */
-    .btn-primary {
-        background-color: #1e73be;
-        border: none;
-    }
-    .btn-primary:hover {
-        background-color: #155a94;
-    }
-
-    /* Botones de acción */
-    .btn-outline-primary {
-        border-color: #1e73be;
-        color: #1e73be;
-    }
-    .btn-outline-primary:hover {
-        background-color: #1e73be;
-        color: white;
-    }
-    .btn-outline-danger {
-        border-color: #dc3545;
-        color: #dc3545;
-    }
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    /* Botón de productos - estado activo */
-    .btn-outline-primary.active {
-        background-color: #6c757d !important;
-        border-color: #6c757d !important;
-        color: white !important;
-    }
-
-    /* Badges de estado */
-    .badge.bg-success {
-        background-color: #28a745 !important;
-    }
-    .badge.bg-warning {
-        background-color: #d4a017 !important;
-        color: white !important;
-    }
-    .badge.bg-danger {
-        background-color: #dc3545 !important;
-    }
-
-    /* Tooltip dorado */
-    [title]:hover:after {
-        position: absolute;
-        content: attr(title);
-        background: #d4a017;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 4px;
-        z-index: 100;
-        margin-top: -5px;
-        margin-left: 5px;
-        font-size: 0.85rem;
-    }
-
-    /* Fila de detalles de productos */
-    .product-details-row {
-        background-color: #f8f9fa;
-    }
-
-    /* Ocultar detalles por defecto */
-    .collapse:not(.show) {
-        display: none;
-    }
-</style>
-
-<!-- Script para manejar el cambio de color del botón -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Agregar evento a todos los botones de productos
-        const toggleButtons = document.querySelectorAll('.product-toggle-btn');
+        let productIndex = 0;
+        const productsContainer = document.getElementById('productsContainer');
+        const productTemplate = document.getElementById('productTemplate');
+        const productSearch = document.getElementById('productSearch');
+        const searchResults = document.getElementById('searchResults');
 
-        toggleButtons.forEach(button => {
-            // Verificar si el collapse está abierto al cargar la página
-            const targetId = button.getAttribute('data-bs-target');
-            const collapseElement = document.querySelector(targetId);
+        // Obtener productos del servidor
+        const allProducts = /*[[${products}]]*/ [];
 
-            if (collapseElement && collapseElement.classList.contains('show')) {
-                button.classList.add('active');
-                button.style.backgroundColor = '#6c757d';
-                button.style.borderColor = '#6c757d';
-                button.style.color = 'white';
+        // Convertir productos a formato usable
+        const productsData = allProducts.map(product => ({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            code: product.id
+        }));
+
+        // Función para calcular totales
+        function calculateTotals() {
+            let subtotal = 0;
+            document.querySelectorAll('#productsContainer .custom-table-row:not(#productTemplate)').forEach(row => {
+                const price = parseFloat(row.querySelector('.price-input').value) || 0;
+                const quantity = parseInt(row.querySelector('.quantity-input').value) || 0;
+                const subtotalValue = price * quantity;
+                row.querySelector('.subtotal-input').value = '$' + subtotalValue.toFixed(2);
+                subtotal += subtotalValue;
+            });
+
+            const tax = subtotal * 0.19;
+            const total = subtotal + tax;
+
+            document.getElementById('subtotalAmount').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('taxAmount').textContent = '$' + tax.toFixed(2);
+            document.getElementById('totalAmount').textContent = '$' + total.toFixed(2);
+            document.getElementById('total').value = total.toFixed(2);
+        }
+
+        // Buscar productos
+        productSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            if (searchTerm.length < 2) {
+                searchResults.style.display = 'none';
+                return;
             }
 
-            button.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-bs-target');
-                const collapseElement = document.querySelector(targetId);
+            const filteredProducts = productsData.filter(product =>
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.code.toString().includes(searchTerm)
+            );
 
-                // Toggle active class on button
-                this.classList.toggle('active');
+            if (filteredProducts.length > 0) {
+                let resultsHTML = '';
+                filteredProducts.forEach(product => {
+                    resultsHTML += `
+                        <div class="product-result"
+                             data-id="${product.id}"
+                             data-name="${product.name}"
+                             data-price="${product.price}">
+                            ${product.name} - $${parseFloat(product.price).toFixed(2)}
+                        </div>
+                    `;
+                });
+                searchResults.innerHTML = resultsHTML;
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div class="p-2 text-muted">No se encontraron productos</div>';
+                searchResults.style.display = 'block';
+            }
+        });
 
-                // Change button style when collapsed/expanded
-                if (this.classList.contains('active')) {
-                    this.style.backgroundColor = '#6c757d';
-                    this.style.borderColor = '#6c757d';
-                    this.style.color = 'white';
+        // Cerrar resultados al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!productSearch.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Seleccionar producto de los resultados
+        searchResults.addEventListener('click', function(e) {
+            let productElement = e.target;
+            if (!productElement.classList.contains('product-result')) {
+                productElement = productElement.closest('.product-result');
+            }
+
+            if (productElement) {
+                const productId = productElement.getAttribute('data-id');
+                const productName = productElement.getAttribute('data-name');
+                const productPrice = productElement.getAttribute('data-price');
+
+                addProductToSale(productId, productName, productPrice);
+                productSearch.value = '';
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Añadir producto manualmente
+        document.getElementById('addProductBtn').addEventListener('click', function() {
+            addProductToSale('', 'Seleccione un producto', '0');
+        });
+
+        // Función para añadir producto
+        function addProductToSale(id, name, price) {
+            const newProduct = productTemplate.cloneNode(true);
+            newProduct.style.display = 'flex';
+            newProduct.id = 'product-' + productIndex;
+
+            // Actualizar índices y valores
+            const currentProductIndex = productIndex;
+            newProduct.innerHTML = newProduct.innerHTML.replace(/\[0\]/g, `[${currentProductIndex}]`);
+
+            // Establecer valores
+            newProduct.querySelector('.product-id').value = id;
+            newProduct.querySelector('.product-name').textContent = name;
+            newProduct.querySelector('.product-code').textContent = 'Código: ' + (id || 'N/A');
+            newProduct.querySelector('.price-input').value = price;
+            newProduct.querySelector('.subtotal-input').value = '$' + (price * 1).toFixed(2);
+
+            // Agregar al contenedor
+            productsContainer.appendChild(newProduct);
+            productIndex++;
+            calculateTotals();
+        }
+
+        // Eventos delegados para controles de cantidad y eliminación
+        productsContainer.addEventListener('click', function(e) {
+            const row = e.target.closest('.custom-table-row:not(#productTemplate)');
+
+            if (!row) return;
+
+            // Botón +
+            if (e.target.classList.contains('plus-btn')) {
+                const input = row.querySelector('.quantity-input');
+                input.value = parseInt(input.value) + 1;
+                calculateTotals();
+            }
+
+            // Botón -
+            if (e.target.classList.contains('minus-btn')) {
+                const input = row.querySelector('.quantity-input');
+                if (parseInt(input.value) > 1) {
+                    input.value = parseInt(input.value) - 1;
+                    calculateTotals();
+                }
+            }
+
+            // Eliminar producto
+            if (e.target.classList.contains('remove-product') || e.target.closest('.remove-product')) {
+                if (document.querySelectorAll('#productsContainer .custom-table-row:not(#productTemplate)').length > 1) {
+                    row.remove();
+                    calculateTotals();
                 } else {
-                    this.style.backgroundColor = '';
-                    this.style.borderColor = '';
-                    this.style.color = '';
+                    alert('Debe haber al menos un producto en la venta');
                 }
-            });
+            }
         });
 
-        // Manejar eventos de Bootstrap collapse
-        document.querySelectorAll('.collapse').forEach(collapse => {
-            collapse.addEventListener('show.bs.collapse', function() {
-                const id = this.id.replace('products-', '');
-                const button = document.querySelector(`#btn-${id}`);
-                if (button) {
-                    button.classList.add('active');
-                    button.style.backgroundColor = '#6c757d';
-                    button.style.borderColor = '#6c757d';
-                    button.style.color = 'white';
-                }
-            });
-
-            collapse.addEventListener('hide.bs.collapse', function() {
-                const id = this.id.replace('products-', '');
-                const button = document.querySelector(`#btn-${id}`);
-                if (button) {
-                    button.classList.remove('active');
-                    button.style.backgroundColor = '';
-                    button.style.borderColor = '';
-                    button.style.color = '';
-                }
-            });
+        // Cambios en cantidad
+        productsContainer.addEventListener('input', function(e) {
+            if (e.target.classList.contains('quantity-input')) {
+                calculateTotals();
+            }
         });
+
+        // Añadir un producto inicial
+        addProductToSale('', 'Seleccione un producto', '0');
     });
 </script>
 </body>
