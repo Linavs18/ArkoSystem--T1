@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-<head th:replace="~{fragments/head :: head}"></head>
+<head th:replace="~{fragments/head :: head}">
+    <!-- ... otros estilos ... -->
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+</head>
 
 <body class="g-sidenav-show bg-gray-100">
 
@@ -22,5 +25,6 @@
     <script th:src="@{/assets/js/plugins/perfect-scrollbar.min.js}"></script>
     <script th:src="@{/assets/js/plugins/smooth-scrollbar.min.js}"></script>
     <script th:src="@{/assets/js/argon-dashboard.min.js}"></script>
+    <script th:src="@{/assets/js/scripts.js}"></script>
 </body>
 </html>

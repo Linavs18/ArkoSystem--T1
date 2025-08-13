@@ -10,18 +10,19 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class AuthController {
-
     @Autowired private RepositoryUser repoUser;
     @Autowired private RepositoryRole repoRole;
     @Autowired private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
-    public String login() { return "login"; }
+    public String login() { 
+        return "auth/login"; 
+    }
 
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("user", new Users());
-        return "register";
+        return "auth/register";
     }
 
     @PostMapping("/register")
