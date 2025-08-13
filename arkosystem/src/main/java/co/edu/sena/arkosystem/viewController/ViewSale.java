@@ -10,7 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime; // <-- ¡Nuevo import!
+import jakarta.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,94 +27,123 @@ public class ViewSale {
     @Autowired private RepositoryEmployee employeeRepository;
 
     @GetMapping("/sales")
-    public String listSales(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String listSales(Model model, HttpSession session, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         model.addAttribute("activePage", "sales");
 
         if (userDetails != null) {
             model.addAttribute("currentUsername", userDetails.getUsername());
         }
 
-        try {
-            List<Clients> allClients = clientsRepository.findAll();
-            List<Inventory> allProducts = productRepository.findAll();
+        List<Clients> allClients = clientsRepository.findAll();
+        List<Inventory> availableProducts = productRepository.findAll()
+                .stream()
+                .filter(p -> p.getAvailableQuantity() > 0)
+                .collect(Collectors.toList());
 
-            List<String> clientNames = allClients.stream().map(Clients::getName).collect(Collectors.toList());
-            List<Inventory> availableProducts = allProducts.stream().filter(p -> p.getAvailableQuantity() > 0).collect(Collectors.toList());
+        model.addAttribute("clientNames", allClients.stream().map(Clients::getName).collect(Collectors.toList()));
+        model.addAttribute("products", availableProducts);
 
-            model.addAttribute("clientNames", clientNames);
-            model.addAttribute("products", availableProducts);
-
-            return "ViewSale/Sales";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Error al cargar datos: " + e.getMessage());
-            model.addAttribute("clientNames", new ArrayList<>());
-            model.addAttribute("products", new ArrayList<>());
-            return "ViewSale/Sales";
+        // Recuperar carrito de sesión
+        List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
         }
+        model.addAttribute("cart", cart);
+
+        double total = cart.stream().mapToDouble(item ->
+                (double) item.get("price") * (int) item.get("quantity")
+        ).sum();
+        model.addAttribute("total", total);
+
+        return "ViewSale/Sales";
     }
 
-    @PostMapping("/process-sale")
-    @ResponseBody
-    public ResponseEntity<String> processSale(@RequestBody Map<String, Object> saleData, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/sales")
+    public String handleSale(
+            @RequestParam(required = false) String action,
+            @RequestParam(required = false) String client,
+            @RequestParam(required = false) String paymentMethod,
+            @RequestParam(required = false) Long productId,
+            @RequestParam(required = false) Integer quantity,
+            HttpSession session,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Model model
+    ) {
+        List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+
         try {
-            String clientName = (String) saleData.get("client");
-            String paymentMethodStr = (String) saleData.get("paymentMethod");
-            List<Map<String, Object>> items = (List<Map<String, Object>>) saleData.get("items");
-            double total = Double.parseDouble(saleData.get("total").toString());
-
-            if (items == null || items.isEmpty()) {
-                return ResponseEntity.badRequest().body("No hay productos en la venta.");
-            }
-            if (clientName == null || clientName.isEmpty()) {
-                return ResponseEntity.badRequest().body("Debe seleccionar un cliente.");
-            }
-
-            Clients client = clientsRepository.findByName(clientName)
-                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado: " + clientName));
-
-            Users user = userRepository.findByEmail(userDetails.getUsername())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + userDetails.getUsername()));
-
-            Employee employee = employeeRepository.findByUserId(user.getId())
-                    .orElseThrow(() -> new RuntimeException("Empleado no encontrado para el usuario: " + user.getId()));
-
-            Sale newSale = new Sale();
-            newSale.setClient(client);
-            newSale.setSaleDate(LocalDateTime.now()); // <-- ¡Corrección aquí!
-            newSale.setTotal(total);
-            newSale.setPaymentMethod(paymentMethodStr);
-            newSale.setEmployee(employee);
-            newSale.setStatus("COMPLETED");
-
-            Sale savedSale = saleRepository.save(newSale);
-
-            for (Map<String, Object> item : items) {
-                Long productId = Long.valueOf(item.get("id").toString());
-                int quantity = Integer.parseInt(item.get("quantity").toString());
-
-                Inventory product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
+            if ("add".equals(action) && productId != null && quantity != null) {
+                Inventory product = productRepository.findById(productId)
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
                 if (product.getAvailableQuantity() < quantity) {
                     throw new RuntimeException("Stock insuficiente para el producto: " + product.getName());
                 }
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", product.getId());
+                item.put("name", product.getName());
+                item.put("price", product.getPrice());
+                item.put("quantity", quantity);
+                cart.add(item);
+            } else if ("remove".equals(action) && productId != null) {
+                cart.removeIf(p -> p.get("id").equals(productId));
+            } else if ("clear".equals(action)) {
+                cart.clear();
+            } else if ("register".equals(action)) {
+                if (cart.isEmpty()) {
+                    throw new RuntimeException("No hay productos en el carrito.");
+                }
+                if (client == null || client.isEmpty()) {
+                    throw new RuntimeException("Debe seleccionar un cliente.");
+                }
 
-                SaleDetails saleDetails = new SaleDetails();
-                saleDetails.setSale(savedSale);
-                saleDetails.setProduct(product);
-                saleDetails.setQuantity(quantity);
-                saleDetails.setUnitPrice(product.getPrice());
-                saleDetailsRepository.save(saleDetails);
+                Clients selectedClient = clientsRepository.findByName(client)
+                        .orElseThrow(() -> new RuntimeException("Cliente no encontrado: " + client));
 
-                product.setAvailableQuantity(product.getAvailableQuantity() - quantity);
-                productRepository.save(product);
+                Users user = userRepository.findByEmail(userDetails.getUsername())
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + userDetails.getUsername()));
+
+                Employee employee = employeeRepository.findByUserId(user.getId())
+                        .orElseThrow(() -> new RuntimeException("Empleado no encontrado para el usuario: " + user.getId()));
+
+                double total = cart.stream().mapToDouble(itemCart ->
+                        (double) itemCart.get("price") * (int) itemCart.get("quantity")
+                ).sum();
+
+                Sale newSale = new Sale();
+                newSale.setClient(selectedClient);
+                newSale.setSaleDate(LocalDateTime.now());
+                newSale.setTotal(total);
+                newSale.setPaymentMethod(paymentMethod);
+                newSale.setEmployee(employee);
+                newSale.setStatus("COMPLETED");
+
+                Sale savedSale = saleRepository.save(newSale);
+
+                for (Map<String, Object> item : cart) {
+                    Inventory product = productRepository.findById((Long) item.get("id"))
+                            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+                    SaleDetails saleDetails = new SaleDetails();
+                    saleDetails.setSale(savedSale);
+                    saleDetails.setProduct(product);
+                    saleDetails.setQuantity((int) item.get("quantity"));
+                    saleDetails.setUnitPrice((double) item.get("price"));
+                    saleDetailsRepository.save(saleDetails);
+
+                    product.setAvailableQuantity(product.getAvailableQuantity() - (int) item.get("quantity"));
+                    productRepository.save(product);
+                }
+
+                cart.clear();
             }
-
-            return ResponseEntity.ok("Venta registrada con éxito.");
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error al registrar la venta: " + e.getMessage());
+            model.addAttribute("error", e.getMessage());
         }
+
+        session.setAttribute("cart", cart);
+        return "redirect:/view/sales";
     }
 }
