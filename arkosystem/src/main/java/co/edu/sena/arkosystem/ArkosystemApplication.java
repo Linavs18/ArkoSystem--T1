@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-public class DemoApplication {
+public class ArkosystemApplication {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(ArkosystemApplication.class, args);
     }
 
     @Bean

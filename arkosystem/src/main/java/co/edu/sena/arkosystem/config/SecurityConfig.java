@@ -99,16 +99,21 @@ public class SecurityConfig {
             var authorities = authentication.getAuthorities();
             String redirectUrl = "/";
 
-            if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            if (authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
                 redirectUrl = "/";
-            } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENT")
-                    || a.getAuthority().equals("ROLE_EMPLOYEE"))) {
+            } else if (authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENT"))) {
                 redirectUrl = "/dashboard";
+            } else if (authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYEE"))) {
+                redirectUrl = "/view/sales";
             }
 
             response.sendRedirect(redirectUrl);
         };
     }
+
 
     /**
      * Configura la cadena de filtros de seguridad.
@@ -163,6 +168,52 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
+
+
+
+    // Configuración de seguridad
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, DaoAuthenticationProvider authProvider) throws Exception {
+        http
+            .authenticationProvider(authProvider)
+            .authorizeHttpRequests(auth -> auth
+                // Recursos públicos
+                .requestMatchers(
+                    "/login",
+                    "/register",
+                    "/forgot-password",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/assets/**",
+                    "/webjars/**"
+                ).permitAll()
+                // Ruta raíz redirige a login
+                .requestMatchers("/").permitAll()
+                // Rutas específicas por rol
+                    .requestMatchers("/dashboard/**").hasAnyRole("CLIENT")
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/view/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .successHandler(successHandler())
+                .permitAll()
+            )
+            .exceptionHandling(exc -> exc
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.sendRedirect("/error");
+                })
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
+
 
         return http.build();
     }
