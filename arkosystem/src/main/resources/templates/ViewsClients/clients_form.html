@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>ArkoSystem</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="content-wrapper">
+            <h1 class="color: #CFA500;" th:text="${clients.id == null} ? 'Registrar Clientes' : 'Editar Clientes'"></h1>
+
+            <!-- Formulario de guardado -->
+            <form th:action="@{/viewC/save}" th:object="${clients}" method="post" novalidate>
+                <!-- Campo oculto para conservar el ID al editar -->
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" th:field="*{name}" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Telefono</label>
+                    <input type="text" th:field="*{phone}" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Direccion</label>
+                    <input type="text" th:field="*{address}" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" th:field="*{email}" class="form-control" required />
+                </div>
+
+                <!-- Botones -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <button type="submit" class="btn btn-success btn-block">Guardar</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <a th:href="@{/view/clients}" class="btn btn-warning btn-block">Volver</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

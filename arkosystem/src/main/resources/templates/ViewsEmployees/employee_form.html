@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>ArkoSystem</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="content-wrapper">
+            <!-- Título -->
+            <h1 style="color: #CFA500;" th:text="${employee.id == null} ? 'Registrar Empleado' : 'Editar Empleado'"></h1>
+
+            <!-- Formulario de guardado -->
+            <form th:action="@{/viewE/save}" th:object="${employee}" method="post" novalidate>
+                <!-- Campo oculto para conservar el ID al editar -->
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                    <label class="form-label">Documento</label>
+                    <input type="text" th:field="*{document}" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" th:field="*{name}" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" th:field="*{email}" class="form-control" required 
+                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                           title="Por favor ingrese un correo electrónico válido" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Posición</label>
+                    <input type="text" th:field="*{position}" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Salario</label>
+                    <input type="number" th:field="*{salary}" step="0.01" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Proveedor</label>
+                    <select th:field="*{role}" class="form-select" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        <option th:each="j: ${role}" th:value="${j.id}" th:text="${j.name}"></option>
+                    </select>
+                </div>
+
+                <!-- Botones -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <button type="submit" class="btn btn-success btn-block">Guardar</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <a th:href="@{/view/employee}" class="btn btn-warning btn-block">Volver</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Validación de correo electrónico -->
+    <script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const emailInput = document.querySelector('input[type="email"]');
+        const email = emailInput.value;
+        
+        if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+            e.preventDefault();
+            alert('Por favor ingrese un correo electrónico válido');
+            emailInput.focus();
+        }
+    });
+    </script>
+</body>
+</html>

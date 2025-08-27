@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>ArkoSystem - Reportes</title>
+  <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="content-wrapper">
+
+    <!-- Notificaciones -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <span th:text="${success}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <span th:text="${error}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Sección Reporte Bajo Stock -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0" style="color: black;">Reporte - Bajo Stock</h2>
+        <div>
+          <a th:href="@{/api/reports/low-stock/pdf}" class="btn btn-custom-warning me-2">
+              Exportar PDF
+          </a>
+          <a th:href="@{/api/reports/low-stock/excel}" class="btn btn-custom-warning me-2">
+            Exportar Excel
+          </a>
+        </div>
+      </div>
+
+      <div class="custom-table-container mb-4">
+        <div class="row custom-table-header m-0">
+          <div class="col">ID</div>
+          <div class="col">Nombre</div>
+          <div class="col">Precio</div>
+          <div class="col">Stock Disponible</div>
+          <div class="col">Stock Mínimo</div>
+        </div>
+
+        <div th:each="item : ${lowStockList}" class="row custom-table-row m-0 align-items-center">
+          <div class="col" th:text="${item.id}"></div>
+          <div class="col" th:text="${item.name}"></div>
+          <div class="col" th:text="'$ ' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}"></div>
+          <div class="col" th:text="${item.availableQuantity}"></div>
+          <div class="col" th:text="${item.minStock}"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Ventas -->
+    <div class="mt-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0" style="color: black;">Reporte de Ventas</h2>
+        <div>
+          <a th:href="@{/view/sales/pdf}" class="btn btn-custom-warning me-2">
+            Exportar PDF
+          </a>
+          <a th:href="@{/view/sales/excel}" class="btn btn-custom-warning me-2">
+            Exportar Excel
+          </a>
+        </div>
+      </div>
+
+      <!-- Tabla de ventas con franja amarilla -->
+      <div class="custom-table-container mb-4">
+        <div class="row custom-table-header m-0">
+          <div class="col text-center">ID</div>
+          <div class="col text-center">Fecha</div>
+          <div class="col">Cliente</div>
+          <div class="col">Empleado</div>
+          <div class="col text-center">Productos</div>
+          <div class="col text-end">Total</div>
+          <div class="col text-center">Estado</div>
+        </div>
+
+        <div th:each="sale : ${sales}" class="row custom-table-row m-0 align-items-center">
+          <div class="col text-center" th:text="${sale.id}"></div>
+          <div class="col text-center" th:text="${#temporals.format(sale.saleDate, 'dd/MM/yyyy HH:mm')}"></div>
+          <div class="col" th:text="${sale.client?.name}"></div>
+          <div class="col" th:text="${sale.employee?.name}"></div>
+          <div class="col text-center">
+            <button class="btn btn-sm btn-outline-primary py-1 px-2 product-toggle-btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    th:attr="data-bs-target='#products-'+${sale.id},
+                              aria-expanded='false',
+                              aria-controls='products-'+${sale.id}"
+                    th:id="'btn-'+${sale.id}">
+              <span th:text="${sale.saleDetails?.size() ?: 0}"></span>
+            </button>
+          </div>
+          <div class="col text-end" th:text="'$' + ${#numbers.formatDecimal(sale.total, 1, 'COMMA', 2, 'POINT')}"></div>
+          <div class="col text-center">
+            <span class="badge d-inline-block py-1 px-2"
+                  style="min-width: 85px;"
+                  th:class="${sale.status == 'Completada'} ? 'bg-success' :
+                            (${sale.status == 'Cancelada'} ? 'bg-danger' : 'bg-warning')"
+                  th:text="${sale.status} ?: 'Pendiente'">
+            </span>
+          </div>
+        </div>
+
+        <!-- Detalles de productos -->
+        <div th:each="sale : ${sales}" class="row product-details-row m-0" th:id="'details-'+${sale.id}">
+          <div class="col-12 p-0">
+            <div class="collapse" th:id="'products-'+${sale.id}">
+              <div class="p-3 bg-light">
+                <h5 class="mb-3" style="color: black;">Detalles de Productos</h5>
+                <div class="custom-table-container">
+                  <div class="row custom-table-header m-0">
+                    <div class="col">Producto</div>
+                    <div class="col text-center">Cantidad</div>
+                    <div class="col text-end">P. Unitario</div>
+                    <div class="col text-end">Subtotal</div>
+                  </div>
+                  <div th:each="detail : ${sale.saleDetails}" class="row custom-table-row m-0 align-items-center">
+                    <div class="col" th:text="${detail.product?.name} ?: 'Producto eliminado'"></div>
+                    <div class="col text-center" th:text="${detail.quantity}"></div>
+                    <div class="col text-end" th:text="'$' + ${#numbers.formatDecimal(detail.unitPrice, 1, 'COMMA', 2, 'POINT')}"></div>
+                    <div class="col text-end" th:text="'$' + ${#numbers.formatDecimal(detail.subtotal, 1, 'COMMA', 2, 'POINT')}"></div>
+                  </div>
+                  <div class="row custom-table-row m-0 align-items-center" style="background-color: #f8f9fa;">
+                    <div class="col-9 text-end fw-bold">Total Venta:</div>
+                    <div class="col text-end fw-bold" th:text="'$' + ${#numbers.formatDecimal(sale.total, 1, 'COMMA', 2, 'POINT')}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts necesarios -->
+<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Estilos adicionales -->
+<style>
+  /* Contenedor de tabla personalizado */
+  .custom-table-container {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+  }
+
+  /* Encabezado de tabla personalizado */
+  .custom-table-header {
+      background-color: #d4a017;
+      color: white;
+      font-weight: bold;
+      padding: 12px 0;
+  }
+
+  /* Filas de tabla personalizadas */
+  .custom-table-row {
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.2s;
+  }
+
+  .custom-table-row:hover {
+      background-color: #f9f9f9;
+  }
+
+  /* Botón Exportar personalizado */
+  .btn-custom-warning {
+      background-color: #d4a017;
+      color: white;
+      border: none;
+      font-weight: 500;
+  }
+
+  .btn-custom-warning:hover {
+      background-color: #c18f0f;
+      color: white;
+  }
+
+  /* Botones de acción */
+  .btn-outline-primary {
+      border-color: #1e73be;
+      color: #1e73be;
+  }
+  .btn-outline-primary:hover {
+      background-color: #1e73be;
+      color: white;
+  }
+
+  /* Detalles de productos */
+  .product-details-row {
+      background-color: #f8f9fa;
+  }
+
+  /* Badges de estado */
+  .badge.bg-success {
+      background-color: #28a745 !important;
+  }
+  .badge.bg-warning {
+      background-color: #d4a017 !important;
+      color: white !important;
+  }
+  .badge.bg-danger {
+      background-color: #dc3545 !important;
+  }
+
+  /* Espaciado entre secciones */
+  .mb-5 {
+      margin-bottom: 3rem !important;
+  }
+  .mt-5 {
+      margin-top: 3rem !important;
+  }
+
+  /* Texto negro */
+  body, h1, h2, h3, h4, h5, h6,
+  .table, .table th, .table td {
+      color: black;
+  }
+</style>
+
+<!-- Script para manejar el cambio de color del botón -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Agregar evento a todos los botones de productos
+      const toggleButtons = document.querySelectorAll('.product-toggle-btn');
+
+      toggleButtons.forEach(button => {
+          button.addEventListener('click', function() {
+              // Cambiar estilo del botón clickeado
+              if (this.classList.contains('active')) {
+                  this.classList.remove('active');
+                  this.style.backgroundColor = '';
+                  this.style.borderColor = '';
+                  this.style.color = '';
+              } else {
+                  this.classList.add('active');
+                  this.style.backgroundColor = '#6c757d';
+                  this.style.borderColor = '#6c757d';
+                  this.style.color = 'white';
+              }
+          });
+      });
+
+      // Manejar eventos de Bootstrap collapse
+      document.querySelectorAll('.collapse').forEach(collapse => {
+          collapse.addEventListener('show.bs.collapse', function() {
+              const id = this.id.replace('products-', '');
+              const button = document.querySelector(`#btn-${id}`);
+              if (button) {
+                  button.classList.add('active');
+                  button.style.backgroundColor = '#6c757d';
+                  button.style.borderColor = '#6c757d';
+                  button.style.color = 'white';
+              }
+          });
+
+          collapse.addEventListener('hide.bs.collapse', function() {
+              const id = this.id.replace('products-', '');
+              const button = document.querySelector(`#btn-${id}`);
+              if (button) {
+                  button.classList.remove('active');
+                  button.style.backgroundColor = '';
+                  button.style.borderColor = '';
+                  button.style.color = '';
+              }
+          });
+      });
+  });
+</script>
+</body>
+</html>

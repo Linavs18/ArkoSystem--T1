@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>ArkoSystem - Inicio</title>
+  <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script th:src="@{/assets/js/scripts.js}" defer></script>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div class="content-wrapper">
+
+      <div class="welcome-section-improved animate__animated animate__fadeInDown">
+        <div class="welcome-icon">
+          <i class="fas fa-tools"></i>
+        </div>
+        <div class="welcome-content">
+          <h2 class="welcome-title">¡Bienvenido a ArkoSystem!</h2>
+          <p class="welcome-text">Sistema de gestión integral para tu ferretería. Controla inventario, ventas, clientes y más desde un solo lugar.</p>
+          <div class="welcome-stats">
+            <span class="stat-item">
+              <i class="fas fa-chart-line"></i>
+              <strong>Dashboard en tiempo real</strong>
+            </span>
+            <span class="stat-item">
+              <i class="fas fa-shield-alt"></i>
+              <strong>Datos seguros</strong>
+            </span>
+            <span class="stat-item">
+              <i class="fas fa-mobile-alt"></i>
+              <strong>Acceso móvil</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="page-title">Panel de Control</h1>
+          <p class="page-subtitle">Resumen general de tu negocio</p>
+        </div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fas fa-home me-1"></i>Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Panel</li>
+          </ol>
+        </nav>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100 stats-card-improved animate__animated animate__fadeInUp">
+            <div class="card-body">
+              <div class="stats-header">
+                <div class="stats-icon bg-primary">
+                  <i class="fas fa-cash-register"></i>
+                </div>
+                <span class="badge bg-primary stats-badge">Hoy</span>
+              </div>
+              <div class="stats-content">
+                <p class="stats-label">Ventas Hoy</p>
+                <h4 class="stats-value">
+                  <span class="currency">$</span>
+                  <span class="counter" th:data-target="${ventasHoy ?: '1250000'}">0</span>
+                </h4>
+                <div class="stats-trend positive">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+12% vs ayer</span>
+                </div>
+              </div>
+              <div class="stats-progress">
+                <div class="progress">
+                  <div class="progress-bar bg-primary" style="width: 75%"></div>
+                </div>
+                <small>75% del objetivo diario</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100 stats-card-improved animate__animated animate__fadeInUp" style="animation-delay:0.1s;">
+            <div class="card-body">
+              <div class="stats-header">
+                <div class="stats-icon bg-success">
+                  <i class="fas fa-users"></i>
+                </div>
+                <span class="badge bg-success stats-badge">Activos</span>
+              </div>
+              <div class="stats-content">
+                <p class="stats-label">Clientes Registrados</p>
+                <h4 class="stats-value" th:text="${clientCount}"></h4>
+                <div class="stats-trend positive">
+                  <i class="fas fa-user-plus"></i>
+                  <span>+5 este mes</span>
+                </div>
+              </div>
+              <div class="stats-action">
+                <a href="/view/clients" class="btn btn-sm btn-success">
+                  <i class="fas fa-plus me-1"></i>Nuevo Cliente
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100 stats-card-improved animate__animated animate__fadeInUp" style="animation-delay:0.2s;">
+            <div class="card-body">
+              <div class="stats-header">
+                <div class="stats-icon bg-warning">
+                  <i class="fas fa-boxes"></i>
+                </div>
+                <span class="badge bg-warning stats-badge">Stock</span>
+              </div>
+              <div class="stats-content">
+                <p class="stats-label">Productos en Inventario</p>
+                <h4 class="stats-value" th:text="${productCount}"></h4>
+                <div class="stats-trend neutral">
+                  <i class="fas fa-box"></i>
+                  <span>92% disponible</span>
+                </div>
+              </div>
+              <div class="stats-action">
+                <a href="/view/inventory" class="btn btn-sm btn-warning">
+                  <i class="fas fa-eye me-1"></i>Ver Inventario
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 col-xl-3">
+          <div class="card border-0 shadow h-100 stats-card-improved animate__animated animate__fadeInUp" style="animation-delay:0.3s;">
+            <div class="card-body">
+              <div class="stats-header">
+                <div class="stats-icon bg-danger">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <span class="badge bg-danger stats-badge pulse">Alerta</span>
+              </div>
+              <div class="stats-content">
+                <p class="stats-label">Productos con Stock Bajo</p>
+                <h4 class="stats-value text-danger" th:text="${lowStockCount}"></h4>
+                <div class="stats-trend negative" th:if="${lowStockCount > 0}">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <span>Requiere atención inmediata</span>
+                </div>
+              </div>
+              <div class="stats-action">
+                <a href="/view/reports" class="btn btn-sm btn-danger">
+                  <i class="fas fa-bell me-1"></i>Ver Alertas
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="card border-0 shadow quick-access-card animate__animated animate__fadeIn">
+            <div class="card-header bg-white border-0">
+              <h3 class="card-title mb-0">
+                <i class="fas fa-bolt text-warning me-2"></i>Acceso Rápido
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="quick-actions-list">
+                <a href="/ventas" class="quick-action-link">
+                  <div class="quick-action-icon bg-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                  <div class="quick-action-text">
+                    <strong>Nueva Venta</strong>
+                    <small>Registrar transacción</small>
+                  </div>
+                  <i class="fas fa-chevron-right quick-action-arrow"></i>
+                </a>
+                <a href="/view/clients" class="quick-action-link">
+                  <div class="quick-action-icon bg-success">
+                    <i class="fas fa-user-plus"></i>
+                  </div>
+                  <div class="quick-action-text">
+                    <strong>Agregar Cliente</strong>
+                    <small>Registro nuevo cliente</small>
+                  </div>
+                  <i class="fas fa-chevron-right quick-action-arrow"></i>
+                </a>
+                <a href="/inventario" class="quick-action-link">
+                  <div class="quick-action-icon bg-warning">
+                    <i class="fas fa-box-open"></i>
+                  </div>
+                  <div class="quick-action-text">
+                    <strong>Gestionar Inventario</strong>
+                    <small>Actualizar productos</small>
+                  </div>
+                  <i class="fas fa-chevron-right quick-action-arrow"></i>
+                </a>
+                <a href="/reportes" class="quick-action-link">
+                  <div class="quick-action-icon bg-info">
+                    <i class="fas fa-chart-bar"></i>
+                  </div>
+                  <div class="quick-action-text">
+                    <strong>Ver Reportes</strong>
+                    <small>Análisis detallado</small>
+                  </div>
+                  <i class="fas fa-chevron-right quick-action-arrow"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card border-0 shadow notifications-card animate__animated animate__fadeIn">
+            <div class="card-header bg-white border-0">
+              <h3 class="card-title mb-0">
+                <i class="fas fa-bell text-info me-2"></i>Notificaciones
+                <span class="badge bg-danger ms-2">3</span>
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="notification-list">
+                <div class="notification-item">
+                  <div class="notification-icon bg-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                  </div>
+                  <div class="notification-content">
+                    <strong>Stock Bajo</strong>
+                    <p th:text="${lowStockCount} + ' productos necesitan reposición'"></p>
+                  </div>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-icon bg-success">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                  <div class="notification-content">
+                    <strong>Nueva Venta</strong>
+                    <p>Venta realizada por $125.000</p>
+                    <small class="text-muted">Hace 1 hora</small>
+                  </div>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-icon bg-primary">
+                    <i class="fas fa-user-plus"></i>
+                  </div>
+                  <div class="notification-content">
+                    <strong>Cliente Nuevo</strong>
+                    <p>María González se registró</p>
+                    <small class="text-muted">Hace 2 horas</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

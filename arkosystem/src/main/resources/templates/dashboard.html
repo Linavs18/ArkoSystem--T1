@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>ArkoSystem - Inicio</title>
+    <link rel="stylesheet" th:href="@{/assets/css/argon-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/custom.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tu archivo JavaScript principal -->
+    <script th:src="@{/assets/js/scripts.js}" defer></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Vista específica para CLIENTE -->
+    <div sec:authorize="hasRole('CLIENT')" class="content-wrapper">
+        <div class="row g-4">
+            <div class="col-md-4" th:each="producto : ${productos}">
+                <div class="card shadow-sm h-100 text-center">
+                    <img th:src="@{${producto.imageUrl}}"
+                         alt="Imagen del producto"
+                         style="height: 320px; width: 80%; object-fit: cover; margin: auto; border-radius: 8px;">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${producto.name}">Nombre Producto</h5>
+                        <p class="card-text text-primary fw-bold">
+                            <span th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 2, 'POINT')}"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div sec:authorize="!hasRole('CLIENT')" class="content-wrapper">
+        <div class="alert alert-warning">
+            Esta vista es exclusiva para clientes. Por favor, utiliza el Panel de Control.
+        </div>
+    </div>
+</div>
+</body>
+</html>
