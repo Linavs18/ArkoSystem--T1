@@ -106,6 +106,48 @@ arkosystem/
 
 ---
 
+## 👥 Contribuciones
+
+### Lina Vanessa Salcedo Cuellar
+- Creación inicial del repositorio y estructura del proyecto
+- Diseño del mockup y diagramas MER
+- Configuración de la base de datos (`DB/arkosystem_db.sql`)
+- Generación del proyecto con Spring Boot
+- Configuración de seguridad (`SecurityConfig`, `WebConfig`)
+- Vistas y controladores: Clientes (`ViewClients`, `ControllerClients`)
+- Vistas y controladores: Inventario (`ViewInventory`, `ControllerInventory`)
+- Dashboard de clientes (`ControllerDashboard`)
+- Módulo de Reportes (`ViewReports`, `ControllerReports`)
+- Servicio de autenticación de usuarios (`UserDetailsServiceImpl`)
+- Corrección de errores y ajustes generales en múltiples módulos
+
+### Juan Fernando Velasquez Sarmiento
+- Diagramas de interfaz de usuario (DIU) y UML (casos de uso, actividades, secuencia)
+- Modelos JPA de todas las entidades: `Clients`, `Employee`, `Inventory`, `Suppliers`, `Category`, `PurchaseOrder`, `OrderDetails`, `Sale`, `SaleDetails`, `PayMethod`
+- Repositorios JPA para todas las entidades
+- Controladores MVC para todos los módulos del sistema
+- Módulo de Proveedores (`ControllerSupplier`, vistas `Suppliers`)
+- Módulo de Ventas (`ControllerSale`, `ControllerSaleDetail`, `ViewSale`, vistas `Sales`)
+- Configuración de seguridad (`SecurityConfig`, `WebConfig`)
+- Javadocs y comentarios de documentación del código
+- Barra lateral de navegación (`sidebar.html`)
+- Scripts JavaScript del frontend
+
+### Juan Sebastian Rodriguez Cruz
+- Diseño visual y estilos CSS (`custom.css`, `volt.css`, integración con Bootstrap)
+- Implementación de autenticación con Spring Security (`UserDetailsImpl`, `SecurityConfig`)
+- Módulo de Empleados (`ControllerEmployee`, `ViewEmployee`)
+- Gestión de Usuarios y Roles (`ControllerUsers`, `ControllerRoles`)
+- Configuración de cuenta (`ControllerSettings`)
+- Recuperación de contraseña (`ControllerForgotPassword`)
+- Controlador de errores (`ControllerError`)
+- Búsqueda (`Search`)
+- Paginación de listados
+- Módulo de Ventas Pt1 (`ViewSale`)
+- Repositorios: `RepositoryUser`, `RoleRepository`, `RepositoryClients`, `RepositoryEmployee`, `RepositorySaleDetails`, `RepositorySuppliers`
+
+---
+
 ## 📚 Créditos
 
 Proyecto desarrollado como actividad del **SENA (Servicio Nacional de Aprendizaje)** dentro del programa de **Análisis y Desarrollo de Software (ADSO)**.
